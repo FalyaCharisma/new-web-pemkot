@@ -24,17 +24,18 @@ export function Tourism() {
   const filtered = filter === "Semua" ? items : items.filter((i) => i.category === filter);
 
   return (
-    <section id="wisata" className="relative py-28">
+    <section id="wisata" className="relative">
       <div className="container-page">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-2xl">
+          <div className="max-w-5xl">
             <SectionLabel>Destinasi Wisata</SectionLabel>
             <h2 className="mt-5 text-4xl font-bold tracking-tight md:text-5xl">
               Setiap sudut menyimpan{" "}
               <span className="font-serif italic text-gold">cerita</span>
             </h2>
           </div>
-          <div className="flex flex-wrap gap-2">
+        </div>
+        <div className="flex flex-wrap gap-2 mt-8">
             {filters.map((f) => (
               <button
                 key={f}
@@ -49,7 +50,6 @@ export function Tourism() {
               </button>
             ))}
           </div>
-        </div>
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((i) => (

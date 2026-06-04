@@ -47,9 +47,9 @@ export function Harmony() {
           <blockquote className="font-serif text-3xl italic md:text-4xl">
             “Damai dalam perbedaan, kuat dalam kebersamaan.”
           </blockquote>
-          <figcaption className="mt-4 text-xs uppercase tracking-[0.22em] text-muted-foreground">
+          {/* <figcaption className="mt-4 text-xs uppercase tracking-[0.22em] text-muted-foreground">
             Filosofi Warga Kediri
-          </figcaption>
+          </figcaption> */}
         </figure>
       </div>
     </section>
