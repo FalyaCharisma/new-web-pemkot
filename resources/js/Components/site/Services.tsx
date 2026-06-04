@@ -34,13 +34,13 @@ export function Services() {
               <span className="font-serif italic text-gold">satu sentuhan</span>
             </h2>
           </div>
-          <p className="max-w-md text-muted-foreground">
+          {/* <p className="max-w-md text-muted-foreground">
             Semua layanan esensial Pemerintah Kota Kediri, tersedia 24/7
             untuk warga.
-          </p>
+          </p> */}
         </div>
 
-        <div className="mt-14 grid grid-cols-1 gap-px overflow-hidden rounded-3xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-3xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
           {services.map((s) => (
             <a
               key={s.title}

@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import mapan from "@/assets/mapan.png";
+import logo from "@/assets/logo.png";
 
 const nav = [
   { href: "#beranda", label: "Beranda" },
@@ -31,15 +33,19 @@ export function Header() {
     >
       <div className="container-page flex h-20 items-center justify-between">
         <a href="#beranda" className="flex items-center gap-3 group">
-          <span className="grid size-11 place-items-center rounded-full bg-gradient-gold text-gold-foreground font-bold shadow-elegant">
-            K
-          </span>
-          <span className="leading-tight">
-            <span className="block text-sm font-semibold tracking-tight">Kota Kediri</span>
-            <span className={`block text-[10px] uppercase tracking-[0.22em] ${scrolled ? "text-muted-foreground" : "text-white/70"}`}>
-              Pemerintah Kota
-            </span>
-          </span>
+          <div className="flex items-center gap-2">
+  <img
+    src={logo}
+    alt="Logo Pemkot Kediri"
+    className="h-10 w-auto"
+  />
+
+  <img
+    src={mapan}
+    alt="Logo HUT"
+    className="h-10 w-auto"
+  />
+</div>
         </a>
 
         <nav className="hidden lg:flex items-center gap-7 text-sm">

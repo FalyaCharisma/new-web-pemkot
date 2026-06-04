@@ -56,10 +56,10 @@
   --popover: oklch(0.995 0.002 145);
   --popover-foreground: oklch(0.18 0.02 145);
 
-  --primary: oklch(0.42 0.13 145);            /* forest green */
+  --primary: #154E5B;            /* forest green */
   --primary-foreground: oklch(0.995 0.002 145);
 
-  --gold: oklch(0.40 0.14 145);               /* green accent */
+  --gold: #eebc48;               /* green accent */
   --gold-foreground: oklch(0.995 0.002 145);
 
   --secondary: oklch(0.94 0.01 145);
@@ -76,27 +76,27 @@
 
   --border: oklch(0.18 0.02 145 / 0.10);
   --input: oklch(0.18 0.02 145 / 0.12);
-  --ring: oklch(0.42 0.13 145);
+  --ring: #154E5B;
 
-  --chart-1: oklch(0.42 0.13 145);
-  --chart-2: oklch(0.40 0.14 145);
-  --chart-3: oklch(0.55 0.12 180);
+  --chart-1: #154E5B;
+  --chart-2: #154E5B;
+  --chart-3: #154E5B;
   --chart-4: oklch(0.62 0.18 30);
   --chart-5: oklch(0.72 0.08 145);
 
   --sidebar: oklch(0.97 0.005 145);
   --sidebar-foreground: oklch(0.18 0.02 145);
-  --sidebar-primary: oklch(0.42 0.13 145);
+  --sidebar-primary: #154E5B;
   --sidebar-primary-foreground: oklch(0.995 0.002 145);
   --sidebar-accent: oklch(0.93 0.01 145);
   --sidebar-accent-foreground: oklch(0.18 0.02 145);
   --sidebar-border: oklch(0.18 0.02 145 / 0.10);
-  --sidebar-ring: oklch(0.42 0.13 145);
+  --sidebar-ring: #154E5B;
 
   /* Gradients & effects */
-  --gradient-hero: radial-gradient(ellipse at 50% 0%, oklch(0.30 0.06 145 / 0.5), transparent 70%),
-                   linear-gradient(180deg, oklch(0.10 0.02 145 / 0.35) 0%, oklch(0.10 0.02 145 / 0.70) 70%, oklch(0.10 0.02 145 / 0.90) 100%);
-  --gradient-gold: linear-gradient(135deg, oklch(0.50 0.13 145), oklch(0.35 0.14 145));
+  --gradient-hero: radial-gradient(ellipse at 50% 0%, oklch(20.182% 0.01242 145.183 / 0.5), transparent 80%),
+                   linear-gradient(180deg, oklch(27.374% 0.08481 142.835 / 0.35) 0%, oklch(90.086% 0.05243 233.425 / 0.7) 70%, oklch(0.10 0.02 145 / 0.90) 100%);
+  --gradient-gold: linear-gradient(135deg, #154E5B, #154E5B);
   --gradient-card: linear-gradient(160deg, oklch(0.995 0.002 145 / 0.95), oklch(0.97 0.005 145 / 0.95));
   --shadow-elegant: 0 30px 80px -30px oklch(0 0 0 / 0.12), 0 8px 24px -8px oklch(0 0 0 / 0.08);
   --shadow-glow: 0 0 0 1px oklch(0.18 0.02 145 / 0.06), 0 30px 60px -30px oklch(0.42 0.13 145 / 0.15);

@@ -1,5 +1,5 @@
 import { ArrowRight, Compass } from "lucide-react";
-import hero from "@/assets/hero-kediri.jpg";
+import hero from "@/assets/hero2.png";
 
 export function Hero() {
   return (
@@ -18,22 +18,18 @@ export function Hero() {
         <div className="max-w-3xl">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-medium uppercase tracking-[0.18em] text-white/80 backdrop-blur">
             <span className="size-1.5 rounded-full bg-gold" />
-            Portal Resmi · Kota Kediri, Jawa Timur
+            Portal Resmi · Pemerintah Kota Kediri
           </div>
 
           <h1 className="mt-8 text-5xl font-bold leading-[1.02] tracking-tight text-white md:text-7xl lg:text-[88px]">
-            Kota Kediri
-            <br />
-            <span className="text-white">Harmoni, </span>
-            <span className="font-serif italic text-gold">Maju,</span>
-            <br />
-            <span className="font-serif italic">dan Berbudaya</span>
+            Kota Kediri <span className="text-gold italic">Mapan</span>
           </h1>
+          <h5 className="mt-6 text-lg font-medium uppercase tracking-[0.18em] text-white/80">
+            Ngangeni dalam Kenangan, Maju dalam Perjalanan
+          </h5>
 
-          <p className="mt-8 max-w-xl text-base text-white/80 md:text-lg">
-            Sebuah kota modern yang menyeimbangkan transformasi digital,
-            kekayaan budaya Nusantara, dan kerukunan antar umat beragama —
-            dirancang untuk warga, terbuka untuk dunia.
+          <p className="mt-4 max-w-xl text-base text-white/80 md:text-lg">
+            Tata kelola pemerintahan yang modern, masyarakat yang produktif, lingkungan yang aman, serta kehidupan yang berlandaskan nilai budaya dan religiusitas.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -56,7 +52,7 @@ export function Hero() {
         </div>
 
         <div className="mt-16 grid grid-cols-2 gap-x-8 gap-y-6 border-t border-white/20 pt-8 text-xs uppercase tracking-[0.22em] text-white/60 md:flex md:flex-wrap md:items-center md:gap-x-12">
-          <span className="text-white">Simpang Lima Gumul</span>
+          {/* <span className="text-white">Simpang Lima Gumul</span> */}
           <span>Wisata Kota</span>
           <span>Budaya &amp; Festival</span>
           <span>Pendidikan &amp; Smart City</span>
