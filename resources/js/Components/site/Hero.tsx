@@ -21,8 +21,8 @@ export function Hero() {
             Portal Resmi · Pemerintah Kota Kediri
           </div>
 
-          <h1 className="mt-8 text-5xl font-bold leading-[1.02] tracking-tight text-white md:text-7xl lg:text-[88px]">
-            Kota Kediri <span className="text-gold italic">Mapan</span>
+          <h1 className="mt-8 text-5xl font-bold leading-[1.02] tracking-tight text-white md:text-7xl ">
+            Kota Kediri <span className="text-gold italic font-serif">Mapan</span>
           </h1>
           <h5 className="mt-6 text-lg font-medium uppercase tracking-[0.18em] text-white/80">
             Ngangeni dalam Kenangan, Maju dalam Perjalanan
@@ -33,6 +33,7 @@ export function Hero() {
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-3">
+            
             <a
               href="#wisata"
               className="inline-flex items-center gap-3 rounded-full bg-foreground px-6 py-3.5 text-sm font-semibold text-background transition-all hover:gap-4"
