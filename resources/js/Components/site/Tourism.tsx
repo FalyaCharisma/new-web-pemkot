@@ -24,17 +24,18 @@ export function Tourism() {
   const filtered = filter === "Semua" ? items : items.filter((i) => i.category === filter);
 
   return (
-    <section id="wisata" className="relative py-28">
+    <section id="wisata" className="relative">
       <div className="container-page">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-2xl">
+          <div className="max-w-5xl">
             <SectionLabel>Destinasi Wisata</SectionLabel>
             <h2 className="mt-5 text-4xl font-bold tracking-tight md:text-5xl">
               Setiap sudut menyimpan{" "}
               <span className="font-serif italic text-gold">cerita</span>
             </h2>
           </div>
-          <div className="flex flex-wrap gap-2">
+        </div>
+        <div className="flex flex-wrap gap-2 mt-8">
             {filters.map((f) => (
               <button
                 key={f}
@@ -49,13 +50,12 @@ export function Tourism() {
               </button>
             ))}
           </div>
-        </div>
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((i) => (
             <article
               key={i.title}
-              className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border"
+              className="group relative aspect-[16/10] overflow-hidden rounded-3xl border border-border"
             >
               <img
                 src={i.img}
@@ -66,11 +66,11 @@ export function Tourism() {
                 className="size-full object-cover transition-transform duration-[1.2s] group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-6">
+              <div className="absolute inset-x-0 bottom-0 p-4">
                 <span className="text-[11px] uppercase tracking-[0.22em] text-gold">
                   {i.category}
                 </span>
-                <h3 className="mt-2 font-serif text-2xl text-white">{i.title}</h3>
+                <h3 className="mt-2 font-serif text-xl text-white">{i.title}</h3>
                 <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-white/70">
                   <MapPin className="size-3.5" /> {i.area}
                 </p>

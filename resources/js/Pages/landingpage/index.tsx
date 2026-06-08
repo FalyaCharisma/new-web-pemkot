@@ -11,8 +11,15 @@ import { Harmony } from "@/Components/site/Harmony";
 import { SmartCity } from "@/Components/site/SmartCity";
 import { News } from "@/Components/site/News";
 import { Footer } from "@/Components/site/Footer";
+import { Berita } from "@/types/berita";
 
-export default function LandingPage() {
+type Props = {
+    berita: Berita[];
+};
+
+export default function LandingPage({
+    berita,
+}: Props) {
     return (
         <>
             <Head
@@ -36,7 +43,7 @@ export default function LandingPage() {
                     <Tourism />
                     <Harmony />
                     <SmartCity />
-                    <News />
+                    <News berita={berita} />
                 </main>
 
                 <Footer />

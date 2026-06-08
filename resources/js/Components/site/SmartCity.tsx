@@ -11,7 +11,7 @@ const pillars = [
 
 export function SmartCity() {
   return (
-    <section id="smart" className="relative py-28">
+    <section id="smart" className="relative">
       <div className="container-page grid gap-14 lg:grid-cols-2">
         <div>
           <SectionLabel>Smart City &amp; Education</SectionLabel>
