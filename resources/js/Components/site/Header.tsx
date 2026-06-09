@@ -1,76 +1,372 @@
 import { useEffect, useState } from "react";
-import mapan from "@/assets/mapan.png";
-import logo from "@/assets/logo.png";
+import {
+  ChevronDown,
+  Search,
+  Menu,
+  X,
+  Info,
+  Building2,
+  Network,
+  Map,
+  Trophy,
+  Newspaper,
+  Megaphone,
+  Images,
+  Video,
+  BarChart3,
+  FileText,
+} from "lucide-react";
 
-const nav = [
-  { href: "#beranda", label: "Beranda" },
-  { href: "#layanan", label: "Layanan" },
-  { href: "#tentang", label: "Tentang" },
-  { href: "#agenda", label: "Agenda" },
-  { href: "#budaya", label: "Budaya" },
-  { href: "#wisata", label: "Wisata" },
-  { href: "#harmoni", label: "Harmoni" },
-  { href: "#smart", label: "Smart City" },
-  { href: "#berita", label: "Berita" },
+import logo from "@/assets/logo.png";
+import mapan from "@/assets/mapan.png";
+
+const navigation = [
+  {
+    title: "Mengenal Kediri",
+    children: [
+      {
+        title: "Pesona Kediri Raya",
+        description:
+          "Informasi lengkap tentang tempat wisata, budaya, kuliner, hingga produk khas Kota Kediri.",
+        icon: Search,
+        href: "#",
+      },
+      {
+        title: "Tentang Kediri",
+        description:
+          "Gambaran umum tentang Kota Kediri termasuk sejarah, visi & misi serta profil pemimpinnya.",
+        icon: Info,
+        href: "#",
+      },
+      {
+        title: "Fasilitas Kota",
+        description:
+          "Berbagai sarana dan prasarana yang ada di Kota Kediri.",
+        icon: Building2,
+        href: "#",
+      },
+      {
+        title: "Perangkat Daerah",
+        description:
+          "Struktur dan tugas perangkat daerah yang mendukung pelayanan publik.",
+        icon: Network,
+        href: "#",
+      },
+      {
+        title: "Kelurahan",
+        description:
+          "Informasi tentang pembagian wilayah kelurahan di Kota Kediri.",
+        icon: Map,
+        href: "#",
+      },
+      {
+        title: "Penghargaan",
+        description:
+          "Prestasi dan penghargaan yang telah diraih oleh Kota Kediri.",
+        icon: Trophy,
+        href: "#",
+      },
+    ],
+  },
+  {
+    title: "Pusat Media & Informasi",
+    children: [
+      {
+        title: "Berita",
+        description:
+          "Berita terkini mengenai berbagai aktivitas dan program Kota Kediri.",
+        icon: Newspaper,
+        href: "#",
+      },
+      {
+        title: "Pengumuman",
+        description:
+          "Informasi penting yang perlu diketahui masyarakat.",
+        icon: Megaphone,
+        href: "#",
+      },
+      {
+        title: "Galeri",
+        description:
+          "Koleksi foto yang menggambarkan aktivitas dan keindahan Kota Kediri.",
+        icon: Images,
+        href: "#",
+      },
+      {
+        title: "Video",
+        description:
+          "Dokumentasi audiovisual terkait Kota Kediri.",
+        icon: Video,
+        href: "#",
+      },
+      {
+        title: "Satu Data",
+        description:
+          "Portal satu data Pemerintah Kota Kediri.",
+        icon: BarChart3,
+        href: "#",
+      },
+      {
+        title: "Dokumen",
+        description:
+          "Dokumen berisi berbagai laporan dan regulasi Pemerintah Kota Kediri.",
+        icon: FileText,
+        href: "#",
+      },
+    ],
+  },
+  {
+    title: "Layanan Publik",
+    href: "#",
+  },
+  {
+    title: "PPID",
+    href: "#",
+  },
 ];
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => setScrolled(window.scrollY > 50);
+
     onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
+
+    window.addEventListener("scroll", onScroll);
+
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-background/70 backdrop-blur-xl border-b border-border"
+          ? "bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm"
           : "bg-transparent"
       }`}
     >
       <div className="container-page flex h-20 items-center justify-between">
-        <a href="#beranda" className="flex items-center gap-3 group">
-          <div className="flex items-center gap-2">
-  <img
-    src={logo}
-    alt="Logo Pemkot Kediri"
-    className="h-10 w-auto"
-  />
+        {/* Logo */}
+        <a href="/" className="flex items-center gap-4">
+          <img
+            src={logo}
+            alt="Logo Pemkot Kediri"
+            className="h-12 w-auto"
+          />
 
-  <img
-    src={mapan}
-    alt="Logo HUT"
-    className="h-10 w-auto"
-  />
+          <img
+            src={mapan}
+            alt="Logo MAPAN"
+            className="h-10 w-auto"
+          />
+        </a>
+
+        <div className="flex items-center gap-2 lg:hidden">
+  {/* Search */}
+  <button
+    onClick={() => setShowSearch(!showSearch)}
+    className={`p-2 ${
+      scrolled ? "text-slate-700" : "text-white"
+    }`}
+  >
+    <Search size={22} />
+  </button>
+
+  {/* Hamburger */}
+  <button
+    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+    className={`p-2 ${
+      scrolled ? "text-slate-700" : "text-white"
+    }`}
+  >
+    {mobileMenuOpen ? (
+      <X size={24} />
+    ) : (
+      <Menu size={24} />
+    )}
+  </button>
 </div>
-        </a>
+        
+        {/* Menu */}
+        <nav className="hidden lg:flex items-center gap-8">
+          {navigation.map((item) =>
+            item.children ? (
+              <div
+                key={item.title}
+                className="group"
+              >
+                <button
+                  className={`flex items-center gap-1 font-semibold transition-colors ${
+                    scrolled
+                      ? "text-slate-700 hover:text-primary"
+                      : "text-white hover:text-white"
+                  }`}
+                >
+                  {item.title}
 
-        <nav className="hidden lg:flex items-center gap-7 text-sm">
-          {nav.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className={`transition-colors ${
-                scrolled
-                  ? "text-muted-foreground hover:text-foreground"
-                  : "text-white/70 hover:text-white"
-              }`}
-            >
-              {item.label}
-            </a>
-          ))}
+                  <ChevronDown
+                    size={16}
+                    className="transition-transform duration-200 group-hover:rotate-180"
+                  />
+                </button>
+
+                {/* Mega Menu */}
+                <div
+                  className="
+                    invisible
+                    absolute
+                    left-1/2
+                    top-full
+                    z-50
+                    mt-3
+                    w-[1000px]
+                    max-w-[90vw]
+                    -translate-x-1/2
+                    rounded-2xl
+                    border
+                    border-primary/10
+                    bg-[#F7FAFB]
+                    p-6
+                    opacity-0
+                    shadow-xl
+                    transition-all
+                    duration-200
+                    group-hover:visible
+                    group-hover:opacity-100
+                  "
+                >
+                  <div className="container-page py-5">
+                    <div className="grid grid-cols-3 gap-x-8 gap-y-3">
+                      {item.children.map((child) => {
+                        const Icon = child.icon;
+
+                        return (
+                          <a
+                            key={child.title}
+                            href={child.href}
+                            className="
+                              flex
+                              items-start
+                              gap-4
+                              rounded-xl
+                              p-3
+                              transition-all
+                              hover:bg-white
+                              hover:shadow-sm
+                            "
+                          >
+                            <div className="mt-1">
+                              <Icon
+                                size={24}
+                                className="text-primary"
+                              />
+                            </div>
+
+                            <div>
+                              <h4 className="font-semibold text-base text-primary">
+                                {child.title}
+                              </h4>
+
+                              <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                                {child.description}
+                              </p>
+                            </div>
+                          </a>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <a
+                key={item.title}
+                href={item.href}
+                className={`font-semibold transition-colors ${
+                  scrolled
+                    ? "text-slate-700 hover:text-primary"
+                    : "text-white hover:text-white"
+                }`}
+              >
+                {item.title}
+              </a>
+            )
+          )}
+
+          {/* Search Button */}
+          <div className="relative">
+            {showSearch ? (
+              <div
+                className={`flex items-center rounded-full px-4 py-2 shadow-lg ${
+                  scrolled
+                    ? "bg-white border border-slate-200"
+                    : "bg-white"
+                }`}
+              >
+                <Search size={16} className="text-slate-500" />
+
+                <input
+                  autoFocus
+                  type="text"
+                  placeholder="Cari..."
+                  className="ml-2 w-64 bg-transparent text-sm outline-none"
+                />
+
+                <button
+                  onClick={() => setShowSearch(false)}
+                  className="ml-2 text-slate-400 hover:text-slate-700"
+                >
+                  ✕
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowSearch(true)}
+                className={`flex h-10 w-10 items-center justify-center rounded-full transition-all ${
+                  scrolled
+                    ? "bg-slate-100 text-slate-700 hover:bg-primary hover:text-white"
+                    : "bg-white/15 text-white backdrop-blur hover:bg-white/25"
+                }`}
+              >
+                <Search size={18} />
+              </button>
+            )}
+          </div>
         </nav>
-
-        <a
-          href="#layanan"
-          className="hidden md:inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:scale-[1.02] hover:shadow-glow"
-        >
-          Layanan Publik
-        </a>
       </div>
+      {mobileMenuOpen && (
+  <div className="lg:hidden bg-white border-t border-slate-200 shadow-lg">
+    <div className="container-page py-4">
+      {navigation.map((item) => (
+        <div
+          key={item.title}
+          className="border-b border-slate-100 py-3"
+        >
+          <div className="font-semibold text-slate-800">
+            {item.title}
+          </div>
+
+          {item.children && (
+            <div className="mt-2 ml-3 space-y-2">
+              {item.children.map((child) => (
+                <a
+                  key={child.title}
+                  href={child.href}
+                  className="block text-sm text-slate-600 hover:text-primary"
+                >
+                  {child.title}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+)}
     </header>
   );
 }
