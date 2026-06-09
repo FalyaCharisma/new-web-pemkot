@@ -17,8 +17,7 @@ import {
   FileText,
 } from "lucide-react";
 
-import logo from "@/assets/logo.png";
-import mapan from "@/assets/mapan.png";
+import stroke from "@/assets/logo-pemkot-stroke.png";
 
 const navigation = [
   {
@@ -148,50 +147,37 @@ export function Header() {
           : "bg-transparent"
       }`}
     >
-      <div className="container-page flex h-20 items-center justify-between">
+      <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-6">
         {/* Logo */}
-        <a href="/" className="flex items-center gap-4">
-          <img
-            src={logo}
-            alt="Logo Pemkot Kediri"
-            className="h-12 w-auto"
-          />
-
-          <img
-            src={mapan}
-            alt="Logo MAPAN"
-            className="h-10 w-auto"
-          />
+        <a href="/" className="flex items-center gap-2">
+          <div className="rounded-xl bg-white p-1">
+            <img
+              src={stroke}
+              alt="Logo"
+              className="h-10 w-auto"
+            />
+          </div>
         </a>
 
         <div className="flex items-center gap-2 lg:hidden">
-  {/* Search */}
-  <button
-    onClick={() => setShowSearch(!showSearch)}
-    className={`p-2 ${
-      scrolled ? "text-slate-700" : "text-white"
-    }`}
-  >
-    <Search size={22} />
-  </button>
-
-  {/* Hamburger */}
-  <button
-    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-    className={`p-2 ${
-      scrolled ? "text-slate-700" : "text-white"
-    }`}
-  >
-    {mobileMenuOpen ? (
-      <X size={24} />
-    ) : (
-      <Menu size={24} />
-    )}
-  </button>
-</div>
+        
+          {/* Hamburger */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className={`p-2 ${
+              scrolled ? "text-slate-700" : "text-white"
+            }`}
+            >
+              {mobileMenuOpen ? (
+                <X size={24} />
+              ) : (
+              <Menu size={24} />
+              )}
+          </button>
+        </div>
         
         {/* Menu */}
-        <nav className="hidden lg:flex items-center gap-8">
+        <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
           {navigation.map((item) =>
             item.children ? (
               <div
@@ -199,7 +185,7 @@ export function Header() {
                 className="group"
               >
                 <button
-                  className={`flex items-center gap-1 font-semibold transition-colors ${
+                  className={`flex items-center gap-1 text-sm font-medium transition-colors ${
                     scrolled
                       ? "text-slate-700 hover:text-primary"
                       : "text-white hover:text-white"
@@ -285,7 +271,7 @@ export function Header() {
               <a
                 key={item.title}
                 href={item.href}
-                className={`font-semibold transition-colors ${
+                className={`text-sm font-medium transition-colors ${
                   scrolled
                     ? "text-slate-700 hover:text-primary"
                     : "text-white hover:text-white"
