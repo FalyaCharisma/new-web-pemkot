@@ -147,4 +147,10 @@
     mix-blend-mode: multiply;
     opacity: 0.3;
   }
+  .background-wave{
+    background-image: url("../js/assets/bg-pattern.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  }
 }
