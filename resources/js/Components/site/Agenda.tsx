@@ -55,7 +55,7 @@ export function Agenda() {
     const [featured, ...rest] = events;
 
     return (
-        <section id="agenda" className="relative">
+        <section id="agenda" className="relative background-wave">
             <div className="container-page">
                 <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
                     <div className="max-w-2xl">

@@ -3,6 +3,7 @@ import { Head } from "@inertiajs/react";
 import { Header } from "@/Components/site/Header";
 import { Hero } from "@/Components/site/Hero";
 import { Services } from "@/Components/site/Services";
+import { Statistik } from "@/Components/site/Statistik";
 // import { About } from "@/Components/site/About";
 import { Agenda } from "@/Components/site/Agenda";
 import { Culture } from "@/Components/site/Culture";
@@ -12,6 +13,7 @@ import { SmartCity } from "@/Components/site/SmartCity";
 import { News } from "@/Components/site/News";
 import { Footer } from "@/Components/site/Footer";
 import { Berita } from "@/types/berita";
+import { CityMap } from "@/Components/site/CityMap";
 
 type Props = {
     berita: Berita[];
@@ -38,11 +40,12 @@ export default function LandingPage({
                     <Hero />
                     <Services />
                     {/* <About /> */}
+                    {/* <Statistik /> */}
                     <Agenda />
                     <Culture />
+                    <CityMap />
                     <Tourism />
                     <Harmony />
-                    <SmartCity />
                     <News berita={berita} />
                 </main>
 
