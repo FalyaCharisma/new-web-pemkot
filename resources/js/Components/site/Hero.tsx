@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 
 import hero from "@/assets/hero4.png";
+import QuickMenu from "../QuickMenu";
+import MobileMenu from "../MobileMenu";
 
 export function Hero() {
   return (
@@ -105,34 +107,45 @@ export function Hero() {
             <QuickMenu
               icon={<Hotel size={28} />}
               title="Akomodasi"
+              href={route('akomodasi.index')}
             />
 
             <QuickMenu
               icon={<Bus size={28} />}
               title="Transportasi"
+              href="#"
+
             />
 
             <QuickMenu
               icon={<HeartPulse size={28} />}
               title="Kesehatan"
+              href="#"
+
             />
 
             <QuickMenu
               icon={<UtensilsCrossed size={28} />}
               title="Kuliner"
+              href="#"
+
             />
 
             <QuickMenu
               icon={<ShoppingBag size={28} />}
               title="Perbelanjaan"
+              href="#"
+
             />
 
             <QuickMenu
               icon={<Trees size={28} />}
               title="Ruang Publik"
+              href="#"
+
             />
 
-            <button className="flex flex-col items-center justify-center gap-3 bg-primary p-6 text-white transition hover:opacity-90">
+            <button className="flex flex-col items-center justify-center gap-2 bg-primary p-6 text-white transition hover:opacity-90">
               <LayoutGrid size={28} />
 
               <span className="text-sm font-medium">
@@ -149,81 +162,46 @@ export function Hero() {
           <MobileMenu
             icon={<Hotel size={22} />}
             title="Akomodasi"
+             href={route('akomodasi.index')}
           />
 
           <MobileMenu
             icon={<Bus size={22} />}
             title="Transportasi"
+            href="#"
           />
 
           <MobileMenu
             icon={<HeartPulse size={22} />}
             title="Kesehatan"
+            href="#"
           />
 
           <MobileMenu
             icon={<UtensilsCrossed size={22} />}
             title="Kuliner"
+            href="#"
           />
 
           <MobileMenu
             icon={<ShoppingBag size={22} />}
             title="Perbelanjaan"
+            href="#"
           />
 
           <MobileMenu
             icon={<Trees size={22} />}
             title="Ruang Publik"
+            href="#"
           />
 
           <MobileMenu
             icon={<LayoutGrid size={22} />}
             title="Semua"
+            href="#"
           />
         </div>
       </div>
     </header>
-  );
-}
-
-type QuickMenuProps = {
-  icon: React.ReactNode;
-  title: string;
-};
-
-function QuickMenu({
-  icon,
-  title,
-}: QuickMenuProps) {
-  return (
-    <button className="group flex flex-col items-center justify-center gap-3 border-r border-slate-200 p-6 transition hover:bg-slate-50">
-      <div className="text-amber-500 transition group-hover:scale-110">
-        {icon}
-      </div>
-
-      <span className="text-center text-sm font-medium text-slate-700">
-        {title}
-      </span>
-    </button>
-  );
-}
-
-function MobileMenu({
-  icon,
-  title,
-}: {
-  icon: React.ReactNode;
-  title: string;
-}) {
-  return (
-    <button className="flex min-w-[100px] flex-col items-center gap-2 rounded-2xl bg-white p-4 shadow-lg">
-      <div className="text-amber-500">
-        {icon}
-      </div>
-
-      <span className="text-center text-xs font-medium text-slate-700">
-        {title}
-      </span>
-    </button>
   );
 }
