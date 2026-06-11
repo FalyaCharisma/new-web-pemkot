@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\PerangkatDaerahController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [LandingPageController::class, 'index']);
+Route::get('/perangkat-daerah/{slug}',[PerangkatDaerahController::class, 'index']);
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

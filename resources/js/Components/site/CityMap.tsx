@@ -117,7 +117,7 @@ export function CityMap() {
 
             <div className="container-page mt-8">
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
-                    <div className="relative h-[480px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 shadow-lg">
+                    <div className="relative h-[480px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 shadow-lg z-[1]">
                         {MapComps ? (
                             <MapComps.MapContainer
                                 center={[selected.lat, selected.lng]}
