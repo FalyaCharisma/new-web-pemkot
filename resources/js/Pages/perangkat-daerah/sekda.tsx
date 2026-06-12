@@ -31,7 +31,7 @@ export default function SekretarisDaerah({
             {/* Deskripsi */}
             <div className="mt-4">
 
-                <div className="rounded-2xl bg-white p-8 shadow-sm">
+                <div className=" bg-white p-8">
                     <div
                         className="prose prose-slate max-w-none
                                    prose-p:leading-8

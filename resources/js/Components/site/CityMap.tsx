@@ -15,7 +15,7 @@ type Landmark = {
 const landmarks: Landmark[] = [
     {
         id: "simpang-lima",
-        name: "Monumen Simpang Lima Gumul",
+        name: "Jembatan Brawijaya",
         category: "Landmark",
         desc: "Ikon Kota Kediri terinspirasi Arc de Triomphe.",
         lat: -7.8443,
@@ -23,7 +23,7 @@ const landmarks: Landmark[] = [
     },
     {
         id: "kelud",
-        name: "Gunung Kelud",
+        name: "Gunung Klotok",
         category: "Wisata Alam",
         desc: "Gunung berapi aktif dengan pemandangan kawah.",
         lat: -7.9302,

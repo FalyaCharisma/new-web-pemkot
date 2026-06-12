@@ -10,13 +10,13 @@ export default function SidebarKategori({
     activeSlug,
 }: Props) {
     return (
-        <div className="bg-white rounded-3xl p-6 shadow-sm">
+        <div className="bg-white p-6 shadow-sm border rounded-lg p-6 bg-white shadow">
             <h3 className="font-bold text-lg mb-4">
                 Struktur Organisasi
             </h3>
             <div className="w-12 h-1 bg-[#D8A21D] mt-4 mb-6 rounded-full" />
 
-            <div className="space-y-2">
+            <div className="">
                 {kategoriList.map((item) => (
                     <Link
                         key={item.id}

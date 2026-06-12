@@ -20,7 +20,7 @@ export default function KepalaDaerah({ opd }: Props) {
                         <img
                             src={`/storage/pimpinan/${item.pimpinan?.foto}`}
                             alt={item.pimpinan?.nama_pimpinan}
-                            className="relative z-10 h-[320px] object-contain"
+                            className="relative z-10 h-[260px] object-contain"
                         />
                     </div>
 
