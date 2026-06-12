@@ -22,4 +22,8 @@ Route::get('/akomodasi', function () {
     return Inertia::render('akomodasi/index');
 })->name('akomodasi.index');
 
+Route::get('/pesona-kediri', function () {
+    return Inertia::render('pesonakediri/index');
+})->name('pesonakediri.index');
+
 require __DIR__.'/auth.php';

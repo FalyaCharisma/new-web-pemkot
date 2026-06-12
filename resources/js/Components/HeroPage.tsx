@@ -1,4 +1,5 @@
 import { Search, Home, ChevronRight } from "lucide-react";
+import cityline from "@/assets/cityline.png";
 
 interface FacilityHeroProps {
   title: string;
@@ -30,8 +31,8 @@ export function HeroPage({
         <div className="absolute -bottom-24 left-0 h-60 w-60 rounded-full bg-primary/10 blur-3xl" />
       </div>
       
-      <div className="container relative z-10 mx-auto px-4 py-16">
-        <div className="mb-6 flex items-center gap-2 text-sm text-slate-500">
+      <div className="container relative z-10 mx-auto px-4 py-6">
+        <div className="mt-4 mb-2 flex items-center gap-2 text-sm text-slate-500">
           <Home size={14} />
 
           <span>Beranda</span>
@@ -45,26 +46,34 @@ export function HeroPage({
 
         <div className="grid gap-10 lg:grid-cols-[1fr_500px] lg:items-center">
           <div>
-            <h1 className="text-5xl font-bold text-slate-900">
+            <h1 className="text-5xl font-bold text-primary">
               {title}
             </h1>
 
-            <p className="mt-4 max-w-xl text-slate-600">
+            <p className="mt-4 max-w-xl text-primary">
               {description}
             </p>
+            <div className="mt-6 max-w-xl">
+              <div className="flex overflow-hidden rounded-xl border bg-white shadow-sm">
+                <input
+                  type="text"
+                  placeholder={placeholder}
+                  className="flex-1 px-6 py-4 outline-none"
+                />
+
+                <button className="m-2 flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white">
+                  <Search size={18} />
+                </button>
+              </div>
+            </div>
           </div>
-
-          <div>
-            <div className="flex overflow-hidden rounded-2xl border bg-white shadow-sm">
-              <input
-                type="text"
-                placeholder={placeholder}
-                className="flex-1 px-6 py-4 outline-none"
+          <div className="relative hidden lg:flex items-center justify-end">
+            <div className="hidden lg:flex items-end justify-end">
+              <img
+                src={cityline}
+                alt="Cityline Kediri"
+                className="max-h-[380px] w-auto object-contain"
               />
-
-              <button className="bg-primary px-6 text-white">
-                <Search size={22} />
-              </button>
             </div>
           </div>
         </div>

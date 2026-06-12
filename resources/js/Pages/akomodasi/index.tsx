@@ -5,14 +5,10 @@ import { useRef } from "react";
 import { HeroPage } from "@/Components/HeroPage";
 
 import {
-  Search,
   MapPin,
   Star,
   ChevronLeft,
   ChevronRight,
-  Bookmark,
-  Home,
-  ChevronRight as BreadcrumbChevron,
   Phone,
   Building2,
   Bus,
@@ -20,6 +16,8 @@ import {
   UtensilsCrossed,
   ShoppingBag,
   Trees,
+  PlayCircle,
+  ArrowRight 
 } from "lucide-react";
 
 const accommodations = [
@@ -67,6 +65,50 @@ const accommodations = [
     address: "Jl. Anggrek No.15, Pare",
     phone: "(0354) 123456",
   },
+  {
+    id: 5,
+    name: "Insumo Palace Hotel",
+    type: "Hotel",
+    image:
+      "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?q=80&w=1200",
+    rating: 4.7,
+    reviews: 1867,
+    address: "Jl. Urip Sumoharjo No.90, Kediri",
+    phone: "(0354) 123456",
+  },
+  {
+    id: 6,
+    name: "Bukit Daun Resort",
+    type: "Resort",
+    image:
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1200",
+    rating: 4.8,
+    reviews: 945,
+    address: "Kec. Banyakan, Kab. Kediri",
+    phone: "(0354) 123456",
+  },
+  {
+    id: 7,
+    name: "Villa Kelud View",
+    type: "Villa",
+    image:
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200",
+    rating: 4.6,
+    reviews: 421,
+    address: "Ngancar, Kediri",
+    phone: "(0354) 123456",
+  },
+  {
+    id: 8,
+    name: "Pare Inn Residence",
+    type: "Guest House",
+    image:
+      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=1200",
+    rating: 4.4,
+    reviews: 287,
+    address: "Jl. Brawijaya, Pare",
+    phone: "(0354) 123456",
+  },
 ];
 
 export default function AkomodasiIndex() {
@@ -95,10 +137,10 @@ export default function AkomodasiIndex() {
 
         <main className="pt-15">
             <HeroPage
-                title="Kediri Hub"
+                title="Fasilitas Kota"
                 breadcrumb="Fasilitas Kota"
-                placeholder="Cari nama akomodasi atau lokasi..."
-                description="Pusat informasi Kota Kediri untuk menemukan wisata, kuliner, akomodasi, dan berbagai rekomendasi terbaik bagi perjalanan Anda."
+                placeholder="Cari fasilitas kota..."
+                description="Cari dan temukan berbagai fasilitas terbaik di Kota Kediri untuk kebutuhan perjalanan, aktivitas sehari-hari, maupun rekreasi Anda."
             />
 
             {/* CONTENT */}
@@ -107,7 +149,7 @@ export default function AkomodasiIndex() {
                     <div className="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
                         <div className="flex items-center justify-center">
                             <h2 className="text-2xl font-bold text-primary">
-                                Jelajahi Fasilitas
+                                Kediri Hub
                             </h2>
                         </div>
                         <div className="relative min-w-0">
@@ -200,120 +242,157 @@ export default function AkomodasiIndex() {
                     </div>
                 </div>
                 <div className="grid gap-8 lg:grid-cols-[280px_1fr]">
-                {/* FILTER */}
-                <aside className="h-fit rounded-2xl border bg-white p-6 shadow-sm lg:sticky lg:top-32">
-                    <h2 className="mb-6 text-lg font-semibold">
-                    Filter Pencarian
-                    </h2>
+                  {/* FILTER */}
+                  <aside className="h-fit rounded-2xl border bg-white p-6 shadow-sm lg:sticky lg:top-32">
+                      <h2 className="mb-6 text-lg font-semibold">
+                      Filter Pencarian
+                      </h2>
 
-                    <div className="space-y-8">
-                    <div>
-                        <h3 className="mb-3 text-sm font-semibold text-slate-700">
-                        Kategori
+                      <div className="space-y-8">
+                      <div>
+                          <h3 className="mb-3 text-sm font-semibold text-slate-700">
+                          Kategori
+                          </h3>
+
+                          <div className="space-y-2">
+                          {[
+                              "Hotel",
+                              "Guest House",
+                              "Homestay",
+                              "Villa",
+                              "Penginapan",
+                          ].map((item) => (
+                              <label
+                              key={item}
+                              className="flex items-center gap-2 text-sm"
+                              >
+                              <input type="checkbox" />
+                              {item}
+                              </label>
+                          ))}
+                          </div>
+                      </div>
+
+                      <button className="w-full rounded-xl bg-primary py-3 font-medium text-white">
+                          Terapkan Filter
+                      </button>
+                      </div>
+                  </aside>
+
+                  {/* LIST */}
+                  <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+                  {accommodations.map((item) => (
+                      <article
+                        key={item.id}
+                        className="overflow-hidden rounded-xl border bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                      >
+                        <div className="relative">
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="h-40 w-full object-cover"
+                          />
+
+                          <span className="absolute left-3 top-3 rounded-md bg-primary px-2 py-1 text-xs font-medium text-white">
+                            {item.type}
+                          </span>
+                        </div>
+
+                        <div className="p-4">
+                          {/* Nama */}
+                          <h3 className="line-clamp-1 font-semibold text-slate-900">
+                            {item.name}
+                          </h3>
+
+                          {/* Rating */}
+                          <div className="mt-2 flex items-center gap-1 text-sm">
+                            <Star
+                              size={15}
+                              className="fill-yellow-400 text-yellow-400"
+                            />
+
+                            <span className="font-medium">
+                              {item.rating}
+                            </span>
+
+                            <span className="text-slate-500">
+                              ({item.reviews} ulasan)
+                            </span>
+                          </div>
+
+                          {/* Alamat */}
+                          <div className="mt-3 flex items-start gap-2 text-sm text-slate-500">
+                            <MapPin
+                              size={15}
+                              className="mt-0.5 shrink-0"
+                            />
+
+                            <span className="line-clamp-2">
+                              {item.address}
+                            </span>
+                          </div>
+
+                          {/* Telepon */}
+                          <div className="mt-2 flex items-center gap-2 text-sm">
+                            <Phone
+                              size={15}
+                              className="text-primary"
+                            />
+
+                            <span className="font-medium text-slate-700">
+                              {item.phone}
+                            </span>
+                          </div>
+
+                          {/* Tombol Maps */}
+                          <a
+                            href="#"
+                            className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-primary px-4 py-2 text-sm font-medium text-primary transition hover:bg-primary hover:text-white"
+                          >
+                            <MapPin size={16} />
+                            Lihat Lokasi
+                          </a>
+                        </div>
+                      </article>
+                  ))}
+                  </div>
+                </div>
+                <div
+                  className="relative mt-10 overflow-hidden rounded-2xl
+                  bg-[linear-gradient(135deg,#154E5B_0%,#1D6573_50%,#2A7D8C_100%)]
+                  px-6 py-5 text-white"
+                >
+                  <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
+                  <div className="absolute bottom-0 left-1/3 h-20 w-20 rounded-full bg-cyan-300/10 blur-2xl" />
+
+                  <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/15">
+                        <PlayCircle className="h-6 w-6" />
+                      </div>
+
+                      <div>
+                        <h3 className="text-lg font-bold">
+                          Butuh inspirasi untuk menjelajahi Kediri Raya?
                         </h3>
 
-                        <div className="space-y-2">
-                        {[
-                            "Hotel",
-                            "Guest House",
-                            "Homestay",
-                            "Villa",
-                            "Penginapan",
-                        ].map((item) => (
-                            <label
-                            key={item}
-                            className="flex items-center gap-2 text-sm"
-                            >
-                            <input type="checkbox" />
-                            {item}
-                            </label>
-                        ))}
-                        </div>
+                        <p className="mt-1 text-sm text-white/80">
+                          Saksikan video destinasi wisata, kuliner khas, budaya lokal,
+                          dan berbagai pengalaman menarik dari Kediri Raya.
+                        </p>
+                      </div>
                     </div>
 
-                    <button className="w-full rounded-xl bg-primary py-3 font-medium text-white">
-                        Terapkan Filter
-                    </button>
-                    </div>
-                </aside>
-
-                {/* LIST */}
-                <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-                {accommodations.map((item) => (
-                    <article
-  key={item.id}
-  className="overflow-hidden rounded-xl border bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
->
-  <div className="relative">
-    <img
-      src={item.image}
-      alt={item.name}
-      className="h-40 w-full object-cover"
-    />
-
-    <span className="absolute left-3 top-3 rounded-md bg-primary px-2 py-1 text-xs font-medium text-white">
-      {item.type}
-    </span>
-  </div>
-
-  <div className="p-4">
-    {/* Nama */}
-    <h3 className="line-clamp-1 font-semibold text-slate-900">
-      {item.name}
-    </h3>
-
-    {/* Rating */}
-    <div className="mt-2 flex items-center gap-1 text-sm">
-      <Star
-        size={15}
-        className="fill-yellow-400 text-yellow-400"
-      />
-
-      <span className="font-medium">
-        {item.rating}
-      </span>
-
-      <span className="text-slate-500">
-        ({item.reviews} ulasan)
-      </span>
-    </div>
-
-    {/* Alamat */}
-    <div className="mt-3 flex items-start gap-2 text-sm text-slate-500">
-      <MapPin
-        size={15}
-        className="mt-0.5 shrink-0"
-      />
-
-      <span className="line-clamp-2">
-        {item.address}
-      </span>
-    </div>
-
-    {/* Telepon */}
-    <div className="mt-2 flex items-center gap-2 text-sm">
-      <Phone
-        size={15}
-        className="text-primary"
-      />
-
-      <span className="font-medium text-slate-700">
-        {item.phone}
-      </span>
-    </div>
-
-    {/* Tombol Maps */}
-    <a
-      href="#"
-      className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-primary px-4 py-2 text-sm font-medium text-primary transition hover:bg-primary hover:text-white"
-    >
-      <MapPin size={16} />
-      Lihat Lokasi
-    </a>
-  </div>
-</article>
-                ))}
-                </div>
+                    <a
+                      href="https://www.youtube.com/results?search_query=wisata+kediri"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-primary shadow-sm transition hover:scale-[1.02]"
+                    >
+                      Tonton Inspirasi Kediri
+                      <ArrowRight size={16} />
+                    </a>
+                  </div>
                 </div>
             </section>
         </main>
