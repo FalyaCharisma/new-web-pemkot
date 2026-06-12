@@ -11,8 +11,8 @@ import food from "@/assets/culture-food.jpg";
 const filters = ["Semua", "Wisata Alam", "Wisata Kota", "Wisata Religi", "Wisata Budaya"] as const;
 
 const items = [
-  { title: "Simpang Lima Gumul", category: "Wisata Kota", area: "Ngasem, Kediri", img: hero },
-  { title: "Gunung Kelud", category: "Wisata Alam", area: "Sugih Waras, Kediri", img: kelud },
+  { title: "Taman Sekartaji", category: "Wisata Kota", area: "Mojoroto, Kediri", img: hero },
+  { title: "Gunung Klotok", category: "Wisata Alam", area: "Mojoroto, Kediri", img: kelud },
   { title: "Goa Selomangleng", category: "Wisata Budaya", area: "Mojoroto, Kediri", img: umkm },
   { title: "Masjid Agung Kediri", category: "Wisata Religi", area: "Kota, Kediri", img: mosque },
   { title: "Sentra Kuliner Tahu", category: "Wisata Kota", area: "Kota, Kediri", img: food },
