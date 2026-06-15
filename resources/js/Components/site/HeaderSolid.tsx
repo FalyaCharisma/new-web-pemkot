@@ -35,7 +35,7 @@ const navigation = [
         description:
           "Gambaran umum tentang Kota Kediri termasuk sejarah, visi & misi serta profil pemimpinnya.",
         icon: Info,
-        href: "#",
+        href: route('tentang-kediri'),
       },
       {
         title: "Fasilitas Kota",
@@ -49,14 +49,14 @@ const navigation = [
         description:
           "Struktur dan tugas perangkat daerah yang mendukung pelayanan publik.",
         icon: Network,
-        href: "#",
+        href: '/perangkat-daerah/struktur-organisasi',
       },
       {
         title: "Kelurahan",
         description:
           "Informasi tentang pembagian wilayah kelurahan di Kota Kediri.",
         icon: Map,
-        href: "#",
+        href: 'kelurahan/35.71.02',
       },
       {
         title: "Penghargaan",

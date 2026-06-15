@@ -1,13 +1,12 @@
 import { Footer } from "@/Components/site/Footer";
 import KepalaDaerah from "./kepala-daerah";
 import SekretarisDaerah from "./sekda";
-import SidebarKategori from "./sidebar-kategori";
 import OpdGrid from "./staf-ahli";
 import StrukturOrganisasi from "./struktur-organisasi";
-import { Header } from "@/Components/site/Header";
 import { Head } from "@inertiajs/react";
 import { HeaderSolid } from "@/Components/site/HeaderSolid";
 import { HeroPage } from "@/Components/HeroPage";
+import SidebarItem from "@/Components/site/SidebarItem";
 
 export default function Index({ kategori, kategoriList }: any) {
     const renderContent = () => {
@@ -43,9 +42,11 @@ export default function Index({ kategori, kategoriList }: any) {
                                 <div className="mt-10">
                                     <div className="grid lg:grid-cols-4 gap-10">
                                         <div>
-                                            <SidebarKategori
-                                                kategoriList={kategoriList}
+                                            <SidebarItem
+                                                title="Struktur Organisasi"
+                                                items={kategoriList}
                                                 activeSlug={kategori.slug}
+                                                baseUrl="/perangkat-daerah"
                                             />
                                         </div>
 

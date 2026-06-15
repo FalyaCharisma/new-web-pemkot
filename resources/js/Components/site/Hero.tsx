@@ -47,7 +47,7 @@ export function Hero() {
               <span>AMAN</span>
               <span className="mx-2 text-yellow-400">•</span>
 
-              <span>NYAMAN</span>
+              <span>NGANGENI</span>
             </div>
 
             {/* Title */}
