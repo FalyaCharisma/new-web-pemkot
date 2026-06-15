@@ -150,9 +150,12 @@ export default function PesonaKediriIndex() {
                                 Deskripsi singkat mengenai pesona khas Kediri.
                                 </p>
 
-                                <button className="mt-4 text-primary font-medium text-sm">
-                                Baca Selengkapnya →
-                                </button>
+                                <Link
+                                    href={route("berita.show", 1)}
+                                    className="mt-3 inline-flex text-sm font-semibold text-primary"
+                                >
+                                    Baca Selengkapnya →
+                                </Link>
                             </div>
                             </div>
                         ))}

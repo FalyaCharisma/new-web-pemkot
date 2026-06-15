@@ -36,7 +36,7 @@ class BeritaController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return Inertia::render('berita/detail');
     }
 
     /**

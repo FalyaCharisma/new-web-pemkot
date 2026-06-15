@@ -71,14 +71,14 @@ const navigation = [
     title: "Pusat Media & Informasi",
     children: [
       {
-        title: "Berita",
+        title: "Berita & Pengumuman",
         description:
           "Berita terkini mengenai berbagai aktivitas dan program Kota Kediri.",
         icon: Newspaper,
         href: route('berita.index'),
       },
       {
-        title: "Pengumuman",
+        title: "Agenda",
         description:
           "Informasi penting yang perlu diketahui masyarakat.",
         icon: Megaphone,
@@ -87,15 +87,8 @@ const navigation = [
       {
         title: "Galeri",
         description:
-          "Koleksi foto yang menggambarkan aktivitas dan keindahan Kota Kediri.",
+          "Koleksi foto dan vidio yang menggambarkan aktivitas dan keindahan Kota Kediri.",
         icon: Images,
-        href: "#",
-      },
-      {
-        title: "Video",
-        description:
-          "Dokumentasi audiovisual terkait Kota Kediri.",
-        icon: Video,
         href: "#",
       },
       {
