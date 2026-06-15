@@ -1,4 +1,4 @@
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import { HeaderSolid } from "@/Components/site/HeaderSolid";
 import { Footer } from "@/Components/site/Footer";
 import { Home, ChevronRight } from "lucide-react";
@@ -32,7 +32,8 @@ import {
   Award,
   ShoppingBag,
   Briefcase,
-  Sparkles 
+  Sparkles,
+  ArrowLeft 
 } from "lucide-react";
 
 const categories = [
@@ -85,10 +86,27 @@ export default function DetailBerita() {
             <section className="container mx-auto px-4 py-10">
                 <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
                     <article className="rounded-3xl border bg-white p-6">
-                        {/* Category */}
-                        <span className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                            Kesenian
-                        </span>
+                        <div className="flex items-center justify-between gap-4">
+                            <span className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
+                                Kesenian
+                            </span>
+
+                            <Link
+                                href={route("berita.index")}
+                                className="
+                                    inline-flex items-center gap-2
+                                    rounded-lg border
+                                    px-3 py-1.5
+                                    text-xs font-medium text-slate-600
+                                    transition-all
+                                    hover:border-primary
+                                    hover:text-primary
+                                "
+                            >
+                                <ArrowLeft size={14} />
+                                Kembali
+                            </Link>
+                        </div>
 
                         {/* Title */}
                         <h1 className="mt-4 text-4xl font-bold text-slate-900">
@@ -114,41 +132,41 @@ export default function DetailBerita() {
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
-    <span className="mr-1 text-sm text-slate-500">
-        Bagikan:
-    </span>
+                                <span className="mr-1 text-sm text-slate-500">
+                                    Bagikan:
+                                </span>
 
-    {[FaFacebookF, FaXTwitter, FaWhatsapp].map((Icon, index) => (
-        <button
-            key={index}
-            className="
-                flex h-8 w-8 items-center justify-center
-                rounded-lg border
-                text-slate-500
-                transition-all
-                hover:border-primary
-                hover:bg-primary
-                hover:text-white
-            "
-        >
-            <Icon size={14} />
-        </button>
-    ))}
+                                {[FaFacebookF, FaXTwitter, FaWhatsapp].map((Icon, index) => (
+                                    <button
+                                        key={index}
+                                        className="
+                                            flex h-8 w-8 items-center justify-center
+                                            rounded-lg border
+                                            text-slate-500
+                                            transition-all
+                                            hover:border-primary
+                                            hover:bg-primary
+                                            hover:text-white
+                                        "
+                                    >
+                                        <Icon size={14} />
+                                    </button>
+                                ))}
 
-    <button
-        className="
-            flex h-8 w-8 items-center justify-center
-            rounded-lg border
-            text-slate-500
-            transition-all
-            hover:border-primary
-            hover:bg-primary
-            hover:text-white
-        "
-    >
-        <Link2 size={14} />
-    </button>
-</div>
+                                <button
+                                    className="
+                                        flex h-8 w-8 items-center justify-center
+                                        rounded-lg border
+                                        text-slate-500
+                                        transition-all
+                                        hover:border-primary
+                                        hover:bg-primary
+                                        hover:text-white
+                                    "
+                                >
+                                    <Link2 size={14} />
+                                </button>
+                            </div>
                         </div>
 
                         {/* Cover */}
