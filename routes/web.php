@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\PerangkatDaerahController;
 use App\Http\Controllers\TentangKediriController;
+use App\Http\Controllers\KelurahanController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -11,6 +12,7 @@ use Inertia\Inertia;
 Route::get('/', [LandingPageController::class, 'index']);
 Route::get('/perangkat-daerah/{slug}', [PerangkatDaerahController::class, 'index']);
 Route::get('/tentang-kediri/{slug?}', [TentangKediriController::class, 'tentangKediri'])->name('tentang-kediri');
+Route::get('/kelurahan/{kecamatan?}', [KelurahanController::class, 'kelurahan']);
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
