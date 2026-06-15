@@ -28,7 +28,7 @@ const navigation = [
         description:
           "Jelajahi kekayaan budaya, kuliner khas, ekonomi kreatif, dan berbagai warisan yang menjadi kebanggaan Kediri Raya.",
         icon: Search,
-        href: route('pesonakediri.index'),
+        href: route('pesona-kediri.index'),
       },
       {
         title: "Tentang Kediri",
@@ -42,7 +42,7 @@ const navigation = [
         description:
           "Berbagai sarana dan prasarana yang ada di Kota Kediri.",
         icon: Building2,
-        href: route('akomodasi.index'),
+        href: route('fasilitas-kota.index'),
       },
       {
         title: "Perangkat Daerah",
@@ -75,7 +75,7 @@ const navigation = [
         description:
           "Berita terkini mengenai berbagai aktivitas dan program Kota Kediri.",
         icon: Newspaper,
-        href: "#",
+        href: route('berita.index'),
       },
       {
         title: "Pengumuman",

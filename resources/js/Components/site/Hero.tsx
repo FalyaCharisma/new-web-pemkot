@@ -107,7 +107,7 @@ export function Hero() {
             <QuickMenu
               icon={<Hotel size={28} />}
               title="Akomodasi"
-              href={route('akomodasi.index')}
+              href={route('fasilitas-kota.index')}
             />
 
             <QuickMenu
@@ -162,7 +162,7 @@ export function Hero() {
           <MobileMenu
             icon={<Hotel size={22} />}
             title="Akomodasi"
-             href={route('akomodasi.index')}
+             href={route('fasilitas-kota.index')}
           />
 
           <MobileMenu

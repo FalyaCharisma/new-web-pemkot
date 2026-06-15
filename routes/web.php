@@ -4,6 +4,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\PerangkatDaerahController;
 use App\Http\Controllers\TentangKediriController;
+use App\Http\Controllers\FasilitasKotaController;
+use App\Http\Controllers\PesonaController;
+use App\Http\Controllers\BeritaController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,12 +27,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/akomodasi', function () {
-    return Inertia::render('akomodasi/index');
-})->name('akomodasi.index');
+Route::resource('fasilitas-kota', FasilitasKotaController::class);
+Route::resource('pesona-kediri', PesonaController::class);
+Route::resource('berita', BeritaController::class);
 
-Route::get('/pesona-kediri', function () {
-    return Inertia::render('pesonakediri/index');
-})->name('pesonakediri.index');
+
 
 require __DIR__ . '/auth.php';

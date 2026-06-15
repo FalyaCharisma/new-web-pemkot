@@ -3,13 +3,13 @@ import { HeaderSolid } from "@/Components/site/HeaderSolid";
 import { Footer } from "@/Components/site/Footer";
 import { HeroPage } from "@/Components/HeroPage";
 import { useState } from "react";
+import { ContentCTA } from "@/Components/ContentCTA";
 
 import {
   Sparkles,
   UtensilsCrossed,
   Barrel,
-  MapPinned, 
-  ArrowRight
+  MapPinned
 } from "lucide-react";
 
 import jaranan from "@/assets/jaranan.jpg";
@@ -343,44 +343,13 @@ export default function PesonaKediriIndex() {
                     </div>
 
                     {/* CTA Bottom */}
-                    <div className="relative mt-10
-                        overflow-hidden
-                        rounded-2xl
-                        bg-[linear-gradient(135deg,#154E5B_0%,#1D6573_50%,#2A7D8C_100%)]
-                        px-6
-                        py-5
-                        text-white">
-                        <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
-                        <div className="absolute left-1/3 bottom-0 h-20 w-20 rounded-full bg-cyan-300/10 blur-2xl" />
-
-                        <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-
-                            <div className="flex items-center gap-4">
-                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/15">
-                                <MapPinned className="h-6 w-6" />
-                            </div>
-
-                            <div>
-                                <h3 className="text-lg font-bold">
-                                Temukan lebih banyak pengalaman di Kota Kediri!
-                                </h3>
-
-                                <p className="mt-1 text-sm text-white/80">
-                                Jelajahi destinasi, kuliner, budaya, dan berbagai fasilitas terbaik di Kediri Raya.
-                                </p>
-                            </div>
-                            </div>
-
-                            <Link
-                                href={route('akomodasi.index')}
-                                className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-primary shadow-sm"
-                            >
-                                Jelajahi Fasilitas Kota
-                                <ArrowRight size={16} />
-                            </Link>
-
-                        </div>
-                    </div>
+                    <ContentCTA
+                        icon={<MapPinned size={24} />}
+                        title="Temukan lebih banyak pengalaman di Kota Kediri!"
+                        description="Jelajahi destinasi, kuliner, budaya, dan berbagai fasilitas terbaik di Kediri Raya."
+                        buttonText="Jelajahi Fasilitas Kota"
+                        href={route('fasilitas-kota.index')}
+                    />
                     </section>
                 </main>
                 <Footer />

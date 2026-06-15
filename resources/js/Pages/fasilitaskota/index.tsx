@@ -3,6 +3,8 @@ import { HeaderSolid } from "@/Components/site/HeaderSolid";
 import { Footer } from "@/Components/site/Footer";
 import { useRef } from "react";
 import { HeroPage } from "@/Components/HeroPage";
+import { ContentCTA } from "@/Components/ContentCTA";
+
 
 import {
   MapPin,
@@ -357,43 +359,17 @@ export default function AkomodasiIndex() {
                   ))}
                   </div>
                 </div>
-                <div
-                  className="relative mt-10 overflow-hidden rounded-2xl
-                  bg-[linear-gradient(135deg,#154E5B_0%,#1D6573_50%,#2A7D8C_100%)]
-                  px-6 py-5 text-white"
-                >
-                  <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
-                  <div className="absolute bottom-0 left-1/3 h-20 w-20 rounded-full bg-cyan-300/10 blur-2xl" />
 
-                  <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/15">
-                        <PlayCircle className="h-6 w-6" />
-                      </div>
-
-                      <div>
-                        <h3 className="text-lg font-bold">
-                          Butuh inspirasi untuk menjelajahi Kediri Raya?
-                        </h3>
-
-                        <p className="mt-1 text-sm text-white/80">
-                          Saksikan video destinasi wisata, kuliner khas, budaya lokal,
-                          dan berbagai pengalaman menarik dari Kediri Raya.
-                        </p>
-                      </div>
-                    </div>
-
-                    <a
+                {/* CTA */}
+                <ContentCTA
+                      icon={<PlayCircle size={24} />}
+                      title="Butuh inspirasi untuk menjelajahi Kediri Raya?"
+                      description="Saksikan video destinasi wisata, kuliner khas, budaya lokal,
+                          dan berbagai pengalaman menarik dari Kediri Raya."
+                      buttonText="Tonton Inspirasi Kediri"
                       href="https://www.youtube.com/results?search_query=wisata+kediri"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-primary shadow-sm transition hover:scale-[1.02]"
-                    >
-                      Tonton Inspirasi Kediri
-                      <ArrowRight size={16} />
-                    </a>
-                  </div>
-                </div>
+                      external
+                  />
             </section>
         </main>
 
