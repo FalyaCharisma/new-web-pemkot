@@ -87,15 +87,8 @@ const navigation = [
       {
         title: "Galeri",
         description:
-          "Koleksi foto yang menggambarkan aktivitas dan keindahan Kota Kediri.",
+          "Koleksi foto dan vidio yang menggambarkan aktivitas dan keindahan Kota Kediri.",
         icon: Images,
-        href: "#",
-      },
-      {
-        title: "Video",
-        description:
-          "Dokumentasi audiovisual terkait Kota Kediri.",
-        icon: Video,
         href: "#",
       },
       {

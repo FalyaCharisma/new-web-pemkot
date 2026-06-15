@@ -70,8 +70,8 @@ export default function Berita() {
         <main className="pt-15">
             <HeroPage
                 title="Berita Kota Kediri"
-                breadcrumb="Berita"
-                placeholder="Cari berita..."
+                breadcrumb="Berita & Pengumuman"
+                placeholder="Cari informasi..."
                 description="Pusat informasi resmi Kota Kediri yang menyajikan berita terkini, agenda daerah, dan berbagai informasi publik untuk masyarakat."
             />
 
