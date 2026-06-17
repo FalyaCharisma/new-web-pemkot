@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Berita;
+use App\Models\KategoriBerita;
 
 class BeritaController extends Controller
 {
@@ -12,7 +14,13 @@ class BeritaController extends Controller
      */
     public function index()
     {
-        return Inertia::render('berita/index');
+        $kategori = KategoriBerita::where('status_enabled', 1)->get();
+        $berita = Berita::latest()->paginate(8);
+
+        return Inertia::render('berita/index', [
+            'kategori' => $kategori,
+            'berita' => $berita,
+        ]);
     }
 
     /**
