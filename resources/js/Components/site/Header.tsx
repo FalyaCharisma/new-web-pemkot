@@ -82,14 +82,14 @@ const navigation = [
         description:
           "Informasi penting yang perlu diketahui masyarakat.",
         icon: Megaphone,
-        href: "#",
+        href: route('agenda.index'),
       },
       {
         title: "Galeri",
         description:
           "Koleksi foto dan vidio yang menggambarkan aktivitas dan keindahan Kota Kediri.",
         icon: Images,
-        href: "#",
+        href: route('galeri.index'),
       },
       {
         title: "Satu Data",
@@ -103,7 +103,7 @@ const navigation = [
         description:
           "Dokumen berisi berbagai laporan dan regulasi Pemerintah Kota Kediri.",
         icon: FileText,
-        href: "#",
+        href: route('dokumen.index'),
       },
     ],
   },

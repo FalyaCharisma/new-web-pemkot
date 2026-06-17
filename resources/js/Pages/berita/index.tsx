@@ -3,7 +3,7 @@ import { HeaderSolid } from "@/Components/site/HeaderSolid";
 import { Footer } from "@/Components/site/Footer";
 import { HeroPage } from "@/Components/HeroPage";
 import { ContentCTA } from "@/Components/ContentCTA";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import {
   FaInstagram,
@@ -26,6 +26,9 @@ import {
   Award,
   ShoppingBag,
   Briefcase,
+  RotateCcw,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 const categories = [
@@ -59,6 +62,22 @@ export default function Berita() {
             document.body.removeChild(script);
         };
     }, []);
+
+    const scrollRef = useRef<HTMLDivElement>(null);
+
+    const scrollLeft = () => {
+        scrollRef.current?.scrollBy({
+            left: -400,
+            behavior: "smooth",
+        });
+    };
+
+    const scrollRight = () => {
+        scrollRef.current?.scrollBy({
+            left: 400,
+            behavior: "smooth",
+        });
+    };
     
   return (
     <>
@@ -85,34 +104,73 @@ export default function Berita() {
                         </h2>
                     </div>
                 </div>
-                <div className="mb-8 flex gap-3 overflow-x-auto pb-2 scrollbar-hide lg:grid lg:grid-cols-8 lg:overflow-visible">
-                    {categories.map((category, index) => {
-                        const Icon = category.icon;
+                <div className="relative mb-7">
+                    {/* Tombol kiri */}
+                    <button
+                        type="button"
+                        onClick={scrollLeft}
+                        className="absolute left-0 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border bg-white shadow-md hover:bg-slate-50"
+                    >
+                        <ChevronLeft size={18} />
+                    </button>
 
-                        return (
-                            <button
-                                key={category.name}
-                                className={`
-                                    shrink-0 lg:w-auto
-                                    min-w-[110px]
-                                    flex flex-col items-center justify-center gap-2
-                                    rounded-2xl border p-4 transition
-                                    hover:border-primary hover:bg-primary/5
-                                    ${
-                                        index === 0
-                                            ? "border-primary bg-primary text-white"
-                                            : "bg-white"
-                                    }
-                                `}
-                            >
-                                <Icon size={20} />
+                    {/* Tombol kanan */}
+                    <button
+                        type="button"
+                        onClick={scrollRight}
+                        className="absolute right-0 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border bg-white shadow-md hover:bg-slate-50"
+                    >
+                        <ChevronRight size={18} />
+                    </button>
 
-                                <span className="text-xs font-medium text-center">
-                                    {category.name}
-                                </span>
-                            </button>
-                        );
-                    })}
+                    {/* Scroll */}
+                    <div
+                        ref={scrollRef}
+                        className="
+                            flex gap-4
+                            overflow-x-auto
+                            scroll-smooth
+                            px-14 pb-2
+                            [-ms-overflow-style:none]
+                            [scrollbar-width:none]
+                            [&::-webkit-scrollbar]:hidden
+                        "
+                    >
+                        {categories.map((category, index) => {
+                            const Icon = category.icon;
+
+                            return (
+                                <button
+                                    key={category.name}
+                                    className={`
+                                        flex-shrink-0
+                                        w-32
+                                        h-24
+                                        rounded-2xl
+                                        border
+                                        flex flex-col
+                                        items-center
+                                        justify-center
+                                        gap-2
+                                        transition
+                                        hover:border-primary
+                                        hover:bg-primary/5
+                                        ${
+                                            index === 0
+                                                ? "bg-primary text-white border-primary"
+                                                : "bg-white"
+                                        }
+                                    `}
+                                >
+                                    <Icon size={22} />
+
+                                    <span className="text-xs font-medium text-center">
+                                        {category.name}
+                                    </span>
+                                </button>
+                            );
+                        })}
+                    </div>
                 </div>
 
                 <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
@@ -146,6 +204,10 @@ export default function Berita() {
 
                             <button className="w-full rounded-xl bg-primary py-3 font-semibold text-white">
                                 Terapkan Filter
+                            </button>
+                            <button className="flex w-full items-center justify-center gap-2 rounded-xl border py-3">
+                                <RotateCcw size={16} />
+                                Reset Filter
                             </button>
                         </div>
                     </aside>

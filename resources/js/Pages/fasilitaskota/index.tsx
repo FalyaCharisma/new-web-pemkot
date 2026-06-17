@@ -19,7 +19,6 @@ import {
   ShoppingBag,
   Trees,
   PlayCircle,
-  ArrowRight 
 } from "lucide-react";
 
 const accommodations = [
