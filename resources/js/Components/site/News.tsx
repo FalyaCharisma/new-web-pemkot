@@ -49,7 +49,7 @@ export function News({ berita }: Props) {
                                 />
                             </div>
                             <div className="mt-5 flex items-center gap-3 text-[11px] uppercase tracking-[0.22em]">
-                                <span className="text-gold">{p.author}</span>
+                                {/* <span className="text-gold">{p.author}</span> */}
                                 <span className="size-1 rounded-full bg-muted-foreground" />
                                 <span className="text-muted-foreground">
                                     {p.tanggal}
