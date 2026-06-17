@@ -63,7 +63,7 @@ const navigation = [
         description:
           "Prestasi dan penghargaan yang telah diraih oleh Kota Kediri.",
         icon: Trophy,
-        href: "#",
+        href: route('penghargaan'),
       },
     ],
   },
