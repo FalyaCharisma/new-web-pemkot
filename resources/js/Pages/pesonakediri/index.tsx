@@ -112,13 +112,13 @@ export default function PesonaKediriIndex() {
                     {/* Header */}
                     <div className="flex items-center justify-between mb-8">
                         <div>
-                        <h2 className="text-3xl font-bold text-slate-900">
-                            Unggulan Pesona Kediri Raya
-                        </h2>
-                        <p className="mt-2 text-slate-500">
-                            Kenali lebih dekat berbagai budaya, kuliner, dan karya yang menjadi
-                            identitas Kediri Raya.
-                        </p>
+                            <h2 className="text-3xl font-bold text-slate-900">
+                                Unggulan Pesona Kediri Raya
+                            </h2>
+                            <p className="mt-2 text-slate-500">
+                                Kenali lebih dekat berbagai budaya, kuliner, dan karya yang menjadi
+                                identitas Kediri Raya.
+                            </p>
                         </div>
 
                         <button className="border rounded-xl px-5 py-3 text-sm font-medium hover:bg-slate-50">

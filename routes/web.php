@@ -8,6 +8,9 @@ use App\Http\Controllers\KelurahanController;
 use App\Http\Controllers\FasilitasKotaController;
 use App\Http\Controllers\PesonaController;
 use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\GaleriController;
+use App\Http\Controllers\DokumenController;
+use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\PenghargaanController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +38,9 @@ Route::middleware('auth')->group(function () {
 Route::resource('fasilitas-kota', FasilitasKotaController::class);
 Route::resource('pesona-kediri', PesonaController::class);
 Route::resource('berita', BeritaController::class);
+Route::resource('galeri', GaleriController::class);
+Route::resource('dokumen', DokumenController::class);
+Route::resource('agenda', AgendaController::class);
 
 
 
