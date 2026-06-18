@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class KategoriFasilitas extends Model
 {
     use HasFactory;
+
     protected $table = 'kategori_fasilitas';
     protected $guarded = [];
 
@@ -16,5 +17,8 @@ class KategoriFasilitas extends Model
         return $this->hasMany(FasilitasKota::class, 'kategori_id');
     }
 
-
+    public function sub_kategori()
+    {
+        return $this->hasMany(SubKategoriFasilitas::class, 'kategori_id');
+    }
 }
