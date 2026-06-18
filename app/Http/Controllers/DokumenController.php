@@ -2,64 +2,66 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dokumen;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class DokumenController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('dokumen/index');
-    }
+        $search = $request->search;
+        $tahun = $request->tahun;
+        $sort = $request->sort ?? 'latest';
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        $query = Dokumen::query()->where('status_published', 1)->where('status_enabled', 1);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $query->when($search, function ($q) use ($search) {
+            $q->where('judul', 'like', "%{$search}%");
+        });
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        $query->when($tahun, function ($q) use ($tahun) {
+            $q->whereYear('tanggal', $tahun);
+        });
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        if ($sort == 'oldest') {
+            $query->oldest('tanggal');
+        } else {
+            $query->latest('tanggal');
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $dokumen = $query->paginate(12)->withQueryString();
+
+        $totalDokumen = Dokumen::query()->where('status_published', 1)->where('status_enabled', 1)->count();
+
+        $rentang = Dokumen::query()
+            ->where('status_published', 1)
+            ->where('status_enabled', 1)
+            ->selectRaw('MIN(YEAR(tanggal)) as awal')
+            ->selectRaw('MAX(YEAR(tanggal)) as akhir')
+            ->first();
+
+        $tahunList = Dokumen::query()
+            ->where('status_published', 1)
+            ->where('status_enabled', 1)
+            ->selectRaw('YEAR(tanggal) as tahun')
+            ->distinct()
+            ->orderByDesc('tahun')
+            ->pluck('tahun');
+
+        return Inertia::render('dokumen/index', [
+            'dokumen' => $dokumen,
+            'totalDokumen' => $totalDokumen,
+            'rentang' => $rentang,
+            'tahunList' => $tahunList,
+            'filters' => [
+                'search' => $search,
+                'tahun' => $tahun,
+                'sort' => $sort,
+            ],
+        ]);
     }
 }
