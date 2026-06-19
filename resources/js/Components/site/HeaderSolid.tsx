@@ -28,7 +28,7 @@ const navigation = [
         description:
           "Jelajahi kekayaan budaya, kuliner khas, ekonomi kreatif, dan berbagai warisan yang menjadi kebanggaan Kediri Raya.",
         icon: Search,
-        href: route('pesona-kediri.index'),
+        href: route('pesona-unggulan.index'),
       },
       {
         title: "Tentang Kediri",

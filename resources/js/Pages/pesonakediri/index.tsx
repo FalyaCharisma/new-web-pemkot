@@ -4,6 +4,7 @@ import { Footer } from "@/Components/site/Footer";
 import { HeroPage } from "@/Components/HeroPage";
 import { useState } from "react";
 import { ContentCTA } from "@/Components/ContentCTA";
+import type { PesonaUnggulan } from "@/types/unggulan";
 
 import {
   Sparkles,
@@ -36,34 +37,6 @@ const images = [
     pecel4,
     pecel5,
     pecel
-];
-
-const unggulan = [
-    {
-        title: "Jaranan Kediri",
-        image: jaranan,
-        category: "KESENIAN",
-    },
-    {
-        title: "Nasi Pecel Tumpang",
-        image: pecel,
-        category: "KULINER KHAS",
-    },
-    {
-        title: "Tenun Bandar Kidul",
-        image: tenun,
-        category: "PRODUK LOKAL",
-    },
-    {
-        title: "Tahu Kuning",
-        image: tahu,
-        category: "PRODUK LOKAL",
-    },
-    {
-        title: "Kediri Nite Carnival",
-        image: carnival,
-        category: "FESTIVAL",
-    },
 ];
 
 const categories = [
@@ -117,8 +90,12 @@ const categories = [
     },
 ];
 
+interface Props {
+    pesona: PesonaUnggulan[];
+}
 
-export default function PesonaKediriIndex() {
+
+export default function PesonaKediriIndex({ pesona }: Props) {
     const [selectedImage, setSelectedImage] = useState(images[0]);
 
     return (
@@ -153,35 +130,36 @@ export default function PesonaKediriIndex() {
 
                     {/* Top Cards */}
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-                        {unggulan.map((item, i) => (
+                        {pesona.map((item) => (
                             <div
-                            key={i}
-                            className="overflow-hidden rounded-2xl border bg-white shadow-sm hover:shadow-md transition"
+                                key={item.id}
+                                className="overflow-hidden rounded-2xl border bg-white shadow-sm hover:shadow-md transition"
                             >
-                            <img
-                                src={item.image}
-                                alt={item.title}
-                                className="h-40 w-full object-cover"
-                            />
+                                <img
+                                    src={`/storage/pesona/${item.cover}`}
+                                    alt={item.judul}
+                                    className="h-40 w-full object-cover"
+                                />
+                                <div className="p-4">
+                                    <span className="inline-block rounded-full bg-amber-100 px-2 py-1 text-[10px] font-semibold text-amber-700">
+                                        {item.kategori}
+                                    </span>
 
-                            <div className="p-4">
-                                <span className="inline-block rounded-full bg-amber-100 px-2 py-1 text-[10px] font-semibold text-amber-700">
-                                {item.category}
-                                </span>
+                                    <h3 className="mt-3 font-bold">
+                                        {item.judul}
+                                    </h3>
 
-                                <h3 className="mt-3 font-bold">{item.title}</h3>
+                                    <p className="mt-2 text-sm text-slate-500 line-clamp-3">
+                                        {item.deskripsi}
+                                    </p>
 
-                                <p className="mt-2 text-sm text-slate-500 line-clamp-3">
-                                Deskripsi singkat mengenai pesona khas Kediri.
-                                </p>
-
-                                <Link
-                                    href={route("berita.show", 1)}
-                                    className="mt-3 inline-flex text-sm font-semibold text-primary"
-                                >
-                                    Baca Selengkapnya →
-                                </Link>
-                            </div>
+                                    <Link
+                                        href={route("pesona-unggulan.show", item.slug)}
+                                        className="mt-3 inline-flex text-sm font-semibold text-primary"
+                                    >
+                                        Baca Selengkapnya →
+                                    </Link>
+                                </div>
                             </div>
                         ))}
                     </div>
