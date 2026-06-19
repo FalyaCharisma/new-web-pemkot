@@ -20,13 +20,11 @@ import {
 
 import jaranan from "@/assets/jaranan.jpg";
 import pecel from "@/assets/pecel.jpeg";
-import tenun from "@/assets/tenun.jpg";
 import carnival from "@/assets/carnival.jpeg";
 import pecel2 from "@/assets/pecel2.webp";
 import pecel3 from "@/assets/pecel3.jpg";
 import pecel4 from "@/assets/pecel4.jpg";
 import pecel5 from "@/assets/pecel5.jpg";
-import tahu from "@/assets/tahu.webp";
 import skena from "@/assets/skena.jpg";
 import batik from "@/assets/batik.jpg";
 import klotok from "@/assets/klotok.jpg";
