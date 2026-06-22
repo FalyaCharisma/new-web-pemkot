@@ -37,11 +37,10 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('fasilitas-kota', FasilitasKotaController::class);
 Route::resource('pesona-kediri', PesonaController::class);
-Route::resource('berita', BeritaController::class);
+Route::get('/berita', [BeritaController::class, 'berita'])->name('berita');
+Route::get('/berita/{slug}', [BeritaController::class, 'show'])->name('berita.show');
 Route::resource('galeri', GaleriController::class);
 Route::resource('dokumen', DokumenController::class);
 Route::resource('agenda', AgendaController::class);
-
-
 
 require __DIR__ . '/auth.php';

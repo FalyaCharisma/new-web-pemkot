@@ -1,3 +1,8 @@
+export interface KategoriBerita {
+    id: number;
+    nama_kategori: string;
+}
+
 export interface Berita {
     id: number;
     judul: string;
@@ -5,5 +10,13 @@ export interface Berita {
     tanggal: string;
     author: string;
     deskripsi: string;
-    image_url: string;
+    images: string;
+
+    id_kategori: number;
+    eksklusif: number;
+
+    kategori?:{
+        id:number;
+        nama_kategori:string;
+    };
 }
