@@ -54,6 +54,7 @@ export default function Index({
                     <HeroPage
                         title="Tentang Kota Kediri"
                         breadcrumb="Tentang Kota Kediri"
+                        enableSearch={false}
                         description="Mengenal lebih dekat Kota Kediri, mulai dari sejarah, identitas daerah, visi dan misi pembangunan, hingga profil pimpinan daerah."
                     />
 

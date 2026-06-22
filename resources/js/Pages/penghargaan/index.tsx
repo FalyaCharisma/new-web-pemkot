@@ -25,6 +25,7 @@ interface Props {
     years: number[];
     filters: {
         year?: string;
+        search?: string;
     };
 }
 
@@ -37,6 +38,8 @@ export default function PenghargaanPage({
     const others = penghargaan.data.slice(1);
 
     const [selectedYear, setSelectedYear] = useState(filters.year ?? "");
+
+    const [search, setSearch] = useState(filters.search ?? "");
     return (
         <>
             <Head title="Penghargaan" />
@@ -50,6 +53,18 @@ export default function PenghargaanPage({
                         breadcrumb="Penghargaan & Prestasi"
                         placeholder="Cari penghargaan..."
                         description="Informasi resmi mengenai penghargaan, prestasi, dan pencapaian Pemerintah Kota Kediri sebagai wujud komitmen dalam memberikan pelayanan dan pembangunan terbaik bagi masyarakat."
+                    
+                        searchValue={search}
+                        onSearchChange={(value) => setSearch(value)}
+                        onSearch={(keyword) => {
+                            router.get(route("penghargaan"), {
+                                search: keyword,
+                                year: selectedYear,
+                            }, {
+                                preserveState: true,
+                                preserveScroll: true,
+                            });
+                        }}
                     />
 
                     {/* CONTENT */}

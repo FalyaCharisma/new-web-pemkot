@@ -54,8 +54,20 @@ const categories = [
   { name: "Produk Unggulan", icon: ShoppingBag },
   { name: "Tenaga Kerja", icon: Briefcase },
 ];
+import type {Berita} from '@/types/berita';
+import { formatDate } from "@/Components/ui/date";
 
-export default function DetailBerita() {
+
+interface Props{
+
+    berita:Berita;
+
+}
+export default function DetailBerita({
+
+    berita
+
+}:Props) {
   return (
     <>
     <Head title="Detail Berita" />
@@ -88,11 +100,11 @@ export default function DetailBerita() {
                     <article className="rounded-3xl border bg-white p-6">
                         <div className="flex items-center justify-between gap-4">
                             <span className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                                Kesenian
+                                {berita.kategori?.nama_kategori}
                             </span>
 
                             <Link
-                                href={route("berita.index")}
+                                href={route("berita")}
                                 className="
                                     inline-flex items-center gap-2
                                     rounded-lg border
@@ -110,7 +122,7 @@ export default function DetailBerita() {
 
                         {/* Title */}
                         <h1 className="mt-4 text-4xl font-bold text-slate-900">
-                            Jaranan Kediri
+                            {berita.judul}
                         </h1>
 
                         {/* Meta */}
@@ -118,18 +130,18 @@ export default function DetailBerita() {
                             <div className="flex flex-wrap items-center gap-5 text-sm text-slate-500">
                                 <div className="flex items-center gap-2">
                                 <CalendarDays size={14} />
-                                <span>28 Mei 2026</span>
+                                <span>{formatDate(berita.tanggal)}</span>
                                 </div>
 
                                 <div className="flex items-center gap-2">
                                 <Building2 size={14} />
                                 <span>Pemerintah Kota Kediri</span>
                                 </div>
-
+{/* 
                                 <div className="flex items-center gap-2">
                                 <Eye size={14} />
                                 <span>1.234 kali dibaca</span>
-                                </div>
+                                </div> */}
                             </div>
                             <div className="flex items-center gap-2">
                                 <span className="mr-1 text-sm text-slate-500">
@@ -171,19 +183,15 @@ export default function DetailBerita() {
 
                         {/* Cover */}
                         <img
-                            src="https://placehold.co/1200x700"
-                            alt="Jaranan Kediri"
+                            src={berita.images?.startsWith("http") ? berita.images : `/storage/berita/${berita.images}`}
+                            alt={berita.judul}
                             className="mt-6 h-[420px] w-full rounded-2xl object-cover"
                         />
 
                         {/* Article */}
                         <div className="prose prose-slate mt-8 max-w-none">
                             <p>
-                                Jaranan merupakan salah satu kesenian tradisional khas
-                                Kediri yang telah turun-temurun dilestarikan oleh
-                                masyarakat. Kesenian ini menampilkan perpaduan antara
-                                tari, musik gamelan, nyanyian, serta atraksi menggunakan
-                                properti kuda tiruan yang terbuat dari anyaman bambu.
+                                {berita.deskripsi.replace(/<[^>]*>/g, "")}
                             </p>
 
                             <p>
@@ -199,72 +207,6 @@ export default function DetailBerita() {
                                 tamu penting.
                             </p>
                         </div>
-
-                        {/* Highlight */}
-                        <div className="mt-8 rounded-2xl bg-cyan-50 p-5">
-                            <div className="flex items-start gap-3">
-                                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm text-primary">
-                                    <Sparkles size={18} />
-                                </div>
-
-                                <div>
-                                    <h3 className="font-bold text-primary">
-                                        Tahukah Anda?
-                                    </h3>
-
-                                    <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                                        Beberapa gerakan dalam jaranan memiliki filosofi mendalam yang
-                                        melambangkan perjalanan hidup manusia, mulai dari lahir,
-                                        berjuang, hingga mencapai tujuan.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Video */}
-                        <div className="mt-8 rounded-2xl border bg-slate-50 p-4">
-                            <div className="grid gap-4 md:grid-cols-[250px_1fr]">
-
-                                <img
-                                    src="https://placehold.co/500x300"
-                                    alt=""
-                                    className="rounded-xl object-cover"
-                                />
-
-                                <div>
-                                    <span className="text-xs font-semibold uppercase text-primary">
-                                        Tonton Video
-                                    </span>
-
-                                    <h3 className="mt-2 text-xl font-bold">
-                                        Jaranan Kediri: Warisan Budaya yang Terus Lestari
-                                    </h3>
-
-                                    <p className="mt-2 text-sm text-slate-600">
-                                        Saksikan keindahan, makna, dan semangat
-                                        kesenian jaranan khas Kediri dalam video
-                                        berikut.
-                                    </p>
-
-                                    <a
-                                        href="https://youtube.com"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="
-                                            mt-4 inline-flex items-center gap-2
-                                            rounded-lg bg-primary
-                                            px-3 py-2
-                                            text-sm font-medium text-white
-                                            shadow-sm transition
-                                            hover:bg-primary/90
-                                        "
-                                    >
-                                        <FaYoutube size={16} />
-                                        Tonton di YouTube
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
                     </article>
                     {/* SIDEBAR */}
                     <aside className="space-y-6">
@@ -272,7 +214,7 @@ export default function DetailBerita() {
                         {/* Related News */}
                         <div className="rounded-3xl border bg-white p-5">
                             <h3 className="font-bold">
-                                Berita Terkait
+                                Berita Lainnya
                             </h3>
 
                             <div className="mt-5 space-y-4">

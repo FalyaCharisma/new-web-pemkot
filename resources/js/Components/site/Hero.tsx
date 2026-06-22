@@ -1,4 +1,5 @@
-import {Link } from "@inertiajs/react";
+import {Link, router } from "@inertiajs/react";
+import { useState } from "react";
 import {
   Search,
   ArrowRight,
@@ -16,6 +17,17 @@ import QuickMenu from "../QuickMenu";
 import MobileMenu from "../MobileMenu";
 
 export function Hero() {
+
+  const [query, setQuery] = useState("");
+
+  const handleSearch = () => {
+    router.visit(route("search.index"), {
+      data: {
+        search: query,
+      },
+    });
+  };
+
   return (
     <header className="relative h-screen overflow-visible">
       {/* Background */}
@@ -67,9 +79,20 @@ export function Hero() {
                 type="text"
                 placeholder="Cari Fasilitas, berita, wisata atau informasi lainnya..."
                 className="flex-1 px-8 py-5 text-gray-700 outline-none"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleSearch();
+                  }
+                }}
               />
 
-              <button className="m-2 flex h-14 w-14 items-center justify-center rounded-full bg-yellow-500 text-white">
+              <button
+                onClick={handleSearch}
+                className="m-2 flex h-14 w-14 items-center justify-center rounded-full bg-yellow-500 text-white"
+              >
                 <Search size={22} />
               </button>
             </div>
@@ -176,43 +199,55 @@ export function Hero() {
           <MobileMenu
             icon={<Hotel size={22} />}
             title="Akomodasi"
-             href={route('fasilitas-kota.index')}
+            href={route('fasilitas-kota.index', {
+                kategori: 1,
+            })}
           />
 
           <MobileMenu
             icon={<Bus size={22} />}
             title="Transportasi"
-            href="#"
+            href={route('fasilitas-kota.index', {
+                  kategori: 2,
+            })}
           />
 
           <MobileMenu
             icon={<HeartPulse size={22} />}
             title="Kesehatan"
-            href="#"
+            href={route('fasilitas-kota.index', {
+                kategori: 3,
+            })}
           />
 
           <MobileMenu
             icon={<UtensilsCrossed size={22} />}
             title="Kuliner"
-            href="#"
+            href={route('fasilitas-kota.index', {
+                kategori: 4,
+            })}
           />
 
           <MobileMenu
             icon={<ShoppingBag size={22} />}
             title="Perbelanjaan"
-            href="#"
+            href={route('fasilitas-kota.index', {
+                kategori: 5,
+            })}
           />
 
           <MobileMenu
             icon={<Trees size={22} />}
             title="Ruang Publik"
-            href="#"
+            href={route('fasilitas-kota.index', {
+                kategori: 6,
+            })}
           />
 
           <MobileMenu
             icon={<LayoutGrid size={22} />}
             title="Semua"
-            href="#"
+            href={route('fasilitas-kota.index')}
           />
         </div>
       </div>

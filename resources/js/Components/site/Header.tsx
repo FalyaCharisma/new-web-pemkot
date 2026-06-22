@@ -75,7 +75,7 @@ const navigation = [
         description:
           "Berita terkini mengenai berbagai aktivitas dan program Kota Kediri.",
         icon: Newspaper,
-        href: route('berita.index'),
+        href: route('berita'),
       },
       {
         title: "Agenda",

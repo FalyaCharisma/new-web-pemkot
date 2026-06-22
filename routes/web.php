@@ -13,6 +13,7 @@ use App\Http\Controllers\DokumenController;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\PenghargaanController;
 use App\Http\Controllers\PesonaUnggulanController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -38,12 +39,13 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('fasilitas-kota', FasilitasKotaController::class);
 Route::resource('pesona-kediri', PesonaController::class);
-Route::resource('berita', BeritaController::class);
+Route::get('/berita', [BeritaController::class, 'berita'])->name('berita');
+Route::get('/berita/{slug}', [BeritaController::class, 'show'])->name('berita.show');
 Route::resource('galeri', GaleriController::class);
 Route::resource('dokumen', DokumenController::class);
 Route::resource('agenda', AgendaController::class);
 Route::resource('pesona-unggulan', PesonaUnggulanController::class);
-
+Route::resource('search', SearchController::class);
 
 
 require __DIR__ . '/auth.php';

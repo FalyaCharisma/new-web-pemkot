@@ -34,6 +34,7 @@ export default function Index({ kategori, kategoriList }: any) {
                         title="Perangkat Daerah"
                         breadcrumb="Perangkat Daerah"
                         placeholder="Cari nama OPD atau Kepala Daerah..."
+                        enableSearch={false}
                         description="Jelajahi informasi Perangkat Daerah Kota Kediri untuk mengenal struktur organisasi, tugas pokok dan fungsi, serta peran masing-masing perangkat daerah dalam penyelenggaraan pemerintahan daerah."
                     />
                     <section className="container mx-auto px-4 py-10">
