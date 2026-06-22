@@ -4,27 +4,30 @@ import { Footer } from "@/Components/site/Footer";
 import { HeroPage } from "@/Components/HeroPage";
 import { useState } from "react";
 import { ContentCTA } from "@/Components/ContentCTA";
+import type { PesonaUnggulan } from "@/types/unggulan";
 
 import {
   Sparkles,
   UtensilsCrossed,
   Barrel,
-  MapPinned
+  MapPinned,
+  Landmark,
+  Palette,
+  ShoppingBag,
+  CalendarDays,
+  Gem
 } from "lucide-react";
 
 import jaranan from "@/assets/jaranan.jpg";
 import pecel from "@/assets/pecel.jpeg";
-import batik from "@/assets/batik.jpg";
-import tenun from "@/assets/tenun.jpg";
 import carnival from "@/assets/carnival.jpeg";
 import pecel2 from "@/assets/pecel2.webp";
 import pecel3 from "@/assets/pecel3.jpg";
 import pecel4 from "@/assets/pecel4.jpg";
 import pecel5 from "@/assets/pecel5.jpg";
-import tahu from "@/assets/tahu.webp";
-import soto from "@/assets/soto.webp";
-import klotok from "@/assets/klotok.jpg";
 import skena from "@/assets/skena.jpg";
+import batik from "@/assets/batik.jpg";
+import klotok from "@/assets/klotok.jpg";
 
 const images = [
     pecel2,
@@ -34,62 +37,63 @@ const images = [
     pecel
 ];
 
-const unggulan = [
+const categories = [
     {
-        title: "Jaranan Kediri",
+        title: "Budaya",
+        description: "Kesenian tradisional, sanggar, dan warisan budaya.",
         image: jaranan,
-        category: "KESENIAN",
+        icon: Landmark,
+        count: "18 Tempat",
+        filter: "budaya",
     },
     {
-        title: "Nasi Pecel Tumpang",
+        title: "Kuliner Khas",
+        description: "Kuliner legendaris dan cita rasa khas Kediri.",
         image: pecel,
-        category: "KULINER KHAS",
+        icon: UtensilsCrossed,
+        count: "32 Tempat",
+        filter: "kuliner",
     },
     {
-        title: "Tenun Bandar Kidul",
-        image: tenun,
-        category: "PRODUK LOKAL",
+        title: "Ekonomi Kreatif",
+        description: "UMKM dan industri kreatif unggulan.",
+        image: skena,
+        icon: Palette,
+        count: "20 Tempat",
+        filter: "ekonomi-kreatif",
     },
     {
-        title: "Tahu Kuning",
-        image: tahu,
-        category: "PRODUK LOKAL",
+        title: "Produk Khas",
+        description: "Batik, tenun, tahu kuning, dan oleh-oleh.",
+        image: batik,
+        icon: ShoppingBag,
+        count: "25 Tempat",
+        filter: "produk-khas",
     },
     {
-        title: "Kediri Nite Carnival",
+        title: "Festival Daerah",
+        description: "Festival budaya dan event tahunan Kota Kediri.",
         image: carnival,
-        category: "FESTIVAL",
+        icon: CalendarDays,
+        count: "12 Event",
+        filter: "festival",
+    },
+    {
+        title: "Sejarah & Warisan",
+        description: "Bangunan bersejarah dan cagar budaya.",
+        image: klotok,
+        icon: Gem,
+        count: "10 Lokasi",
+        filter: "sejarah",
     },
 ];
 
-const pesonaItems = [
-  {
-    title: "Soto Kediri",
-    image: soto,
-  },
-  {
-    title: "Tahu Kuning",
-    image: tahu,
-  },
-  {
-    title: "Gang Skena",
-    image: skena,
-  },
-  {
-    title: "Batik Kediri",
-    image: batik,
-  },
-  {
-    title: "Tenun Bandar Kidul",
-    image: tenun,
-  },
-  {
-    title: "Gunung Klotok",
-    image: klotok,
-  },
-];
+interface Props {
+    pesona: PesonaUnggulan[];
+}
 
-export default function PesonaKediriIndex() {
+
+export default function PesonaKediriIndex({ pesona }: Props) {
     const [selectedImage, setSelectedImage] = useState(images[0]);
 
     return (
@@ -120,43 +124,40 @@ export default function PesonaKediriIndex() {
                                 identitas Kediri Raya.
                             </p>
                         </div>
-
-                        <button className="border rounded-xl px-5 py-3 text-sm font-medium hover:bg-slate-50">
-                        Lihat Semua →
-                        </button>
                     </div>
 
                     {/* Top Cards */}
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-                        {unggulan.map((item, i) => (
+                        {pesona.map((item) => (
                             <div
-                            key={i}
-                            className="overflow-hidden rounded-2xl border bg-white shadow-sm hover:shadow-md transition"
+                                key={item.id}
+                                className="overflow-hidden rounded-2xl border bg-white shadow-sm hover:shadow-md transition"
                             >
-                            <img
-                                src={item.image}
-                                alt={item.title}
-                                className="h-40 w-full object-cover"
-                            />
+                                <img
+                                    src={`/storage/pesona/${item.cover}`}
+                                    alt={item.judul}
+                                    className="h-40 w-full object-cover"
+                                />
+                                <div className="p-4">
+                                    <span className="inline-block rounded-full bg-amber-100 px-2 py-1 text-[10px] font-semibold text-amber-700">
+                                        {item.kategori}
+                                    </span>
 
-                            <div className="p-4">
-                                <span className="inline-block rounded-full bg-amber-100 px-2 py-1 text-[10px] font-semibold text-amber-700">
-                                {item.category}
-                                </span>
+                                    <h3 className="mt-3 font-bold">
+                                        {item.judul}
+                                    </h3>
 
-                                <h3 className="mt-3 font-bold">{item.title}</h3>
+                                    <p className="mt-2 text-sm text-slate-500 line-clamp-3">
+                                        {item.deskripsi}
+                                    </p>
 
-                                <p className="mt-2 text-sm text-slate-500 line-clamp-3">
-                                Deskripsi singkat mengenai pesona khas Kediri.
-                                </p>
-
-                                <Link
-                                    href={route("berita.show", 1)}
-                                    className="mt-3 inline-flex text-sm font-semibold text-primary"
-                                >
-                                    Baca Selengkapnya →
-                                </Link>
-                            </div>
+                                    <Link
+                                        href={route("pesona-unggulan.show", item.slug)}
+                                        className="mt-3 inline-flex text-sm font-semibold text-primary"
+                                    >
+                                        Baca Selengkapnya →
+                                    </Link>
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -282,67 +283,89 @@ export default function PesonaKediriIndex() {
                         </div>
                     </div>
 
-                    {/* Tema */}
+                    {/* JELAJAH BERDASARKAN KATEGORI */}
                     <div className="mt-14">
+
                         <h2 className="text-3xl font-bold">
-                        Jelajah Berdasarkan Tema
+                            Jelajahi Berdasarkan Kategori
                         </h2>
 
                         <p className="mt-2 text-slate-500">
-                        Temukan berbagai pesona Kediri Raya dan jelajahi lebih dalam.
+                            Temukan berbagai fasilitas dan destinasi unggulan Kota Kediri sesuai kategori yang Anda minati.
                         </p>
 
-                        <div className="mt-8 flex gap-8 border-b overflow-x-auto">
-                        {[
-                            "Semua",
-                            "Budaya",
-                            "Kuliner",
-                            "Ekonomi Kreatif",
-                            "Produk Khas",
-                            "Festival Daerah",
-                            "Sejarah & Warisan",
-                        ].map((tab, i) => (
-                            <button
-                            key={tab}
-                            className={`pb-3 whitespace-nowrap ${
-                                i === 0
-                                ? "border-b-2 border-primary text-primary font-semibold"
-                                : "text-slate-500"
-                            }`}
-                            >
-                            {tab}
-                            </button>
-                        ))}
+                        {/* CARD */}
+                        <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+                            {categories.map((item, index) => {
+
+                                const Icon = item.icon;
+
+                                return (
+
+                                    <Link
+                                        key={index}
+                                        href={route("fasilitas-kota.index", {
+                                            category: item.filter,
+                                        })}
+                                        className="group overflow-hidden rounded-3xl border bg-white transition hover:-translate-y-1 hover:shadow-lg"
+                                    >
+
+                                        {/* IMAGE */}
+                                        <div className="relative h-52 overflow-hidden">
+
+                                            <img
+                                                src={item.image}
+                                                alt={item.title}
+                                                className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                                            />
+
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+                                            <div className="absolute bottom-5 left-5">
+
+                                                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-white/90">
+
+                                                    <Icon
+                                                        size={24}
+                                                        className="text-primary"
+                                                    />
+
+                                                </div>
+
+                                                <h3 className="text-2xl font-bold text-white">
+                                                    {item.title}
+                                                </h3>
+
+                                                <p className="mt-1 text-sm text-white/80">
+                                                    {item.count}
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+                                        {/* CONTENT */}
+                                        <div className="p-5">
+
+                                            <p className="text-sm leading-relaxed text-slate-500">
+                                                {item.description}
+                                            </p>
+
+                                            <div className="mt-5 flex items-center font-semibold text-primary">
+                                                Jelajahi Kategori →
+                                            </div>
+
+                                        </div>
+
+                                    </Link>
+
+                                );
+
+                            })}
+
                         </div>
 
-                        <div className="mt-6 grid gap-4 md:grid-cols-3 lg:grid-cols-6">
-                            {pesonaItems.map((item, i) => (
-                                <div
-                                key={i}
-                                className="overflow-hidden rounded-2xl border bg-white shadow-sm"
-                                >
-                                <img
-                                    src={item.image}
-                                    alt={item.title}
-                                    className="h-36 w-full object-cover"
-                                />
-
-                                <div className="p-4">
-                                    <h3 className="font-semibold">
-                                    {item.title}
-                                    </h3>
-
-                                    <p className="mt-2 text-sm text-slate-500">
-                                    Deskripsi singkat mengenai {item.title}.
-                                    </p>
-
-                                    <button className="mt-3 text-primary text-sm font-medium">
-                                    Lihat →
-                                    </button>
-                                </div>
-                                </div>
-                            ))}
-                        </div>
                     </div>
 
                     {/* CTA Bottom */}

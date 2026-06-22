@@ -12,6 +12,7 @@ use App\Http\Controllers\GaleriController;
 use App\Http\Controllers\DokumenController;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\PenghargaanController;
+use App\Http\Controllers\PesonaUnggulanController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -42,5 +43,7 @@ Route::get('/berita/{slug}', [BeritaController::class, 'show'])->name('berita.sh
 Route::resource('galeri', GaleriController::class);
 Route::resource('dokumen', DokumenController::class);
 Route::resource('agenda', AgendaController::class);
+Route::resource('pesona-unggulan', PesonaUnggulanController::class);
+
 
 require __DIR__ . '/auth.php';
