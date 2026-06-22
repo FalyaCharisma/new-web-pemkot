@@ -1,8 +1,8 @@
-import { Head, Link  } from "@inertiajs/react";
+import { Head, Link, router  } from "@inertiajs/react";
 import { HeaderSolid } from "@/Components/site/HeaderSolid";
 import { Footer } from "@/Components/site/Footer";
 import { HeroPage } from "@/Components/HeroPage";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { ContentCTA } from "@/Components/ContentCTA";
 import type { PesonaUnggulan } from "@/types/unggulan";
 
@@ -15,7 +15,12 @@ import {
   Palette,
   ShoppingBag,
   CalendarDays,
-  Gem
+  Gem,
+  ChevronLeft, 
+  ChevronRight,
+  Coffee,
+  Theater,
+  Moon,
 } from "lucide-react";
 
 import jaranan from "@/assets/jaranan.jpg";
@@ -37,54 +42,41 @@ const images = [
     pecel
 ];
 
-const categories = [
+const itinerary = [
     {
-        title: "Budaya",
-        description: "Kesenian tradisional, sanggar, dan warisan budaya.",
-        image: jaranan,
+        time: "08.00",
+        icon: Coffee,
+        title: "Sarapan Pecel Tumpang",
+        desc: "Kuliner khas Kediri yang wajib dicoba.",
+        query: "pecel tumpang kediri",
+    },
+    {
+        time: "10.00",
         icon: Landmark,
-        count: "18 Tempat",
-        filter: "budaya",
+        title: "Museum Airlangga",
+        desc: "Jejak sejarah kerajaan Kediri.",
+        query: "museum airlangga",
     },
     {
-        title: "Kuliner Khas",
-        description: "Kuliner legendaris dan cita rasa khas Kediri.",
-        image: pecel,
-        icon: UtensilsCrossed,
-        count: "32 Tempat",
-        filter: "kuliner",
-    },
-    {
-        title: "Ekonomi Kreatif",
-        description: "UMKM dan industri kreatif unggulan.",
-        image: skena,
-        icon: Palette,
-        count: "20 Tempat",
-        filter: "ekonomi-kreatif",
-    },
-    {
-        title: "Produk Khas",
-        description: "Batik, tenun, tahu kuning, dan oleh-oleh.",
-        image: batik,
+        time: "13.00",
         icon: ShoppingBag,
-        count: "25 Tempat",
-        filter: "produk-khas",
+        title: "Pusat Oleh-oleh",
+        desc: "Cari buah tangan khas Kediri.",
+        query: "oleh oleh kediri",
     },
     {
-        title: "Festival Daerah",
-        description: "Festival budaya dan event tahunan Kota Kediri.",
-        image: carnival,
-        icon: CalendarDays,
-        count: "12 Event",
-        filter: "festival",
+        time: "16.00",
+        icon: Theater,
+        title: "Pertunjukan Budaya",
+        desc: "Seni & budaya lokal Kediri.",
+        query: "gedung kesenian kediri",
     },
     {
-        title: "Sejarah & Warisan",
-        description: "Bangunan bersejarah dan cagar budaya.",
-        image: klotok,
-        icon: Gem,
-        count: "10 Lokasi",
-        filter: "sejarah",
+        time: "20.00",
+        icon: Moon,
+        title: "Alun-Alun Kediri",
+        desc: "Suasana malam kota yang tenang.",
+        query: "alun alun kediri",
     },
 ];
 
@@ -94,7 +86,37 @@ interface Props {
 
 
 export default function PesonaKediriIndex({ pesona }: Props) {
+    const [activeItinerary, setActiveItinerary] = useState(0);
+
+    const active = itinerary[activeItinerary];
+
+    const mapUrl = `https://www.google.com/maps?q=${encodeURIComponent(
+        active.query
+    )}&output=embed`;
+
     const [selectedImage, setSelectedImage] = useState(images[0]);
+
+    const [search, setSearch] = useState("");
+
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    const scrollNext = () => {
+        if (containerRef.current) {
+            containerRef.current.scrollBy({
+                left: 300,
+                behavior: "smooth",
+            });
+        }
+    };
+
+    const scrollPrev = () => {
+        if (containerRef.current) {
+            containerRef.current.scrollBy({
+                left: -300,
+                behavior: "smooth",
+            });
+        }
+    };
 
     return (
         <>
@@ -107,7 +129,7 @@ export default function PesonaKediriIndex({ pesona }: Props) {
                     <HeroPage
                         title="Pesona Kediri Raya"
                         breadcrumb="Pesona Kediri Raya"
-                        placeholder="Cari budaya, kuliner, festival, produk khas, dan lainnya..."
+                        enableSearch={false}
                         description="Jelajahi kekayaan budaya, kuliner khas, ekonomi kreatif, dan berbagai warisan yang menjadi kebanggaan Kediri Raya."
                     />
 
@@ -127,39 +149,62 @@ export default function PesonaKediriIndex({ pesona }: Props) {
                     </div>
 
                     {/* Top Cards */}
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-                        {pesona.map((item) => (
-                            <div
-                                key={item.id}
-                                className="overflow-hidden rounded-2xl border bg-white shadow-sm hover:shadow-md transition"
-                            >
-                                <img
-                                    src={`/storage/pesona/${item.cover}`}
-                                    alt={item.judul}
-                                    className="h-40 w-full object-cover"
-                                />
-                                <div className="p-4">
-                                    <span className="inline-block rounded-full bg-amber-100 px-2 py-1 text-[10px] font-semibold text-amber-700">
-                                        {item.kategori}
-                                    </span>
+                    <div className="relative">
+                        {/* tombol kiri */}
+                        <button
+                            onClick={scrollPrev}
+                            className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-primary text-white p-3 shadow-lg hover:scale-105 transition"
+                        >
+                            <ChevronLeft className="w-5 h-5" />
+                        </button>
 
-                                    <h3 className="mt-3 font-bold">
-                                        {item.judul}
-                                    </h3>
+                        {/* container scroll */}
+                        <div
+                            ref={containerRef}
+                            className="flex gap-4 overflow-x-auto scroll-smooth no-scrollbar px-10"
+                        >
+                            {pesona.map((item) => (
+                                <div
+                                    key={item.id}
+                                    className="min-w-[250px] max-w-[250px] overflow-hidden rounded-2xl border bg-white shadow-sm hover:shadow-md transition"
+                                >
+                                    <img
+                                        src={`/storage/pesona/${item.cover}`}
+                                        alt={item.judul}
+                                        className="h-40 w-full object-cover"
+                                    />
 
-                                    <p className="mt-2 text-sm text-slate-500 line-clamp-3">
-                                        {item.deskripsi}
-                                    </p>
+                                    <div className="p-4">
+                                        <span className="inline-block rounded-full bg-amber-100 px-2 py-1 text-[10px] font-semibold text-amber-700">
+                                            { item.kategori?.nama_kategori }
+                                        </span>
 
-                                    <Link
-                                        href={route("pesona-unggulan.show", item.slug)}
-                                        className="mt-3 inline-flex text-sm font-semibold text-primary"
-                                    >
-                                        Baca Selengkapnya →
-                                    </Link>
+                                        <h3 className="mt-3 font-bold">
+                                            {item.judul}
+                                        </h3>
+
+                                        <p className="mt-2 text-sm text-slate-500 line-clamp-3">
+                                            {item.deskripsi}
+                                        </p>
+
+                                        <Link
+                                            href={route("pesona-unggulan.show", item.slug)}
+                                            className="mt-3 inline-flex text-sm font-semibold text-primary"
+                                        >
+                                            Baca Selengkapnya →
+                                        </Link>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
+
+                        {/* tombol kanan */}
+                        <button
+                            onClick={scrollNext}
+                            className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-primary text-white p-3 shadow-lg hover:scale-105 transition"
+                        >
+                            <ChevronRight className="w-5 h-5" />
+                        </button>
                     </div>
 
                     {/* Featured Detail */}
@@ -275,99 +320,118 @@ export default function PesonaKediriIndex({ pesona }: Props) {
                                 Tumpang di Kota Kediri.
                             </p>
 
-                            <button className="mt-4 rounded-xl bg-white px-5 py-3 font-medium text-primary">
+                            <Link
+                                href={route("fasilitas-kota.index", {
+                                    kategori: 4,
+                                    search: "Nasi Pecel",
+                                })}
+                                className="mt-4 inline-flex rounded-xl bg-white px-5 py-3 font-medium text-primary transition hover:bg-slate-100"
+                            >
                                 Cari Kuliner Terkait →
-                            </button>
+                            </Link>
                             </div>
                         </div>
                         </div>
                     </div>
 
-                    {/* JELAJAH BERDASARKAN KATEGORI */}
-                    <div className="mt-14">
+                    {/* ITINERARY + MAP */}
+                    <div className="mt-10 overflow-hidden rounded-3xl border bg-white shadow-sm">
 
-                        <h2 className="text-3xl font-bold">
-                            Jelajahi Berdasarkan Kategori
-                        </h2>
+                        <div className="grid lg:grid-cols-2">
 
-                        <p className="mt-2 text-slate-500">
-                            Temukan berbagai fasilitas dan destinasi unggulan Kota Kediri sesuai kategori yang Anda minati.
-                        </p>
+                            {/* LEFT */}
+                            <div className="p-7 bg-gradient-to-b from-white to-slate-50">
 
-                        {/* CARD */}
-                        <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                                <h3 className="text-2xl font-bold">
+                                    Rekomendasi Sehari di Kediri
+                                </h3>
 
-                            {categories.map((item, index) => {
+                                <p className="mt-1 text-sm text-slate-500">
+                                    Klik aktivitas untuk melihat lokasi di peta interaktif.
+                                </p>
 
-                                const Icon = item.icon;
+                                <div className="mt-6 space-y-3">
 
-                                return (
+                                    {itinerary.map((item, index) => {
+                                        const isActive = index === activeItinerary;
+                                        const Icon = item.icon;
 
-                                    <Link
-                                        key={index}
-                                        href={route("fasilitas-kota.index", {
-                                            category: item.filter,
-                                        })}
-                                        className="group overflow-hidden rounded-3xl border bg-white transition hover:-translate-y-1 hover:shadow-lg"
-                                    >
+                                        return (
+                                            <button
+                                                key={index}
+                                                onClick={() => setActiveItinerary(index)}
+                                                className={`
+                                                    group w-full text-left rounded-2xl border p-4 transition-all
+                                                    hover:shadow-md hover:-translate-y-0.5
+                                                    ${isActive
+                                                        ? "border-primary bg-primary/5 shadow-md"
+                                                        : "bg-white"
+                                                    }
+                                                `}
+                                            >
 
-                                        {/* IMAGE */}
-                                        <div className="relative h-52 overflow-hidden">
+                                                <div className="flex items-center justify-between">
 
-                                            <img
-                                                src={item.image}
-                                                alt={item.title}
-                                                className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                                            />
+                                                    <div className="flex items-center gap-3">
 
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                                                        {/* ICON BOX */}
+                                                        <div className={`
+                                                            flex h-10 w-10 items-center justify-center rounded-xl transition
+                                                            ${isActive
+                                                                ? "bg-primary text-white"
+                                                                : "bg-slate-100 text-slate-600 group-hover:bg-slate-200"
+                                                            }
+                                                        `}>
+                                                            <Icon className="h-5 w-5" />
+                                                        </div>
 
-                                            <div className="absolute bottom-5 left-5">
+                                                        {/* TEXT */}
+                                                        <div>
+                                                            <div className="font-semibold">
+                                                                {item.title}
+                                                            </div>
+                                                            <div className="text-xs text-slate-500">
+                                                                {item.desc}
+                                                            </div>
+                                                        </div>
 
-                                                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-white/90">
+                                                    </div>
 
-                                                    <Icon
-                                                        size={24}
-                                                        className="text-primary"
-                                                    />
+                                                    {/* TIME BADGE */}
+                                                    <span className={`
+                                                        text-sm font-semibold
+                                                        ${isActive ? "text-primary" : "text-slate-400"}
+                                                    `}>
+                                                        {item.time}
+                                                    </span>
 
                                                 </div>
+                                            </button>
+                                        );
+                                    })}
 
-                                                <h3 className="text-2xl font-bold text-white">
-                                                    {item.title}
-                                                </h3>
+                                </div>
+                            </div>
 
-                                                <p className="mt-1 text-sm text-white/80">
-                                                    {item.count}
-                                                </p>
+                            {/* RIGHT MAP */}
+                            <div className="relative h-[520px]">
 
-                                            </div>
+                                {/* MAP */}
+                                <iframe
+                                    key={activeItinerary}
+                                    src={mapUrl}
+                                    className="h-full w-full"
+                                    loading="lazy"
+                                />
 
-                                        </div>
+                                {/* overlay gradient biar lebih aesthetic */}
+                                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
 
-                                        {/* CONTENT */}
-                                        <div className="p-5">
-
-                                            <p className="text-sm leading-relaxed text-slate-500">
-                                                {item.description}
-                                            </p>
-
-                                            <div className="mt-5 flex items-center font-semibold text-primary">
-                                                Jelajahi Kategori →
-                                            </div>
-
-                                        </div>
-
-                                    </Link>
-
-                                );
-
-                            })}
+                            </div>
 
                         </div>
-
                     </div>
-
+                    
                     {/* CTA Bottom */}
                     <ContentCTA
                         icon={<MapPinned size={24} />}

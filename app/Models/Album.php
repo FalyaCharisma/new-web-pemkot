@@ -11,7 +11,7 @@ class Album extends Model
     protected $table = "album";
     protected $guarded = [];
 
-    public function foto()
+    public function fotos()
     {
         return $this->hasMany(FotoAlbum::class, 'id_album');
     }

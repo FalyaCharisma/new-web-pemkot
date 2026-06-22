@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PesonaUnggulan;
+use App\Models\Berita;
+use App\Models\KategoriBerita;
 use Inertia\Inertia;
 
 class PesonaUnggulanController extends Controller
@@ -13,7 +15,7 @@ class PesonaUnggulanController extends Controller
      */
     public function index()
     {
-        $pesona = PesonaUnggulan::latest()
+        $pesona = PesonaUnggulan::with('kategori')->latest()
         ->get();
 
         return Inertia::render('pesonakediri/index', [
@@ -40,10 +42,119 @@ class PesonaUnggulanController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($slug)
     {
-        //
-    }
+        $kategori_berita = KategoriBerita::where('status_enabled', 1)->get();
+        $pesona = PesonaUnggulan::with('kategori')->where('slug', $slug)->firstOrFail();
+
+        // dd($pesona);
+
+        // tambah viewer
+        $pesona->increment('views');
+
+        $judulPesona = strtolower($pesona->judul);
+
+        $keywords = preg_split('/\s+/', $judulPesona);
+
+        $stopWords = [
+            'dan',
+            'di',
+            'ke',
+            'dari',
+            'yang',
+            'untuk',
+            'dengan',
+            'kota',
+            'kabupaten'
+        ];
+
+        $related = Berita::with('kategori')
+            ->get()
+            ->map(function ($berita) use ($pesona, $judulPesona, $keywords, $stopWords) {
+
+                $score = 0;
+
+                $judul = strtolower($berita->judul);
+                $deskripsi = strtolower(strip_tags($berita->deskripsi));
+
+                // 1. Judul mengandung frasa lengkap
+                if (str_contains($judul, $judulPesona)) {
+                    $score += 100;
+                }
+
+                // 2. Keyword
+                foreach ($keywords as $word) {
+
+                    $word = trim($word);
+
+                    if (
+                        strlen($word) < 3 ||
+                        in_array($word, $stopWords)
+                    ) {
+                        continue;
+                    }
+
+                    // Keyword di judul
+                    if (str_contains($judul, $word)) {
+                        $score += 10;
+                    }
+
+                    // Keyword di deskripsi
+                    if (str_contains($deskripsi, $word)) {
+                        $score += 5;
+                    }
+                }
+
+                // 3. Bonus kategori
+                if (
+                    !empty($berita->id_kategori) &&
+                    $berita->id_kategori == $pesona->kategori_id
+                ) {
+                    $score += 3;
+                }
+
+                $berita->score = $score;
+
+                return $berita;
+            })
+            ->filter(fn($berita) => $berita->score > 0)
+            ->sort(function ($a, $b) {
+
+                // Skor tertinggi
+                if ($a->score === $b->score) {
+                    // Jika skor sama, tampilkan yang terbaru
+                    return strtotime($b->tanggal) <=> strtotime($a->tanggal);
+                }
+
+                return $b->score <=> $a->score;
+            })
+            ->take(4)
+            ->values();
+
+
+        // Jika hasil kurang dari 4,
+        // tambahkan berita terbaru yang belum ada
+        if ($related->count() < 4) {
+
+            $additional = Berita::with('kategori')
+                ->whereNotIn('id', $related->pluck('id')->toArray())
+                ->orderByDesc('tanggal')
+                ->take(4 - $related->count())
+                ->get();
+
+            $related = $related
+                ->merge($additional)
+                ->unique('id')
+                ->values();
+        }
+                
+
+                return Inertia::render('pesonakediri/detail', [
+                    'pesona' => $pesona,
+                    'related' => $related,
+                    'kategori_berita' => $kategori_berita
+                ]);
+            }
 
     /**
      * Show the form for editing the specified resource.

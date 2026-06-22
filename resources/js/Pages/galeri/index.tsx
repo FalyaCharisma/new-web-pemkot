@@ -1,191 +1,74 @@
-import { Head } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { HeaderSolid } from "@/Components/site/HeaderSolid";
 import { Footer } from "@/Components/site/Footer";
 import { HeroPage } from "@/Components/HeroPage";
 import { useState, useEffect } from "react";
+import type { FeaturedVideos } from "@/types/featured-videos";
+import type { PaginatedAlbums } from "@/types/album";
+import { getYoutubeEmbedUrl } from "@/helpers/youtube";
+import Pagination from "@/Components/Pagination";
+ 
 import {
     Image as ImageIcon,
     Video,
     FolderOpen,
-    Play,
-    Camera,
     RotateCcw,
 } from "lucide-react";
 
+import {
+  FaYoutube,
+} from "react-icons/fa6";
+
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import { Navigation, Autoplay } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-export default function GaleriIndex() {
+interface Props {
+    videos: FeaturedVideos[];
+    albums: PaginatedAlbums;
+    totalFoto: number;
+    totalVideo: number;
+    totalAlbum: number;
+}
 
-    const featuredVideos = [
-        {
-            category: "Profil Kota",
-            date: "12 Juni 2026",
-            title: "Video Profil Kota Kediri 2026",
-            description:
-                "Mengenal potensi wisata, budaya, dan perkembangan Kota Kediri melalui video profil terbaru.",
-            image: "/images/video-profil.jpg",
-            duration: "03:25",
-        },
-        {
-            category: "Budaya",
-            date: "10 Juni 2026",
-            title: "Festival Jaranan Kota Kediri",
-            description:
-                "Kemeriahan Festival Jaranan yang dihadiri ribuan masyarakat Kota Kediri.",
-            image: "/images/jaranan.jpg",
-            duration: "04:10",
-        },
-        {
-            category: "Wisata",
-            date: "8 Juni 2026",
-            title: "Pesona Wisata Kediri",
-            description:
-                "Menjelajahi destinasi wisata unggulan yang menjadi kebanggaan Kota Kediri.",
-            image: "/images/wisata.jpg",
-            duration: "05:42",
-        },
-    ];
+export default function GaleriIndex( { videos, albums, totalAlbum, totalFoto, totalVideo }:Props) {
 
-    const galleries = [
-        {
-            type: "photo",
-            category: "Wisata",
-            title: "Simpang Lima Gumul",
-            cover:
-                "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-            images: [
-                "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-                "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-                "https://images.unsplash.com/photo-1441974231531-c6227db76b6e",
-                "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-            ],
-            date: "24 Mei 2026",
-            count: "18 Foto",
-        },
-        {
-            type: "photo",
-            category: "Wisata",
-            title: "Air Terjun Dolo",
-            cover:
-                "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-            images: [
-                "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-                "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-                "https://images.unsplash.com/photo-1441974231531-c6227db76b6e",
-                "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-            ],
-            date: "23 Mei 2026",
-            count: "15 Foto",
-        },
-        {
-            type: "video",
-            category: "Video",
-            title: "Video Profil Kota Kediri",
-            cover:
-                "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-            images: [
-                "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-                "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-                "https://images.unsplash.com/photo-1441974231531-c6227db76b6e",
-                "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-            ],
-            duration: "03:25",
-        },
-        {
-            type: "photo",
-            category: "Pemerintahan",
-            title: "Upacara Hari Jadi Kota Kediri",
-            cover:
-                "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
-            images: [
-                "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-                "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-                "https://images.unsplash.com/photo-1441974231531-c6227db76b6e",
-                "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-            ],
-            date: "17 Mei 2026",
-            count: "42 Foto",
-        },
-        {
-            type: "photo",
-            category: "Budaya",
-            title: "Kirab Budaya Hari Jadi Kota Kediri",
-            cover:
-                "https://images.unsplash.com/photo-1511795409834-ef04bbd61622",
-            images: [
-                "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-                "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-                "https://images.unsplash.com/photo-1441974231531-c6227db76b6e",
-                "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-            ],
-            date: "17 Mei 2026",
-            count: "36 Foto",
-        },
-        {
-            type: "photo",
-            category: "UMKM",
-            title: "Pameran UMKM Kota Kediri",
-            cover:
-                "https://images.unsplash.com/photo-1522202176988-66273c2fd55f",
-            images: [
-                "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-                "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-                "https://images.unsplash.com/photo-1441974231531-c6227db76b6e",
-                "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-            ],
-            date: "10 Mei 2026",
-            count: "28 Foto",
-        },
-        {
-            type: "video",
-            category: "Video",
-            title: "Pesona Wisata Kota Kediri",
-            cover:
-                "https://images.unsplash.com/photo-1441974231531-c6227db76b6e",
-            images: [
-                "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-                "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-                "https://images.unsplash.com/photo-1441974231531-c6227db76b6e",
-                "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-            ],
-            duration: "04:18",
-        },
-        {
-            type: "photo",
-            category: "Pendidikan",
-            title: "Kegiatan Belajar Mengajar",
-            cover:
-                "https://images.unsplash.com/photo-1509062522246-3755977927d7",
-            images: [
-                "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-                "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-                "https://images.unsplash.com/photo-1441974231531-c6227db76b6e",
-                "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-            ],
-            date: "8 Mei 2026",
-            count: "20 Foto",
-        },
-        {
-            type: "photo",
-            category: "Wisata",
-            title: "Masjid Agung Kota Kediri",
-            cover:
-                "https://images.unsplash.com/photo-1512632578888-169bbbc64f33",
-            images: [
-                "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-                "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-                "https://images.unsplash.com/photo-1441974231531-c6227db76b6e",
-                "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-            ],
-            date: "5 Mei 2026",
-            count: "22 Foto",
-        },
-    ];
+    const [search, setSearch] = useState("");
+
+    const [year, setYear] = useState<string>("all");
+
+    const years = Array.from(
+        new Set(
+            (albums?.data ?? []).map((a) =>
+                new Date(a.created_at).getFullYear()
+            )
+        )
+    );
+
+    const filteredAlbums = (albums?.data ?? []).filter((album) => {
+        if (year === "all") return true;
+
+        return new Date(album.created_at).getFullYear().toString() === year;
+    });
+
+
+    const galleries = filteredAlbums.map((album) => ({
+        category: "Album",
+        title: album.judul,
+        cover: album.fotos?.[0]?.foto
+            ? `/storage/album/${album.fotos[0].foto}`
+            : "https://placehold.co/600x400",
+
+        images: album.fotos?.map(
+            (foto) => `/storage/album/${foto.foto}`
+        ) || [],
+
+        date: new Date(album.created_at).toLocaleDateString("id-ID"),
+        count: `${album.fotos?.length ?? 0} Foto`,
+    }));
     
     const [selectedItem, setSelectedItem] = useState<any>(null);
 
@@ -208,14 +91,31 @@ export default function GaleriIndex() {
                     <HeroPage
                         title="Galeri"
                         breadcrumb="Galeri"
-                        placeholder="Cari foto, video, destinasi, budaya, atau kegiatan..."
-                        description="Jelajahi momen terbaik Kota Kediri melalui koleksi foto dan video yang merekam pesona alam, budaya, destinasi wisata, serta berbagai kegiatan masyarakat."
+                        placeholder="Cari album..."
+                        description="Jelajahi momen terbaik Kota Kediri..."
+
+                        searchValue={search}
+                        onSearchChange={(value) => setSearch(value)}
+                        onSearch={(keyword) => {
+                            router.get(
+                                route("galeri.index"),
+                                {
+                                    search: keyword,
+                                },
+                                {
+                                    preserveState: true,
+                                    preserveScroll: true,
+                                }
+                            );
+                        }}
                     />
 
                     <section className="container mx-auto px-4 py-10">
 
                         {/* STATISTIK */}
                         <div className="grid gap-5 md:grid-cols-3">
+
+                            {/* FOTO */}
                             <div className="rounded-2xl border bg-white p-6 shadow-sm">
                                 <div className="flex items-center gap-4">
                                     <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-100">
@@ -223,7 +123,7 @@ export default function GaleriIndex() {
                                     </div>
                                     <div>
                                         <h3 className="text-3xl font-bold text-primary">
-                                            1.250
+                                            {totalFoto}
                                         </h3>
                                         <p className="font-semibold">Foto</p>
                                         <p className="text-sm text-muted-foreground">
@@ -233,6 +133,7 @@ export default function GaleriIndex() {
                                 </div>
                             </div>
 
+                            {/* VIDEO */}
                             <div className="rounded-2xl border bg-white p-6 shadow-sm">
                                 <div className="flex items-center gap-4">
                                     <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-100">
@@ -240,7 +141,7 @@ export default function GaleriIndex() {
                                     </div>
                                     <div>
                                         <h3 className="text-3xl font-bold text-primary">
-                                            145
+                                            {totalVideo}
                                         </h3>
                                         <p className="font-semibold">Video</p>
                                         <p className="text-sm text-muted-foreground">
@@ -250,6 +151,7 @@ export default function GaleriIndex() {
                                 </div>
                             </div>
 
+                            {/* ALBUM */}
                             <div className="rounded-2xl border bg-white p-6 shadow-sm">
                                 <div className="flex items-center gap-4">
                                     <div className="flex h-14 w-14 items-center justify-center rounded-full bg-orange-100">
@@ -257,7 +159,7 @@ export default function GaleriIndex() {
                                     </div>
                                     <div>
                                         <h3 className="text-3xl font-bold text-primary">
-                                            25
+                                            {totalAlbum}
                                         </h3>
                                         <p className="font-semibold">Album</p>
                                         <p className="text-sm text-muted-foreground">
@@ -266,6 +168,7 @@ export default function GaleriIndex() {
                                     </div>
                                 </div>
                             </div>
+
                         </div>
 
                         {/* HIGHLIGHT VIDEO */}
@@ -281,75 +184,91 @@ export default function GaleriIndex() {
                             </div>
 
                             <div className="overflow-hidden rounded-3xl border bg-white">
-                                <Swiper
-                                    modules={[Navigation, Pagination, Autoplay]}
-                                    navigation
-                                    pagination={{
-                                        clickable: true,
-                                    }}
-                                    autoplay={{
-                                        delay: 5000,
-                                        disableOnInteraction: false,
-                                    }}
-                                    loop
-                                >
-                                    {featuredVideos.map((item, index) => (
-                                        <SwiperSlide key={index}>
-                                            <div className="grid lg:grid-cols-[1.4fr_1fr]">
-                                                {/* THUMBNAIL */}
-                                                <div className="relative h-[260px] lg:h-[320px]">
-                                                    <img
-                                                        src={item.image}
-                                                        alt={item.title}
-                                                        className="h-full w-full object-cover"
-                                                    />
+                                {videos?.length > 0 && (
+                                    <Swiper
+                                        modules={[Navigation, Autoplay]}
+                                        navigation
+                                        pagination={{ clickable: true }}
+                                        autoplay={{
+                                            delay: 5000,
+                                            disableOnInteraction: false,
+                                        }}
+                                        loop={videos.length > 1}
+                                    >
+                                        {videos.map((item, index) => {
+                                            // ambil youtube id
+                                            const videoId = item.video_url
+                                                ? item.video_url.match(
+                                                    /(?:youtube\.com\/.*v=|youtu\.be\/)([^&?/]+)/
+                                                )?.[1]
+                                                : null;
 
-                                                    <div className="absolute inset-0 bg-black/30" />
+                                            return (
+                                                <SwiperSlide key={item.id}>
+                                                    <div className="grid lg:grid-cols-[1.4fr_1fr]">
 
-                                                    <div className="absolute inset-0 flex items-center justify-center">
-                                                        <div className="rounded-full bg-white/90 p-5 shadow-lg">
-                                                            <Play className="h-10 w-10 text-primary" />
+                                                        {/* VIDEO */}
+                                                        <div className="aspect-video">
+                                                            <iframe
+                                                                loading="lazy"
+                                                                className="h-full w-full"
+                                                                src={`${getYoutubeEmbedUrl(item.video_url)}?rel=0&mute=1`}
+                                                                title={item.title}
+                                                                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                allowFullScreen
+                                                            />
                                                         </div>
+
+                                                        {/* DETAIL */}
+                                                        <div className="flex flex-col justify-center p-8">
+                                                            <span className="w-fit rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                                                                Highlight Video
+                                                            </span>
+
+                                                            <h2 className="mt-4 text-3xl font-bold">
+                                                                {item.title}
+                                                            </h2>
+
+                                                            <p className="mt-4 text-muted-foreground">
+                                                                {item.description}
+                                                            </p>
+
+                                                           <div className="mt-8 rounded-2xl bg-red-50 border border-red-100 p-5">
+                                                                <div className="flex items-start gap-4">
+                                                                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-red-600 text-white">
+                                                                        <FaYoutube size={22} />
+                                                                    </div>
+
+                                                                    <div className="flex-1">
+                                                                        <h3 className="font-semibold text-slate-900">
+                                                                            Tonton video selengkapnya
+                                                                        </h3>
+
+                                                                        <p className="mt-1 text-sm text-slate-600">
+                                                                            Saksikan berbagai video destinasi wisata, budaya, dan aktivitas menarik
+                                                                            Kota Kediri di kanal resmi Pemkot Kediri TV.
+                                                                        </p>
+
+                                                                        <a
+                                                                            href="https://www.youtube.com/@pemkotkediritv"
+                                                                            target="_blank"
+                                                                            rel="noopener noreferrer"
+                                                                            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
+                                                                        >
+                                                                            <FaYoutube />
+                                                                            Buka Channel
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
                                                     </div>
-
-                                                    <span className="absolute left-4 top-4 rounded-full bg-primary px-3 py-1 text-xs font-medium text-white">
-                                                        Highlight Video
-                                                    </span>
-                                                </div>
-
-                                                {/* DETAIL */}
-                                                <div className="flex flex-col justify-center p-6 lg:p-8">
-                                                    <div className="flex items-center gap-3">
-                                                        <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                                                            {item.category}
-                                                        </span>
-
-                                                        <span className="text-sm text-muted-foreground">
-                                                            {item.date}
-                                                        </span>
-                                                    </div>
-
-                                                    <h2 className="mt-4 text-2xl font-bold lg:text-3xl">
-                                                        {item.title}
-                                                    </h2>
-
-                                                    <p className="mt-3 text-muted-foreground">
-                                                        {item.description}
-                                                    </p>
-
-                                                    <div className="mt-5 flex gap-6 text-sm text-muted-foreground">
-                                                        <span>🎬 Video</span>
-                                                        <span>⏱ {item.duration}</span>
-                                                    </div>
-
-                                                    <button className="mt-6 w-fit rounded-xl bg-primary px-5 py-3 font-medium text-white">
-                                                        Tonton Video →
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </SwiperSlide>
-                                    ))}
-                                </Swiper>
+                                                </SwiperSlide>
+                                            );
+                                        })}
+                                    </Swiper>
+                                )}
                             </div>
                         </div>
 
@@ -359,32 +278,29 @@ export default function GaleriIndex() {
                             {/* FILTER */}
                             <aside className="h-fit rounded-2xl border bg-white p-6 shadow-sm">
                                 <h3 className="mb-5 text-lg font-semibold">
-                                    Filter Galeri
+                                    Filter Tahun
                                 </h3>
 
                                 <div className="space-y-4">
-                                    <select className="w-full rounded-xl border p-3">
-                                        <option>Semua Jenis</option>
-                                    </select>
 
-                                    <select className="w-full rounded-xl border p-3">
-                                        <option>Semua Kategori</option>
-                                    </select>
-
-                                    <select className="w-full rounded-xl border p-3">
-                                        <option>Semua Tahun</option>
-                                    </select>
-
-                                    <input
-                                        type="date"
+                                    <select
+                                        value={year}
+                                        onChange={(e) => setYear(e.target.value)}
                                         className="w-full rounded-xl border p-3"
-                                    />
+                                    >
+                                        <option value="all">Semua Tahun</option>
 
-                                    <button className="w-full rounded-xl bg-primary py-3 font-medium text-white">
-                                        Terapkan Filter
-                                    </button>
+                                        {years.map((y) => (
+                                            <option key={y} value={y}>
+                                                {y}
+                                            </option>
+                                        ))}
+                                    </select>
 
-                                    <button className="flex w-full items-center justify-center gap-2 rounded-xl border py-3">
+                                    <button
+                                        onClick={() => setYear("all")}
+                                        className="flex w-full items-center justify-center gap-2 rounded-xl border py-3"
+                                    >
                                         <RotateCcw size={16} />
                                         Reset Filter
                                     </button>
@@ -412,41 +328,18 @@ export default function GaleriIndex() {
                                                 {item.category}
                                             </span>
 
-                                            {item.type === "video" && (
-                                                <div className="absolute inset-0 flex items-center justify-center">
-                                                    <div className="rounded-full bg-white/90 p-4">
-                                                        <Play className="h-8 w-8" />
-                                                    </div>
-                                                </div>
-                                            )}
-
                                             <div className="absolute bottom-4 left-4 right-4 text-white">
                                                 <h3 className="font-semibold">
                                                     {item.title}
                                                 </h3>
-
-                                                {item.type === "video" ? (
-                                                    <p className="mt-2 text-sm">
-                                                        Durasi {item.duration}
-                                                    </p>
-                                                ) : (
-                                                    <>
-                                                        <p className="mt-1 text-sm opacity-90">
-                                                            {item.date}
-                                                        </p>
-
-                                                        <div className="mt-2 flex items-center gap-2 text-sm">
-                                                            <Camera size={14} />
-                                                            {item.count}
-                                                        </div>
-                                                    </>
-                                                )}
                                             </div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         </div>
+                        
+                        <Pagination links={albums.links} />
 
                         {selectedItem && (
                             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
@@ -464,7 +357,7 @@ export default function GaleriIndex() {
                                     {selectedItem?.images?.length > 0 && (
                                         <Swiper
                                             key={selectedItem?.title}
-                                            modules={[Navigation, Pagination]}
+                                            modules={[Navigation]}
                                             navigation
                                             pagination={{ clickable: true }}
                                             loop={selectedItem.images.length > 1}

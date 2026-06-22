@@ -4,15 +4,57 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\FeaturedVideo;
+use App\Models\Album;
+use App\Models\FotoAlbum;
+
 
 class GaleriController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('galeri/index');
+        $videos = FeaturedVideo::where('status_enabled', 1)
+            ->latest()
+            ->get();
+
+        $albums = Album::with([
+            'fotos' => function ($query) {
+                $query->where('status_enabled', 1);
+            }
+        ])
+        ->where('status_enabled', 1)
+        ->when($request->search, function ($q) use ($request) {
+            $q->where('judul', 'like', '%' . $request->search . '%');
+        })
+        ->latest()
+        ->paginate(6)
+        ->through(function ($album) {
+            return [
+                'id' => $album->id,
+                'judul' => $album->judul,
+                'created_at' => $album->created_at,
+
+                'fotos' => $album->fotos?->map(fn($f) => [
+                    'foto' => asset('storage/album/'.$f->foto),
+                    'nama_foto' => $f->nama_foto,
+                ]) ?? [],
+            ];
+        });
+
+        $totalFoto = FotoAlbum::where('status_enabled', 1)->count();
+        $totalVideo = FeaturedVideo::where('status_enabled', 1)->count();
+        $totalAlbum = Album::where('status_enabled', 1)->count();
+
+        return Inertia::render('galeri/index', [
+            'videos' => $videos,
+            'albums' => $albums,
+            'totalFoto' => $totalFoto,
+            'totalVideo' => $totalVideo,
+            'totalAlbum' => $totalAlbum,
+        ]);
     }
 
     /**

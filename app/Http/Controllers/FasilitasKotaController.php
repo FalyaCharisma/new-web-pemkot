@@ -15,57 +15,51 @@ class FasilitasKotaController extends Controller
      */
     public function index(Request $request)
     {
-        $filters = [
-            'search' => $request->input('search', ''),
-            'kategori' => $request->input('kategori', ''),
-            'sub_kategori' => $request->input('sub_kategori', ''),
-        ];
-
-        $fasilitas = FasilitasKota::query()
-            ->with(['kategori', 'sub_kategori'])
-            ->where('status_enabled', 1)
-            ->when($request->filled('kategori'), function ($query) use ($request) {
-                $query->where('kategori_id', $request->integer('kategori'));
-            })
-            ->when($request->filled('sub_kategori'), function ($query) use ($request) {
-                $query->where('sub_kategori_id', $request->integer('sub_kategori'));
-            })
-            ->when($request->filled('search'), function ($query) use ($request) {
-                $search = $request->input('search');
-
-                $query->where(function ($q) use ($search) {
-                    $q->where('nama', 'like', "%{$search}%")
-                        ->orWhere('alamat', 'like', "%{$search}%")
-                        ->orWhere('telp', 'like', "%{$search}%");
-                });
-            })
-            ->latest('id')
-            ->paginate(12)
-            ->withQueryString();
+        $selectedKategori = $request->integer('kategori', 1);
+        $selectedSubKategori = $request->integer('sub_kategori');
 
         $kategori = KategoriFasilitas::query()
-            ->where('status_enabled', 1)
-            ->withCount([
-                'fasilitas as fasilitas_count' => function ($query) {
-                    $query->where('status_enabled', 1);
-                },
-            ])
-            ->orderBy('nama_kategori')
-            ->get();
+        ->where('status_enabled', 1)
+        ->withCount([
+            'fasilitas as fasilitas_count' => function ($query) {
+                $query->where('status_enabled', 1);
+            },
+        ])
+        ->orderBy('nama_kategori')
+        ->get();
 
         $subKategori = SubKategoriFasilitas::query()
-            ->where('status_enabled', 1)
-            ->when($request->filled('kategori'), function ($query) use ($request) {
-                $query->where('kategori_id', $request->integer('kategori'));
-            })
-            ->orderBy('nama_sub')
-            ->get();
+        ->where('status_enabled', 1)
+        ->when($selectedKategori, function ($query) use ($selectedKategori) {
+            $query->where('kategori_id', $selectedKategori);
+        })
+        ->orderBy('nama_sub')
+        ->get();
+
+        $fasilitas = FasilitasKota::query()
+        ->where('status_enabled', 1)
+        ->with(['kategori', 'sub_kategori'])
+        ->when($request->kategori, function ($q) use ($request) {
+            $q->where('kategori_id', $request->kategori);
+        })
+        ->when($request->sub_kategori, function ($q) use ($request) {
+            $q->whereIn('sub_kategori_id', (array) $request->sub_kategori);
+        })
+        ->when($request->search, function ($query) use ($request) {
+            $query->where('nama', 'like', '%' . $request->search . '%');
+        })
+        ->latest()
+        ->paginate(8)
+        ->withQueryString();
 
         return Inertia::render('fasilitaskota/index', [
-            'fasilitas' => $fasilitas,
             'kategori' => $kategori,
             'subKategori' => $subKategori,
-            'filters' => $filters,
+            'fasilitas' => $fasilitas,
+            'filters' => [
+                'kategori' => $selectedKategori,
+                'sub_kategori' => $selectedSubKategori,
+            ],
         ]);
     }
 

@@ -46,5 +46,4 @@ Route::resource('pesona-unggulan', PesonaUnggulanController::class);
 
 
 
-
 require __DIR__ . '/auth.php';

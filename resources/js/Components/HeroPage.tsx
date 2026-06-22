@@ -7,15 +7,10 @@ interface FacilityHeroProps {
   description: string;
   placeholder?: string;
   breadcrumb?: string;
-
-  /** Nilai kata kunci dari halaman induk. */
   searchValue?: string;
-
-  /** Dipanggil saat isi kolom pencarian berubah. */
   onSearchChange?: (value: string) => void;
-
-  /** Dipanggil saat tombol cari diklik atau Enter ditekan. */
   onSearch?: (keyword: string) => void;
+  enableSearch?: boolean;
 }
 
 export function HeroPage({
@@ -24,6 +19,7 @@ export function HeroPage({
   placeholder = "Cari informasi...",
   breadcrumb = "Fasilitas Kota",
   searchValue,
+  enableSearch = true,
   onSearchChange,
   onSearch,
 }: FacilityHeroProps) {
@@ -85,26 +81,28 @@ export function HeroPage({
               {description}
             </p>
 
-            <form onSubmit={handleSubmit} className="mt-6 max-w-xl">
-              <div className="flex overflow-hidden rounded-xl border bg-white shadow-sm">
-                <input
-                  type="search"
-                  value={currentSearchValue}
-                  onChange={(event) => handleSearchChange(event.target.value)}
-                  placeholder={placeholder}
-                  aria-label={placeholder}
-                  className="flex-1 px-6 py-4 outline-none"
-                />
+            {enableSearch && (
+              <form onSubmit={handleSubmit} className="mt-6 max-w-xl">
+                <div className="flex overflow-hidden rounded-xl border bg-white shadow-sm">
+                  <input
+                    type="search"
+                    value={currentSearchValue}
+                    onChange={(event) => handleSearchChange(event.target.value)}
+                    placeholder={placeholder}
+                    aria-label={placeholder}
+                    className="flex-1 px-6 py-4 outline-none"
+                  />
 
-                <button
-                  type="submit"
-                  aria-label="Cari fasilitas"
-                  className="m-2 flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white transition hover:opacity-90"
-                >
-                  <Search size={18} />
-                </button>
-              </div>
-            </form>
+                  <button
+                    type="submit"
+                    aria-label="Cari fasilitas"
+                    className="m-2 flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white transition hover:opacity-90"
+                  >
+                    <Search size={18} />
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
 
           <div className="relative hidden lg:flex items-center justify-end">

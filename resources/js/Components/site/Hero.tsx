@@ -1,3 +1,4 @@
+import {Link } from "@inertiajs/react";
 import {
   Search,
   ArrowRight,
@@ -107,51 +108,64 @@ export function Hero() {
             <QuickMenu
               icon={<Hotel size={28} />}
               title="Akomodasi"
-              href={route('fasilitas-kota.index')}
+              href={route('fasilitas-kota.index', {
+                  kategori: 1,
+              })}
             />
 
             <QuickMenu
               icon={<Bus size={28} />}
               title="Transportasi"
-              href="#"
-
+              href={route('fasilitas-kota.index', {
+                  kategori: 2,
+              })}
             />
 
             <QuickMenu
               icon={<HeartPulse size={28} />}
               title="Kesehatan"
-              href="#"
-
+              href={route('fasilitas-kota.index', {
+                  kategori: 3,
+              })}
             />
 
             <QuickMenu
               icon={<UtensilsCrossed size={28} />}
               title="Kuliner"
-              href="#"
+              href={route('fasilitas-kota.index', {
+                  kategori: 4,
+              })}
 
             />
 
             <QuickMenu
               icon={<ShoppingBag size={28} />}
               title="Perbelanjaan"
-              href="#"
+              href={route('fasilitas-kota.index', {
+                  kategori: 5,
+              })}
 
             />
 
             <QuickMenu
               icon={<Trees size={28} />}
               title="Ruang Publik"
-              href="#"
+              href={route('fasilitas-kota.index', {
+                  kategori: 6,
+              })}
 
             />
 
-            <button className="flex flex-col items-center justify-center gap-2 bg-primary p-6 text-white transition hover:opacity-90">
-              <LayoutGrid size={28} />
+            <Link
+                href={route('fasilitas-kota.index')}
+                className="flex flex-col items-center justify-center gap-2 bg-primary p-6 text-white transition hover:opacity-90"
+            >
+                <LayoutGrid size={28} />
 
-              <span className="text-sm font-medium">
-                Semua Fasilitas
-              </span>
-            </button>
+                <span className="text-sm font-medium text-center">
+                    Semua Fasilitas
+                </span>
+            </Link>
           </div>
         </div>
       </div>
