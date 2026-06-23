@@ -1,35 +1,22 @@
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import { HeaderSolid } from "@/Components/site/HeaderSolid";
 import { Footer } from "@/Components/site/Footer";
 import { HeroPage } from "@/Components/HeroPage";
 import { ContentCTA } from "@/Components/ContentCTA";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Berita, KategoriBerita } from "@/types/berita";
 
 import { FaInstagram } from "react-icons/fa6";
 
 import {
     Grid2x2,
-    Calendar,
     FileText,
-    Building2,
-    ChartColumn,
-    Info,
-    HeartPulse,
-    Gavel,
-    Landmark,
-    Trophy,
-    GraduationCap,
-    Megaphone,
-    MapPinned,
-    Award,
-    ShoppingBag,
-    Briefcase,
     RotateCcw,
     ChevronLeft,
     ChevronRight,
 } from "lucide-react";
 import { formatDate } from "@/Components/ui/date";
+import Pagination from "@/Components/Pagination";
 
 interface Props {
     berita: {
@@ -75,6 +62,10 @@ export default function Berita({
 
     const scrollRef = useRef<HTMLDivElement>(null);
 
+    const [selectedKategori, setSelectedKategori] = useState(
+        filters.kategori ?? "",
+    );
+
     const scrollLeft = () => {
         scrollRef.current?.scrollBy({
             left: -400,
@@ -87,6 +78,23 @@ export default function Berita({
             left: 400,
             behavior: "smooth",
         });
+    };
+
+    const handleKategoriClick = (id: number | string) => {
+        setSelectedKategori(id);
+
+        router.get(
+            route("berita"),
+            {
+                kategori: id,
+                search: filters.search,
+                sort: filters.sort,
+            },
+            {
+                preserveScroll: true,
+                preserveState: true,
+            },
+        );
     };
 
     return (
@@ -107,79 +115,63 @@ export default function Berita({
                     {/* CONTENT */}
                     <section className="container mx-auto px-4 py-10">
                         {/* BERITA */}
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center justify-between">
-                                <h2 className="text-xl font-bold">
-                                    Kategori Berita
-                                </h2>
-                            </div>
-                        </div>
-                        <div className="relative mb-7">
-                            {/* Tombol kiri */}
-                            <button
-                                type="button"
-                                onClick={scrollLeft}
-                                className="absolute left-0 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border bg-white shadow-md hover:bg-slate-50"
-                            >
-                                <ChevronLeft size={18} />
-                            </button>
+                        <div className="mb-8 rounded-3xl border bg-white p-6 shadow-sm">
+                            <div className="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+                                <div className="flex items-center justify-center">
+                                    <h2 className="text-2xl font-bold text-primary">
+                                        Kediri News
+                                    </h2>
+                                </div>
 
-                            {/* Tombol kanan */}
-                            <button
-                                type="button"
-                                onClick={scrollRight}
-                                className="absolute right-0 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border bg-white shadow-md hover:bg-slate-50"
-                            >
-                                <ChevronRight size={18} />
-                            </button>
+                                <div className="relative min-w-0">
+                                    <button
+                                        type="button"
+                                        onClick={scrollLeft}
+                                        className="absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border bg-white shadow-md transition hover:bg-slate-50"
+                                    >
+                                        <ChevronLeft size={18} />
+                                    </button>
 
-                            {/* Scroll */}
-                            <div
-                                ref={scrollRef}
-                                className="
-                            flex gap-4
-                            overflow-x-auto
-                            scroll-smooth
-                            px-14 pb-2
-                            [-ms-overflow-style:none]
-                            [scrollbar-width:none]
-                            [&::-webkit-scrollbar]:hidden
-                        "
-                            >
-                                {categories.map((category) => {
-                                    const Icon = category.icon;
+                                    <button
+                                        type="button"
+                                        onClick={scrollRight}
+                                        className="absolute right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border bg-white shadow-md transition hover:bg-slate-50"
+                                    >
+                                        <ChevronRight size={18} />
+                                    </button>
 
-                                    return (
-                                        <button
-                                            key={category.id}
-                                            className={`
-                                        flex-shrink-0
-                                        w-32
-                                        h-24
-                                        rounded-2xl
-                                        border
-                                        flex flex-col
-                                        items-center
-                                        justify-center
-                                        gap-2
-                                        transition
-                                        hover:border-primary
-                                        hover:bg-primary/5
-                                        ${
-                                            category.id === 0
-                                                ? "bg-primary text-white border-primary"
-                                                : "bg-white"
-                                        }
-                                    `}
-                                        >
-                                            <Icon size={22} />
+                                    <div
+                                        ref={scrollRef}
+                                        className="flex gap-4 overflow-x-auto scroll-smooth px-14 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                                    >
+                                        {categories.map((item) => {
+                                            const Icon = item.icon;
 
-                                            <span className="text-xs font-medium text-center">
-                                                {category.nama}
-                                            </span>
-                                        </button>
-                                    );
-                                })}
+                                            return (
+                                                <button
+                                                    key={item.id}
+                                                    onClick={() =>
+                                                        handleKategoriClick(
+                                                            item.id,
+                                                        )
+                                                    }
+                                                    className={`flex h-24 w-40 shrink-0 flex-col items-center justify-center rounded-2xl transition cursor-pointer ${
+                                                        selectedKategori ==
+                                                        item.id
+                                                            ? "bg-primary text-white shadow-lg"
+                                                            : "border bg-white text-slate-700 hover:border-primary hover:text-primary"
+                                                    }`}
+                                                >
+                                                    <Icon size={28} />
+
+                                                    <span className="mt-2 font-medium">
+                                                        {item.nama}
+                                                    </span>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -222,7 +214,7 @@ export default function Berita({
 
                             {/* LIST BERITA */}
                             <div className="space-y-6">
-                                <article className="overflow-hidden rounded-2xl border bg-white">
+                                <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-lg">
                                     <div className="grid lg:grid-cols-[320px_1fr]">
                                         <img
                                             src={
@@ -258,7 +250,10 @@ export default function Berita({
                                             </p>
 
                                             <Link
-                                                href="#"
+                                                href={route(
+                                                    "berita.show",
+                                                    beritaEkslusif?.slug,
+                                                )}
                                                 className="mt-3 inline-flex text-sm font-semibold text-primary"
                                             >
                                                 Baca Selengkapnya →
@@ -269,104 +264,61 @@ export default function Berita({
 
                                 {/* GRID BERITA */}
                                 <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+                                    {berita.data.map((item: Berita) => (
+                                        <article
+                                            key={item.id}
+                                            className="overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-lg"
+                                        >
+                                            <img
+                                                src={
+                                                    item.images?.startsWith(
+                                                        "http",
+                                                    )
+                                                        ? item.images
+                                                        : `/storage/berita/${item.images}`
+                                                }
+                                                alt={item.judul}
+                                                className="h-40 w-full object-cover"
+                                            />
 
-    {berita.data.map((item: Berita) => (
+                                            <div className="p-4">
+                                                <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary">
+                                                    {item.kategori
+                                                        ?.nama_kategori ||
+                                                        "Berita"}
+                                                </span>
 
-        <article
-            key={item.id}
-            className="
-                overflow-hidden
-                rounded-2xl
-                border
-                bg-white
-                transition
-                hover:shadow-md
-            "
-        >
+                                                <h3 className="mt-3 line-clamp-2 text-base font-semibold leading-snug">
+                                                    {item.judul}
+                                                </h3>
 
-            <img
-                src={item.images?.startsWith("http") ? item.images : `/storage/berita/${item.images}`}
-                alt={item.judul}
-                className="h-40 w-full object-cover"
-            />
+                                                <p className="mt-2 text-xs text-slate-500">
+                                                    {formatDate(item.tanggal)}
+                                                </p>
 
+                                                <p className="mt-2 line-clamp-2 text-sm text-slate-600">
+                                                    {item.deskripsi.replace(
+                                                        /<[^>]*>/g,
+                                                        "",
+                                                    )}
+                                                </p>
 
-
-            <div className="p-4">
-
-
-                <span
-                    className="
-                        rounded-full
-                        bg-primary/10
-                        px-2.5 py-1
-                        text-[11px]
-                        font-medium
-                        text-primary
-                    "
-                >
-                    {item.kategori?.nama_kategori}
-                </span>
-
-
-
-                <h3
-                    className="
-                        mt-3
-                        line-clamp-2
-                        text-base
-                        font-semibold
-                        leading-snug
-                    "
-                >
-                    {item.judul}
-                </h3>
-
-
-
-                <p className="mt-2 text-xs text-slate-500">
-                    {formatDate(item.tanggal)}
-                </p>
-
-
-
-                <p
-                    className="
-                        mt-2
-                        line-clamp-2
-                        text-sm
-                        text-slate-600
-                    "
-                >
-                    {item.deskripsi.replace(/<[^>]*>/g, "")}
-                </p>
-
-
-
-                <Link
-                    href={route(
-                        'berita.show',
-                        item.slug
-                    )}
-                    className="
-                        mt-3
-                        inline-flex
-                        text-sm
-                        font-semibold
-                        text-primary
-                    "
-                >
-                    Baca Selengkapnya →
-                </Link>
-
-
-            </div>
-
-        </article>
-
-    ))}
-
-</div>
+                                                <Link
+                                                    href={route(
+                                                        "berita.show",
+                                                        item.slug,
+                                                    )}
+                                                    className="mt-3 inline-flex text-sm font-semibold text-primary"
+                                                >
+                                                    Baca Selengkapnya →
+                                                </Link>
+                                            </div>
+                                        </article>
+                                    ))}
+                                </div>
+                                <div className="mt-8">
+                                    <Pagination links={berita.links} />
+                                </div>
                             </div>
                         </div>
 

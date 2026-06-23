@@ -1,9 +1,8 @@
 import { ArrowUpRight } from "lucide-react";
 import { SectionLabel } from "./SectionLabel";
-import festival from "@/assets/agenda-festival.jpg";
-import smart from "@/assets/smart-city.jpg";
-import hero from "@/assets/hero-kediri.jpg";
 import { Berita } from "@/types/berita";
+import { formatDate } from "../ui/date";
+import { Link } from "@inertiajs/react";
 
 type Props = {
     berita: Berita[];
@@ -23,7 +22,8 @@ export function News({ berita }: Props) {
                             </span>
                         </h2>
                         <p className="mt-4 max-w-4xl text-muted-foreground md:text-lg">
-                            Ikuti perkembangan terkini dan informasi resmi dari Pemerintah Kota Kediri.
+                            Ikuti perkembangan terkini dan informasi resmi dari
+                            Pemerintah Kota Kediri.
                         </p>
                     </div>
                     <a
@@ -35,41 +35,50 @@ export function News({ berita }: Props) {
                     </a>
                 </div>
 
-                <div className="mt-8 grid gap-8 md:grid-cols-3">
-                    {berita.map((p) => (
-                        <article key={p.judul} className="group flex flex-col">
-                            <div className="relative aspect-[5/4] overflow-hidden rounded-2xl border border-border">
-                                <img
-                                    src={p.image_url}
-                                    alt={p.judul}
-                                    loading="lazy"
-                                    width={800}
-                                    height={640}
-                                    className="size-full object-cover transition-transform duration-[1.2s] group-hover:scale-110"
-                                />
-                            </div>
-                            <div className="mt-5 flex items-center gap-3 text-[11px] uppercase tracking-[0.22em]">
-                                {/* <span className="text-gold">{p.author}</span> */}
-                                <span className="size-1 rounded-full bg-muted-foreground" />
-                                <span className="text-muted-foreground">
-                                    {p.tanggal}
-                                </span>
-                            </div>
-                            <h3 className="mt-3 font-serif text-xl leading-tight">
-                                {p.judul}
-                            </h3>
-                            <p className="mt-2 text-sm text-muted-foreground">
-                                {p.deskripsi}
-                            </p>
-                            <a
-                                href="#"
-                                className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-foreground/80 hover:text-gold"
+                <div className="mt-10">
+                    {/* Berita Pemkot */}
+                    <div className="space-y-6">
+                        {berita.map((item) => (
+                            <article
+                                key={item.id}
+                                className="group flex gap-5 rounded-2xl border bg-white p-4 transition hover:shadow-md"
                             >
-                                Baca selengkapnya
-                                <ArrowUpRight className="size-3.5" />
-                            </a>
-                        </article>
-                    ))}
+                                <img
+                                    src={item.image_url}
+                                    alt={item.judul}
+                                    className="h-36 w-56 shrink-0 rounded-xl object-cover"
+                                />
+
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex items-center gap-3">
+                                        <span className="rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
+                                            {item.kategori?.nama_kategori}
+                                        </span>
+
+                                        <span className="text-xs text-muted-foreground">
+                                            {formatDate(item.tanggal)}
+                                        </span>
+                                    </div>
+
+                                    <h3 className="mt-3 line-clamp-2 text-xl font-semibold transition-colors group-hover:text-primary">
+                                        {item.judul}
+                                    </h3>
+
+                                    <p className="mt-2 line-clamp-1 text-sm text-muted-foreground">
+                                        {item.deskripsi}
+                                    </p>
+
+                                    <Link
+                                        href={route("berita.show", item.slug)}
+                                        className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-primary"
+                                    >
+                                        Baca selengkapnya
+                                        <ArrowUpRight size={15} />
+                                    </Link>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>
