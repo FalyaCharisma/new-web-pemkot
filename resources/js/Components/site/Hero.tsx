@@ -99,11 +99,16 @@ export function Hero() {
 
             {/* CTA */}
             <div className="mt-8 flex flex-wrap gap-4">
-              <button className="flex items-center gap-2 rounded-full bg-primary px-8 py-4 font-semibold text-white transition hover:opacity-90">
-                Akses Fasilitas Publik
-                <ArrowRight size={18} />
-              </button>
 
+              <a
+                  href="https://pecut.kedirikota.go.id/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 rounded-full bg-primary px-8 py-4 font-semibold text-white transition hover:opacity-90"
+              >
+                  Akses Layanan Publik
+                  <ArrowRight size={18} />
+              </a>
               <button className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-8 py-4 font-semibold text-white backdrop-blur-md transition hover:bg-white/20">
                 Jelajahi Kota Kediri
                 <ArrowRight size={18} />

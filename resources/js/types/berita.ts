@@ -13,5 +13,6 @@ export interface Berita {
     author: string;
     deskripsi: string;
     images: string;
+    created_at_formatted: string;
 }
 

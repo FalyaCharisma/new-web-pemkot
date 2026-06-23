@@ -171,7 +171,76 @@ export default function GaleriIndex( { videos, albums, totalAlbum, totalFoto, to
 
                         </div>
 
-                        {/* HIGHLIGHT VIDEO */}
+                        {/* FILTER + GRID */}
+                        <div className="mt-10 grid gap-6 lg:grid-cols-[280px_1fr]">
+
+                            {/* FILTER */}
+                            <aside className="h-fit rounded-2xl border bg-white p-6 shadow-sm">
+                                <h3 className="mb-5 text-lg font-semibold">
+                                    Filter Tahun
+                                </h3>
+
+                                <div className="space-y-4">
+
+                                    <select
+                                        value={year}
+                                        onChange={(e) => setYear(e.target.value)}
+                                        className="w-full rounded-xl border p-3"
+                                    >
+                                        <option value="all">Semua Tahun</option>
+
+                                        {years.map((y) => (
+                                            <option key={y} value={y}>
+                                                {y}
+                                            </option>
+                                        ))}
+                                    </select>
+
+                                    <button
+                                        onClick={() => setYear("all")}
+                                        className="flex w-full items-center justify-center gap-2 rounded-xl border py-3"
+                                    >
+                                        <RotateCcw size={16} />
+                                        Reset Filter
+                                    </button>
+                                </div>
+                            </aside>
+
+                            {/* GRID GALERI */}
+                            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                                {galleries.map((item, index) => (
+                                    <div
+                                        key={index}
+                                        onClick={() => setSelectedItem(item)}
+                                        className="group cursor-pointer overflow-hidden rounded-2xl bg-white shadow-sm"
+                                    >
+                                        <div className="relative aspect-[4/3]">
+                                            <img
+                                                src={item.cover || item.images?.[0]}
+                                                alt={item.title}
+                                                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                                            />
+
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+
+                                            <span className="absolute left-3 top-3 rounded-full bg-primary px-3 py-1 text-xs font-medium text-white">
+                                                {item.category}
+                                            </span>
+
+                                            <div className="absolute bottom-4 left-4 right-4 text-white">
+                                                <h3 className="font-semibold">
+                                                    {item.title}
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        
+                        <Pagination links={albums.links} />
+
+                                                {/* HIGHLIGHT VIDEO */}
                         <div className="mt-10">
                             <div className="mb-5">
                                 <h2 className="text-2xl font-bold">
@@ -271,75 +340,6 @@ export default function GaleriIndex( { videos, albums, totalAlbum, totalFoto, to
                                 )}
                             </div>
                         </div>
-
-                        {/* FILTER + GRID */}
-                        <div className="mt-10 grid gap-6 lg:grid-cols-[280px_1fr]">
-
-                            {/* FILTER */}
-                            <aside className="h-fit rounded-2xl border bg-white p-6 shadow-sm">
-                                <h3 className="mb-5 text-lg font-semibold">
-                                    Filter Tahun
-                                </h3>
-
-                                <div className="space-y-4">
-
-                                    <select
-                                        value={year}
-                                        onChange={(e) => setYear(e.target.value)}
-                                        className="w-full rounded-xl border p-3"
-                                    >
-                                        <option value="all">Semua Tahun</option>
-
-                                        {years.map((y) => (
-                                            <option key={y} value={y}>
-                                                {y}
-                                            </option>
-                                        ))}
-                                    </select>
-
-                                    <button
-                                        onClick={() => setYear("all")}
-                                        className="flex w-full items-center justify-center gap-2 rounded-xl border py-3"
-                                    >
-                                        <RotateCcw size={16} />
-                                        Reset Filter
-                                    </button>
-                                </div>
-                            </aside>
-
-                            {/* GRID GALERI */}
-                            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                                {galleries.map((item, index) => (
-                                    <div
-                                        key={index}
-                                        onClick={() => setSelectedItem(item)}
-                                        className="group cursor-pointer overflow-hidden rounded-2xl bg-white shadow-sm"
-                                    >
-                                        <div className="relative aspect-[4/3]">
-                                            <img
-                                                src={item.cover || item.images?.[0]}
-                                                alt={item.title}
-                                                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                                            />
-
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-
-                                            <span className="absolute left-3 top-3 rounded-full bg-primary px-3 py-1 text-xs font-medium text-white">
-                                                {item.category}
-                                            </span>
-
-                                            <div className="absolute bottom-4 left-4 right-4 text-white">
-                                                <h3 className="font-semibold">
-                                                    {item.title}
-                                                </h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                        
-                        <Pagination links={albums.links} />
 
                         {selectedItem && (
                             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">

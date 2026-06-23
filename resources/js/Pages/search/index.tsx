@@ -1,6 +1,8 @@
 import { Head } from "@inertiajs/react";
 import { HeaderSolid } from "@/Components/site/HeaderSolid";
 import { Footer } from "@/Components/site/Footer";
+import type { SearchGroupedResult } from "@/types/searchresult";
+
 import {
     Search,
     FileText,
@@ -23,47 +25,22 @@ interface StatCardProps {
     value: string | number;
 }
 
-type ResultItem = {
-    category: string;
-    color: string;
-    title: string;
-    image: string;
-    date: string;
-    desc: string;
-    location?: string;
-};
+interface Props {
+    keyword: string;
+    results: SearchGroupedResult;
+}
 
 /**
  * PAGE
  */
-export default function SearchIndex() {
-    const results: ResultItem[] = [
-        {
-            category: "Agenda / Acara",
-            color: "bg-amber-500",
-            title: "Kediri Festival 2025",
-            image: "https://picsum.photos/600/400?1",
-            date: "12 - 14 Juli 2025",
-            desc: "Rangkaian kegiatan budaya, seni, dan pariwisata terbesar di Kota Kediri.",
-            location: "Alun-Alun Kota Kediri",
-        },
-        {
-            category: "Berita",
-            color: "bg-blue-600",
-            title: "Kediri Festival 2024 Sukses Gaet 50 Ribu Pengunjung",
-            image: "https://picsum.photos/600/400?2",
-            date: "15 Juli 2024",
-            desc: "Kediri Festival 2024 berlangsung meriah dengan berbagai pertunjukan menarik.",
-        },
-        {
-            category: "Penghargaan",
-            color: "bg-green-600",
-            title: "Kota Kediri Raih Penghargaan Anugerah Pesona Indonesia",
-            image: "https://picsum.photos/600/400?3",
-            date: "2 Mei 2024",
-            desc: "Penghargaan diberikan atas komitmen dalam pengembangan pariwisata daerah.",
-        },
-    ];
+export default function SearchIndex({keyword, results}: Props) {
+
+    const categoryColor: Record<keyof SearchGroupedResult, string> = {
+        berita: 'bg-blue-500',
+        agenda: 'bg-green-500',
+        fasilitas: 'bg-yellow-500',
+        penghargaan: 'bg-purple-500',
+    };
 
     return (
         <>
@@ -89,7 +66,7 @@ export default function SearchIndex() {
                                     <Search className="w-5 h-5 text-slate-400 ml-4" />
 
                                     <input
-                                        defaultValue="kediri festival"
+                                        defaultValue={ keyword }
                                         className="flex-1 px-4 py-3 outline-none text-lg"
                                     />
 
@@ -134,11 +111,10 @@ export default function SearchIndex() {
 
                                         <div className="space-y-4 text-sm">
                                             {[
-                                                "Semua Kategori",
                                                 "Agenda / Acara",
                                                 "Berita",
                                                 "Penghargaan & Prestasi",
-                                                "Informasi Lainnya",
+                                                "Fasilitas Kota",
                                             ].map((item) => (
                                                 <label
                                                     key={item}
@@ -176,12 +152,17 @@ export default function SearchIndex() {
                                                 <h1 className="text-4xl font-bold">
                                                     Hasil pencarian untuk{" "}
                                                     <span className="text-teal-800">
-                                                        “kediri festival”
+                                                        { keyword }
                                                     </span>
                                                 </h1>
 
                                                 <p className="text-slate-500 mt-2">
-                                                    Ditemukan 24 hasil
+                                                    Ditemukan{" "}
+                                                    {results.berita.length +
+                                                        results.agenda.length +
+                                                        results.fasilitas.length +
+                                                        results.penghargaan.length}{" "}
+                                                    hasil
                                                 </p>
                                             </div>
 
@@ -215,47 +196,7 @@ export default function SearchIndex() {
                                             />
                                         </div>
 
-                                        {/* RESULTS */}
-                                        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
-                                            {results.map((item, i) => (
-                                                <article
-                                                    key={i}
-                                                    className="border rounded-3xl overflow-hidden hover:shadow-lg transition"
-                                                >
-                                                    <img
-                                                        src={item.image}
-                                                        className="h-56 w-full object-cover"
-                                                    />
-
-                                                    <div className="p-5">
-                                                        <span
-                                                            className={`${item.color} text-white text-sm px-3 py-1 rounded-full`}
-                                                        >
-                                                            {item.category}
-                                                        </span>
-
-                                                        <div className="text-sm text-slate-500 mt-3">
-                                                            {item.date}
-                                                        </div>
-
-                                                        <h3 className="font-bold text-xl mt-2">
-                                                            {item.title}
-                                                        </h3>
-
-                                                        <p className="text-slate-600 mt-2 line-clamp-3">
-                                                            {item.desc}
-                                                        </p>
-
-                                                        {item.location && (
-                                                            <div className="flex items-center gap-2 mt-4 text-sm text-slate-500">
-                                                                <MapPin size={16} />
-                                                                {item.location}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </article>
-                                            ))}
-                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>

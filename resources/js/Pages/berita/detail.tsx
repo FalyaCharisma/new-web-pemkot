@@ -190,22 +190,10 @@ export default function DetailBerita({
 
                         {/* Article */}
                         <div className="prose prose-slate mt-8 max-w-none">
-                            <p>
-                                {berita.deskripsi.replace(/<[^>]*>/g, "")}
-                            </p>
+<div
+                                dangerouslySetInnerHTML={{ __html: berita.deskripsi }}
+                            />
 
-                            <p>
-                                Jaranan bukan hanya sekadar hiburan, tetapi juga sarat
-                                makna budaya dan nilai-nilai luhur. Setiap gerakan dan
-                                iringan musik menggambarkan semangat, keberanian, serta
-                                kebersamaan masyarakat Kediri.
-                            </p>
-
-                            <p>
-                                Di Kota Kediri, jaranan menjadi bagian penting dalam
-                                berbagai acara adat, perayaan budaya, hingga penyambutan
-                                tamu penting.
-                            </p>
                         </div>
                     </article>
                     {/* SIDEBAR */}

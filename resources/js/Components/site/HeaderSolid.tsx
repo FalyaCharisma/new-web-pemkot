@@ -109,11 +109,11 @@ const navigation = [
   },
   {
     title: "Layanan Publik",
-    href: "#",
+    href: "https://pecut.kedirikota.go.id/",
   },
   {
     title: "PPID",
-    href: "#",
+    href: "https://ppid.kedirikota.go.id/",
   },
 ];
 

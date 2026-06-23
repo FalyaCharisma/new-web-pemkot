@@ -8,6 +8,8 @@ use App\Models\Penghargaan;
 use App\Models\Berita;
 use App\Models\FasilitasKota;
 use App\Models\Agenda;
+use Illuminate\Support\Str;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class SearchController extends Controller
 {
@@ -18,70 +20,82 @@ class SearchController extends Controller
     {
         $keyword = $request->search;
 
-        $results = $results->merge(
-            $berita->map(function ($item) {
-                return [
-                    'type' => 'berita',
-                    'title' => $item->judul,
-                    'description' => $item->deskripsi,
-                    'image' => $item->images,
-                    'date' => $item->tanggal,
-                    'location' => null,
-                    'url' => route('berita.show', $item->slug),
-                ];
-            })
-        );
+        $berita = Berita::query()
+            ->when($keyword, fn($q) =>
+                $q->where('judul', 'like', "%{$keyword}%")
+                ->orWhere('deskripsi', 'like', "%{$keyword}%")
+            )
+            ->latest()
+            ->get()
+            ->map(fn($item) => [
+                'type' => 'berita',
+                'title' => $item->judul,
+                'description' => Str::limit(strip_tags($item->deskripsi), 120),
+                'image' => $item->images ? asset('storage/berita/' . $item->images) : null,
+                'date' => $item->tanggal,
+                'location' => null,
+                'url' => route('berita.show', $item->slug),
+            ]);
 
-        $results = $results->merge(
-            $fasilitas->map(function ($item) {
-                return [
-                    'type' => 'fasilitas',
-                    'title' => $item->nama,
-                    'description' => $item->alamat,
-                    'image' => $item->foto,
-                    'date' => null,
-                    'location' => $item->alamat,
-                    'url' => route('fasilitas-kota.show', $item->slug),
-                ];
-            })
-        );
+        $agenda = Agenda::query()
+            ->when($keyword, fn($q) =>
+                $q->where('judul_acara', 'like', "%{$keyword}%")
+                ->orWhere('deskripsi', 'like', "%{$keyword}%")
+            )
+            ->latest()
+            ->get()
+            ->map(fn($item) => [
+                'type' => 'agenda',
+                'title' => $item->judul_acara,
+                'description' => Str::limit(strip_tags($item->deskripsi), 120),
+                'image' => $item->banner ? asset('storage/agenda/' . $item->banner) : null,
+                'date' => $item->tanggal_mulai,
+                'location' => $item->lokasi_acara,
+                'url' => route('agenda.show', $item->id),
+            ]);
 
-        $results = $results->merge(
-            $agenda->map(function ($item) {
-                return [
-                    'type' => 'agenda',
-                    'title' => $item->judul_acara,
-                    'description' => $item->deskripsi,
-                    'image' => $item->banner,
-                    'date' => $item->tanggal_mulai,
-                    'location' => $item->lokasi_acara,
-                    'url' => route('agenda.show', $item->slug),
-                ];
-            })
-        );
+        $fasilitas = FasilitasKota::query()
+            ->when($keyword, fn($q) =>
+                $q->where('nama', 'like', "%{$keyword}%")
+                ->orWhere('alamat', 'like', "%{$keyword}%")
+            )
+            ->latest()
+            ->get()
+            ->map(fn($item) => [
+                'type' => 'fasilitas',
+                'title' => $item->nama,
+                'description' => $item->alamat,
+                'image' => $item->foto ? asset('storage/fasilitas/' . $item->foto) : null,
+                'date' => $item->created_at,
+                'location' => $item->alamat,
+                'url' => route('fasilitas.show', $item->slug),
+            ]);
 
-        $results = $results->merge(
-            $penghargaan->map(function ($item) {
-                return [
-                    'type' => 'penghargaan',
-                    'title' => $item->judul,
-                    'description' => $item->deskripsi,
-                    'image' => $item->foto,
-                    'date' => $item->tanggal,
-                    'location' => null,
-                    'url' => route('penghargaan.show', $item->slug),
-                ];
-            })
-        );
-
-        dd($keyword, $berita, $fasilitas, $agenda, $penghargaan);
+        $penghargaan = Penghargaan::query()
+            ->when($keyword, fn($q) =>
+                $q->where('judul', 'like', "%{$keyword}%")
+                ->orWhere('deskripsi', 'like', "%{$keyword}%")
+            )
+            ->latest()
+            ->get()
+            ->map(fn($item) => [
+                'type' => 'penghargaan',
+                'title' => $item->judul,
+                'description' => Str::limit(strip_tags($item->deskripsi), 120),
+                'image' => $item->foto ? asset('storage/penghargaan/' . $item->foto) : null,
+                'date' => $item->tanggal,
+                'location' => null,
+                'url' => route('penghargaan.show', $item->slug),
+            ]);
 
         return Inertia::render('search/index', [
             'keyword' => $keyword,
-            'berita' => $berita,
-            'fasilitas' => $fasilitas,
-            'agenda' => $agenda,
-            'penghargaan' => $penghargaan,
+            'results' => [
+                'berita' => $berita,
+                'agenda' => $agenda,
+                'fasilitas' => $fasilitas,
+                'penghargaan' => $penghargaan,
+            ],
         ]);
     }
 
