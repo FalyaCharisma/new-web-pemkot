@@ -113,14 +113,26 @@ class BeritaController extends Controller
     public function show($slug)
     {
         $berita = Berita::with('kategori')
-            ->where('slug',$slug)
+            ->where('slug', $slug)
             ->firstOrFail();
 
-        $beritaTerbaru = Berita::with('kategori')->where('status_published', 1)->where('status_enabled', 1)->orderBy('tanggal', 'desc')->limit(5)->get();
+        $beritaTerbaru = Berita::with('kategori')
+            ->where('status_published', 1)
+            ->where('status_enabled', 1)
+            ->where('id', '!=', $berita->id)
+            ->latest('tanggal')
+            ->limit(5)
+            ->get();
 
-        return Inertia::render('berita/detail',[
-            'berita'=>$berita,
-            'beritaTerbaru'=>$beritaTerbaru
+        $kategoriBerita = KategoriBerita::query()
+            ->where('status_enabled', 1)
+            ->orderBy('nama_kategori')
+            ->get();
+
+        return Inertia::render('berita/detail', [
+            'berita' => $berita,
+            'beritaTerbaru' => $beritaTerbaru,
+            'kategoriBerita' => $kategoriBerita,
         ]);
     }
 
