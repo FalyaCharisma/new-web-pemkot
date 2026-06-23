@@ -48,6 +48,7 @@
                                     <tr>
                                         <th>No.</th>
                                         <th>Tahun</th>
+                                         <th>Judul</th>
                                         <th>Keterangan</th>
                                         <th>Action</th>
                                     </tr>
@@ -79,6 +80,10 @@
                         <input type="text" class="form-control" name="tahun" id="tahun">
                     </div>
                     <div class="form-group">
+                        <label for="judul" class="form-label">Judul</label>
+                        <input type="text" class="form-control" name="judul" id="judul">
+                    </div>
+                    <div class="form-group">
                         <label for="my-editor" class="mb-2 form-label">Detail:</label>
                         <textarea class="my-editor" id="my-editor" name="keterangan"></textarea>
                     </div>
@@ -106,6 +111,7 @@
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex', className: 'text-center'},
                 {data: 'tahun', name: 'tahun', width: '20%'},
+                {data: 'judul', name: 'judul'},
                 {data: 'keterangan', name: 'keterangan'},
                 {data: 'action', name: 'action', className: 'text-center'},
             ],
