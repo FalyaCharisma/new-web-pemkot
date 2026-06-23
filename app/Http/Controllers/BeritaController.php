@@ -89,7 +89,7 @@ class BeritaController extends Controller
             ->where(function ($q) {
                 $q->whereNull('eksklusif')->orWhere('eksklusif', 0);
             })
-            ->paginate(12)
+            ->paginate(8)
             ->withQueryString();
 
         $kategoriBerita = KategoriBerita::query()->where('status_enabled', 1)->orderBy('nama_kategori')->get();
@@ -112,8 +112,11 @@ class BeritaController extends Controller
             ->where('slug',$slug)
             ->firstOrFail();
 
+        $beritaTerbaru = Berita::with('kategori')->where('status_published', 1)->where('status_enabled', 1)->orderBy('tanggal', 'desc')->limit(5)->get();
+
         return Inertia::render('berita/detail',[
-            'berita'=>$berita
+            'berita'=>$berita,
+            'beritaTerbaru'=>$beritaTerbaru
         ]);
     }
 }

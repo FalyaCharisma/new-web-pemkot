@@ -20,7 +20,7 @@ class LandingPageController extends Controller
             ->map(function ($item) {
                 return [
                     'id' => $item->id,
-                    'judul' => Str::limit(strip_tags($item->judul), 65),
+                    'judul' => Str::limit(strip_tags($item->judul), 90),
                     'slug' => $item->slug,
                     'tanggal' => $item->tanggal,
                     'author' => $item->author,
