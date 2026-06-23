@@ -7,9 +7,9 @@ import type { PesonaUnggulan } from "@/types/unggulan";
 import type { Berita } from "@/types/berita";
 import type { Kategori } from "@/types/kategori";
 import { ShareButtons } from "@/Components/ShareButtons";
+import SidebarKategoriBerita from "@/Components/site/SidebarKategoriBerita";
 import { getYoutubeEmbedUrl } from "@/helpers/youtube";
 import * as LucideIcons from "lucide-react";
-import type { LucideIcon } from "lucide-react";
 
 import {
   FaInstagram,
@@ -222,7 +222,7 @@ export default function DetailPesona({ pesona, related, kategori_berita }: Props
                                                 </span>
 
                                                 <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
-                                                    { item.kategori?.nama_kategori }
+                                                    { item.kategori?.nama_kategori  || "Berita"}
                                                 </span>
                                             </div>
 
@@ -236,34 +236,7 @@ export default function DetailPesona({ pesona, related, kategori_berita }: Props
                         </div>
 
                         {/* Categories */}
-                        <div className="rounded-3xl border bg-white p-5">
-                            <h3 className="font-bold">
-                                Kategori Berita
-                            </h3>
-                            <div className="space-y-1">
-                                {kategori_berita.map((item) => {
-                                    const Icon = (LucideIcons[item.icon as keyof typeof LucideIcons] ?? LucideIcons.Tag) as LucideIcon;
-                                    return (
-                                    <button
-                                        key={item.nama_kategori}
-                                        className="
-                                            flex w-full items-center gap-3
-                                            rounded-xl px-3 py-2
-                                            text-sm
-                                            cursor-pointer
-                                            transition-all duration-200
-                                            hover:bg-primary
-                                            hover:text-white
-                                            hover:shadow-sm
-                                        "
-                                    >
-                                        <Icon size={16} />
-                                        <span>{item.nama_kategori}</span>
-                                    </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
+                        <SidebarKategoriBerita kategoriBerita={kategori_berita} />
                     </aside>
                 </div>
                 {/* CTA */}

@@ -3,7 +3,7 @@ import { HeaderSolid } from "@/Components/site/HeaderSolid";
 import { Footer } from "@/Components/site/Footer";
 import { HeroPage } from "@/Components/HeroPage";
 import { ContentCTA } from "@/Components/ContentCTA";
-import { useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import type { Berita, KategoriBerita } from "@/types/berita";
 
 import { FaInstagram } from "react-icons/fa6";
@@ -14,6 +14,7 @@ import {
     RotateCcw,
     ChevronLeft,
     ChevronRight,
+    Newspaper,
 } from "lucide-react";
 import { formatDate } from "@/Components/ui/date";
 import Pagination from "@/Components/Pagination";
@@ -25,8 +26,42 @@ interface Props {
     };
     beritaEkslusif: Berita | null;
     kategoriBerita: KategoriBerita[];
-    filters: any;
+    filters: {
+        search?: string | null;
+        kategori?: string | number | null;
+        sort?: string | null;
+    };
 }
+
+const cleanParams = (params: Record<string, string | number | null | undefined>) => {
+    return Object.fromEntries(
+        Object.entries(params).filter(([, value]) => value !== "" && value !== null && value !== undefined),
+    );
+};
+
+const stripHtml = (value?: string | null) => {
+    return value ? value.replace(/<[^>]*>/g, "") : "";
+};
+
+const resolveBeritaImage = (image?: string | null) => {
+    if (!image) {
+        return "/assets/no-image.png";
+    }
+
+    if (image.startsWith("http://") || image.startsWith("https://")) {
+        return image;
+    }
+
+    if (image.startsWith("/")) {
+        return image;
+    }
+
+    if (image.startsWith("storage/")) {
+        return `/${image}`;
+    }
+
+    return `/storage/berita/${image}`;
+};
 
 export default function Berita({
     berita,
@@ -62,9 +97,12 @@ export default function Berita({
 
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    const [selectedKategori, setSelectedKategori] = useState(
+    const [selectedKategori, setSelectedKategori] = useState<string | number>(
         filters.kategori ?? "",
     );
+
+    const [searchKeyword, setSearchKeyword] = useState(filters.search ?? "");
+    const [selectedSort, setSelectedSort] = useState(filters.sort ?? "latest");
 
     const scrollLeft = () => {
         scrollRef.current?.scrollBy({
@@ -80,21 +118,52 @@ export default function Berita({
         });
     };
 
+    const goToBerita = (
+        params: Record<string, string | number | null | undefined>,
+    ) => {
+        router.get(route("berita"), cleanParams(params), {
+            preserveScroll: true,
+            replace: true,
+        });
+    };
+
     const handleKategoriClick = (id: number | string) => {
         setSelectedKategori(id);
 
-        router.get(
-            route("berita"),
-            {
-                kategori: id,
-                search: filters.search,
-                sort: filters.sort,
-            },
-            {
-                preserveScroll: true,
-                preserveState: true,
-            },
-        );
+        goToBerita({
+            kategori: id,
+            search: searchKeyword,
+            sort: selectedSort,
+        });
+    };
+
+    const handleSearch = (keyword: string) => {
+        goToBerita({
+            kategori: selectedKategori,
+            search: keyword,
+            sort: selectedSort,
+        });
+    };
+
+    const submitFilter = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        goToBerita({
+            kategori: selectedKategori,
+            search: searchKeyword,
+            sort: selectedSort,
+        });
+    };
+
+    const resetFilter = () => {
+        setSelectedKategori("");
+        setSearchKeyword("");
+        setSelectedSort("latest");
+
+        router.get(route("berita"), {}, {
+            preserveScroll: true,
+            replace: true,
+        });
     };
 
     return (
@@ -110,6 +179,9 @@ export default function Berita({
                         breadcrumb="Berita & Pengumuman"
                         placeholder="Cari informasi..."
                         description="Pusat informasi resmi Kota Kediri yang menyajikan berita terkini, agenda daerah, dan berbagai informasi publik untuk masyarakat."
+                        searchValue={searchKeyword}
+                        onSearchChange={setSearchKeyword}
+                        onSearch={handleSearch}
                     />
 
                     {/* CONTENT */}
@@ -150,12 +222,13 @@ export default function Berita({
                                             return (
                                                 <button
                                                     key={item.id}
+                                                    type="button"
                                                     onClick={() =>
                                                         handleKategoriClick(
                                                             item.id,
                                                         )
                                                     }
-                                                    className={`flex h-24 w-40 shrink-0 flex-col items-center justify-center rounded-2xl transition cursor-pointer ${
+                                                    className={`flex h-24 w-40 shrink-0 cursor-pointer flex-col items-center justify-center rounded-2xl transition ${
                                                         selectedKategori ==
                                                         item.id
                                                             ? "bg-primary text-white shadow-lg"
@@ -177,148 +250,201 @@ export default function Berita({
 
                         <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
                             {/* FILTER */}
-                            <aside className="rounded-3xl border bg-white p-5 h-fit">
+                            <aside className="h-fit rounded-3xl border bg-white p-5">
                                 <h3 className="font-bold">Filter Berita</h3>
 
-                                <div className="mt-5 space-y-4">
+                                <form
+                                    onSubmit={submitFilter}
+                                    className="mt-5 space-y-4"
+                                >
                                     <div>
                                         <label className="mb-2 block text-sm font-medium">
                                             Kategori
                                         </label>
 
-                                        <select className="w-full rounded-xl border px-3 py-2">
-                                            <option>Semua Kategori</option>
+                                        <select
+                                            value={selectedKategori}
+                                            onChange={(event) =>
+                                                setSelectedKategori(
+                                                    event.target.value,
+                                                )
+                                            }
+                                            className="w-full rounded-xl border px-3 py-2"
+                                        >
+                                            <option value="">
+                                                Semua Kategori
+                                            </option>
+
+                                            {kategoriBerita.map((item) => (
+                                                <option
+                                                    key={item.id}
+                                                    value={item.id}
+                                                >
+                                                    {item.nama_kategori}
+                                                </option>
+                                            ))}
                                         </select>
                                     </div>
 
                                     <div>
                                         <label className="mb-2 block text-sm font-medium">
-                                            Tanggal
+                                            Urutan Tanggal
                                         </label>
 
-                                        <input
-                                            type="date"
+                                        <select
+                                            value={selectedSort}
+                                            onChange={(event) =>
+                                                setSelectedSort(
+                                                    event.target.value,
+                                                )
+                                            }
                                             className="w-full rounded-xl border px-3 py-2"
-                                        />
+                                        >
+                                            <option value="latest">
+                                                Terbaru
+                                            </option>
+                                            <option value="oldest">
+                                                Terlama
+                                            </option>
+                                        </select>
                                     </div>
 
-                                    <button className="w-full rounded-xl bg-primary py-3 font-semibold text-white">
+                                    <button
+                                        type="submit"
+                                        className="w-full rounded-xl bg-primary py-3 font-semibold text-white"
+                                    >
                                         Terapkan Filter
                                     </button>
-                                    <button className="flex w-full items-center justify-center gap-2 rounded-xl border py-3">
+
+                                    <button
+                                        type="button"
+                                        onClick={resetFilter}
+                                        className="flex w-full items-center justify-center gap-2 rounded-xl border py-3"
+                                    >
                                         <RotateCcw size={16} />
                                         Reset Filter
                                     </button>
-                                </div>
+                                </form>
                             </aside>
 
                             {/* LIST BERITA */}
                             <div className="space-y-6">
-                                <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-lg">
-                                    <div className="grid lg:grid-cols-[320px_1fr]">
-                                        <img
-                                            src={
-                                                beritaEkslusif?.images?.startsWith(
-                                                    "http",
-                                                )
-                                                    ? beritaEkslusif.images
-                                                    : `/storage/${beritaEkslusif?.images}`
-                                            }
-                                            alt={beritaEkslusif?.judul}
-                                            className="h-full w-full object-cover"
-                                        />
+                                {beritaEkslusif && (
+                                    <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-lg">
+                                        <div className="grid lg:grid-cols-[320px_1fr]">
+                                            <img
+                                                src={resolveBeritaImage(
+                                                    beritaEkslusif.images,
+                                                )}
+                                                alt={beritaEkslusif.judul}
+                                                className="h-full w-full object-cover"
+                                            />
 
-                                        <div className="p-5">
-                                            <p className="text-xs text-muted-foreground">
-                                                <p>
+                                            <div className="p-5">
+                                                <p className="text-xs text-muted-foreground">
                                                     {formatDate(
-                                                        beritaEkslusif?.tanggal ||
+                                                        beritaEkslusif.tanggal ||
                                                             "",
                                                     )}
                                                 </p>
-                                            </p>
 
-                                            <h2 className="mt-2 text-2xl font-bold leading-tight">
-                                                {beritaEkslusif?.judul}
-                                            </h2>
+                                                <h2 className="mt-2 text-2xl font-bold leading-tight">
+                                                    {beritaEkslusif.judul}
+                                                </h2>
 
-                                            <p className="mt-3 text-sm text-muted-foreground line-clamp-3">
-                                                {beritaEkslusif?.deskripsi.replace(
-                                                    /<[^>]*>/g,
-                                                    "",
-                                                )}
-                                            </p>
-
-                                            <Link
-                                                href={route(
-                                                    "berita.show",
-                                                    beritaEkslusif?.slug,
-                                                )}
-                                                className="mt-3 inline-flex text-sm font-semibold text-primary"
-                                            >
-                                                Baca Selengkapnya →
-                                            </Link>
-                                        </div>
-                                    </div>
-                                </article>
-
-                                {/* GRID BERITA */}
-                                <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-                                    {berita.data.map((item: Berita) => (
-                                        <article
-                                            key={item.id}
-                                            className="overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-lg"
-                                        >
-                                            <img
-                                                src={
-                                                    item.images?.startsWith(
-                                                        "http",
-                                                    )
-                                                        ? item.images
-                                                        : `/storage/berita/${item.images}`
-                                                }
-                                                alt={item.judul}
-                                                className="h-40 w-full object-cover"
-                                            />
-
-                                            <div className="p-4">
-                                                <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary">
-                                                    {item.kategori
-                                                        ?.nama_kategori ||
-                                                        "Berita"}
-                                                </span>
-
-                                                <h3 className="mt-3 line-clamp-2 text-base font-semibold leading-snug">
-                                                    {item.judul}
-                                                </h3>
-
-                                                <p className="mt-2 text-xs text-slate-500">
-                                                    {formatDate(item.tanggal)}
-                                                </p>
-
-                                                <p className="mt-2 line-clamp-2 text-sm text-slate-600">
-                                                    {item.deskripsi.replace(
-                                                        /<[^>]*>/g,
-                                                        "",
+                                                <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">
+                                                    {stripHtml(
+                                                        beritaEkslusif.deskripsi,
                                                     )}
                                                 </p>
 
                                                 <Link
                                                     href={route(
                                                         "berita.show",
-                                                        item.slug,
+                                                        beritaEkslusif.slug,
                                                     )}
                                                     className="mt-3 inline-flex text-sm font-semibold text-primary"
                                                 >
                                                     Baca Selengkapnya →
                                                 </Link>
                                             </div>
-                                        </article>
-                                    ))}
-                                </div>
-                                <div className="mt-8">
-                                    <Pagination links={berita.links} />
-                                </div>
+                                        </div>
+                                    </article>
+                                )}
+
+                                {/* GRID BERITA */}
+                                {berita.data.length > 0 ? (
+                                    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+                                        {berita.data.map((item: Berita) => (
+                                            <article
+                                                key={item.id}
+                                                className="overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-lg"
+                                            >
+                                                <img
+                                                    src={resolveBeritaImage(
+                                                        item.images,
+                                                    )}
+                                                    alt={item.judul}
+                                                    className="h-40 w-full object-cover"
+                                                />
+
+                                                <div className="p-4">
+                                                    <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary">
+                                                        {item.kategori
+                                                            ?.nama_kategori ||
+                                                            "Berita"}
+                                                    </span>
+
+                                                    <h3 className="mt-3 line-clamp-2 text-base font-semibold leading-snug">
+                                                        {item.judul}
+                                                    </h3>
+
+                                                    <p className="mt-2 text-xs text-slate-500">
+                                                        {formatDate(
+                                                            item.tanggal,
+                                                        )}
+                                                    </p>
+
+                                                    <p className="mt-2 line-clamp-2 text-sm text-slate-600">
+                                                        {stripHtml(
+                                                            item.deskripsi,
+                                                        )}
+                                                    </p>
+
+                                                    <Link
+                                                        href={route(
+                                                            "berita.show",
+                                                            item.slug,
+                                                        )}
+                                                        className="mt-3 inline-flex text-sm font-semibold text-primary"
+                                                    >
+                                                        Baca Selengkapnya →
+                                                    </Link>
+                                                </div>
+                                            </article>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="rounded-2xl border bg-white p-10 text-center shadow-sm">
+                                        <Newspaper
+                                            size={42}
+                                            className="mx-auto mb-3 text-slate-400"
+                                        />
+                                        <h3 className="text-lg font-semibold text-slate-900">
+                                            Berita belum ditemukan
+                                        </h3>
+                                        <p className="mt-1 text-sm text-slate-500">
+                                            Coba ubah kategori atau kata kunci
+                                            pencarian.
+                                        </p>
+                                    </div>
+                                )}
+
+                                {berita.links?.length > 3 && (
+                                    <div className="mt-8">
+                                        <Pagination links={berita.links} />
+                                    </div>
+                                )}
                             </div>
                         </div>
 
