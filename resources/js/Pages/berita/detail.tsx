@@ -3,68 +3,99 @@ import { HeaderSolid } from "@/Components/site/HeaderSolid";
 import { Footer } from "@/Components/site/Footer";
 import { Home, ChevronRight } from "lucide-react";
 import { ContentCTA } from "@/Components/ContentCTA";
+import SidebarKategoriBerita from "@/Components/site/SidebarKategoriBerita";
 
 import {
     FaInstagram,
     FaFacebookF,
     FaXTwitter,
-    FaYoutube,
     FaWhatsapp,
 } from "react-icons/fa6";
 
 import {
     CalendarDays,
     Building2,
-    Eye,
     Link2,
-    Grid2x2,
-    Calendar,
-    FileText,
-    ChartColumn,
-    Info,
-    HeartPulse,
-    Gavel,
-    Landmark,
-    Trophy,
-    GraduationCap,
-    Megaphone,
-    MapPinned,
-    Award,
-    ShoppingBag,
-    Briefcase,
-    Sparkles,
     ArrowLeft,
 } from "lucide-react";
 
-const categories = [
-    { name: "Semua", icon: Grid2x2 },
-    { name: "Agenda", icon: Calendar },
-    { name: "Artikel", icon: FileText },
-    { name: "Berita SKPD", icon: Building2 },
-    { name: "Ekonomi", icon: ChartColumn },
-    { name: "Informasi", icon: Info },
-    { name: "Kesehatan", icon: HeartPulse },
-    { name: "Lelang", icon: Gavel },
-    { name: "Pemerintah", icon: Landmark },
-    { name: "Pemuda & Olahraga", icon: Trophy },
-    { name: "Pendidikan", icon: GraduationCap },
-    { name: "Pengumuman", icon: Megaphone },
-    { name: "Potensi", icon: MapPinned },
-    { name: "Prestasi", icon: Award },
-    { name: "Produk Unggulan", icon: ShoppingBag },
-    { name: "Tenaga Kerja", icon: Briefcase },
-];
 import type { Berita } from "@/types/berita";
+import type { Kategori } from "@/types/kategori";
 import { formatDate } from "@/Components/ui/date";
 
 interface Props {
     berita: Berita;
     beritaTerbaru: Berita[];
+    kategoriBerita: Kategori[];
 }
-export default function DetailBerita({ berita, beritaTerbaru }: Props) {
+
+const getBeritaImageUrl = (image?: string | null) => {
+    if (!image) {
+        return "/images/placeholder.jpg";
+    }
+
+    if (image.startsWith("http")) {
+        return image;
+    }
+
+    if (image.startsWith("/storage")) {
+        return image;
+    }
+
+    return `/storage/berita/${image}`;
+};
+
+const getCurrentUrl = () => {
+    if (typeof window === "undefined") {
+        return "";
+    }
+
+    return window.location.href;
+};
+
+const shareToFacebook = () => {
+    const url = encodeURIComponent(getCurrentUrl());
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, "_blank");
+};
+
+const shareToX = (title: string) => {
+    const url = encodeURIComponent(getCurrentUrl());
+    const text = encodeURIComponent(title);
+    window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, "_blank");
+};
+
+const shareToWhatsapp = (title: string) => {
+    const url = encodeURIComponent(getCurrentUrl());
+    const text = encodeURIComponent(`${title} ${url}`);
+    window.open(`https://wa.me/?text=${text}`, "_blank");
+};
+
+const copyCurrentLink = async () => {
+    const url = getCurrentUrl();
+
+    if (navigator?.clipboard) {
+        await navigator.clipboard.writeText(url);
+        return;
+    }
+
+    const input = document.createElement("input");
+    input.value = url;
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand("copy");
+    document.body.removeChild(input);
+};
+
+export default function DetailBerita({
+    berita,
+    beritaTerbaru = [],
+    kategoriBerita = [],
+}: Props) {
+    const deskripsiText = berita.deskripsi?.replace(/<[^>]*>/g, "") ?? "";
+
     return (
         <>
-            <Head title="Detail Berita" />
+            <Head title={berita.judul || "Detail Berita"} />
 
             <div className="min-h-screen bg-slate-50 text-foreground">
                 <HeaderSolid />
@@ -72,11 +103,16 @@ export default function DetailBerita({ berita, beritaTerbaru }: Props) {
                 <main className="pt-15">
                     <div className="container relative z-10 mx-auto px-4 py-3">
                         <div className="mt-13 flex items-center gap-2 text-sm text-slate-500">
-                            <Home size={14} />
-                            <span>Beranda</span>
+                            <Link href="/" className="inline-flex items-center gap-1 transition hover:text-primary">
+                                <Home size={14} />
+                                <span>Beranda</span>
+                            </Link>
 
                             <ChevronRight size={14} />
-                            <span>Berita</span>
+
+                            <Link href={route("berita")} className="transition hover:text-primary">
+                                Berita
+                            </Link>
 
                             <ChevronRight size={14} />
 
@@ -92,20 +128,20 @@ export default function DetailBerita({ berita, beritaTerbaru }: Props) {
                             <article className="rounded-3xl border bg-white p-6">
                                 <div className="flex items-center justify-between gap-4">
                                     <span className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                                        {berita.kategori?.nama_kategori}
+                                        {berita.kategori?.nama_kategori || "Berita"}
                                     </span>
 
                                     <Link
                                         href={route("berita")}
                                         className="
-                                    inline-flex items-center gap-2
-                                    rounded-lg border
-                                    px-3 py-1.5
-                                    text-xs font-medium text-slate-600
-                                    transition-all
-                                    hover:border-primary
-                                    hover:text-primary
-                                "
+                                            inline-flex items-center gap-2
+                                            rounded-lg border
+                                            px-3 py-1.5
+                                            text-xs font-medium text-slate-600
+                                            transition-all
+                                            hover:border-primary
+                                            hover:text-primary
+                                        "
                                     >
                                         <ArrowLeft size={14} />
                                         Kembali
@@ -122,57 +158,84 @@ export default function DetailBerita({ berita, beritaTerbaru }: Props) {
                                     <div className="flex flex-wrap items-center gap-5 text-sm text-slate-500">
                                         <div className="flex items-center gap-2">
                                             <CalendarDays size={14} />
-                                            <span>
-                                                {formatDate(berita.tanggal)}
-                                            </span>
+                                            <span>{formatDate(berita.tanggal)}</span>
                                         </div>
 
                                         <div className="flex items-center gap-2">
                                             <Building2 size={14} />
                                             <span>Pemerintah Kota Kediri</span>
                                         </div>
-                                        {/* 
-                                <div className="flex items-center gap-2">
-                                <Eye size={14} />
-                                <span>1.234 kali dibaca</span>
-                                </div> */}
                                     </div>
+
                                     <div className="flex items-center gap-2">
                                         <span className="mr-1 text-sm text-slate-500">
                                             Bagikan:
                                         </span>
 
-                                        {[
-                                            FaFacebookF,
-                                            FaXTwitter,
-                                            FaWhatsapp,
-                                        ].map((Icon, index) => (
-                                            <button
-                                                key={index}
-                                                className="
-                                            flex h-8 w-8 items-center justify-center
-                                            rounded-lg border
-                                            text-slate-500
-                                            transition-all
-                                            hover:border-primary
-                                            hover:bg-primary
-                                            hover:text-white
-                                        "
-                                            >
-                                                <Icon size={14} />
-                                            </button>
-                                        ))}
+                                        <button
+                                            type="button"
+                                            onClick={shareToFacebook}
+                                            className="
+                                                flex h-8 w-8 items-center justify-center
+                                                rounded-lg border
+                                                text-slate-500
+                                                transition-all
+                                                hover:border-primary
+                                                hover:bg-primary
+                                                hover:text-white
+                                            "
+                                            aria-label="Bagikan ke Facebook"
+                                        >
+                                            <FaFacebookF size={14} />
+                                        </button>
 
                                         <button
+                                            type="button"
+                                            onClick={() => shareToX(berita.judul)}
                                             className="
-                                        flex h-8 w-8 items-center justify-center
-                                        rounded-lg border
-                                        text-slate-500
-                                        transition-all
-                                        hover:border-primary
-                                        hover:bg-primary
-                                        hover:text-white
-                                    "
+                                                flex h-8 w-8 items-center justify-center
+                                                rounded-lg border
+                                                text-slate-500
+                                                transition-all
+                                                hover:border-primary
+                                                hover:bg-primary
+                                                hover:text-white
+                                            "
+                                            aria-label="Bagikan ke X"
+                                        >
+                                            <FaXTwitter size={14} />
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => shareToWhatsapp(berita.judul)}
+                                            className="
+                                                flex h-8 w-8 items-center justify-center
+                                                rounded-lg border
+                                                text-slate-500
+                                                transition-all
+                                                hover:border-primary
+                                                hover:bg-primary
+                                                hover:text-white
+                                            "
+                                            aria-label="Bagikan ke WhatsApp"
+                                        >
+                                            <FaWhatsapp size={14} />
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={copyCurrentLink}
+                                            className="
+                                                flex h-8 w-8 items-center justify-center
+                                                rounded-lg border
+                                                text-slate-500
+                                                transition-all
+                                                hover:border-primary
+                                                hover:bg-primary
+                                                hover:text-white
+                                            "
+                                            aria-label="Salin link berita"
                                         >
                                             <Link2 size={14} />
                                         </button>
@@ -181,25 +244,17 @@ export default function DetailBerita({ berita, beritaTerbaru }: Props) {
 
                                 {/* Cover */}
                                 <img
-                                    src={
-                                        berita.images?.startsWith("http")
-                                            ? berita.images
-                                            : `/storage/berita/${berita.images}`
-                                    }
+                                    src={getBeritaImageUrl(berita.images)}
                                     alt={berita.judul}
                                     className="mt-6 h-[420px] w-full rounded-2xl object-cover"
                                 />
 
                                 {/* Article */}
                                 <div className="prose prose-slate mt-8 max-w-none">
-                                    <p>
-                                        {berita.deskripsi.replace(
-                                            /<[^>]*>/g,
-                                            "",
-                                        )}
-                                    </p>
+                                    <p>{deskripsiText}</p>
                                 </div>
                             </article>
+
                             {/* SIDEBAR */}
                             <aside className="space-y-6">
                                 {/* Related News */}
@@ -209,76 +264,48 @@ export default function DetailBerita({ berita, beritaTerbaru }: Props) {
                                     </h3>
 
                                     <div className="mt-5 space-y-4">
-                                        {beritaTerbaru.map((item) => (
-                                            <Link
-                                                key={item.id}
-                                                href={route(
-                                                    "berita.show",
-                                                    item.slug,
-                                                )}
-                                                className="flex gap-3 group"
-                                            >
-                                                <img
-                                                    src={item.images}
-                                                    alt={item.judul}
-                                                    className="h-20 w-24 rounded-lg object-cover"
-                                                />
-
-                                                <div className="min-w-0 flex-1">
-                                                    <div className="flex flex-wrap items-center gap-2">
-                                                        <span className="text-xs text-slate-500">
-                                                            {formatDate(item.tanggal)}
-                                                        </span>
-
-                                                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
-                                                            {
-                                                                item.kategori
-                                                                    ?.nama_kategori
-                                                            }
-                                                        </span>
-                                                    </div>
-
-                                                    <h4 className="mt-2 line-clamp-2 text-sm font-semibold leading-snug transition group-hover:text-primary">
-                                                        {item.judul}
-                                                    </h4>
-                                                </div>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Categories */}
-                                <div className="rounded-3xl border bg-white p-5">
-                                    <h3 className="font-bold">
-                                        Kategori Berita
-                                    </h3>
-                                    <div className="space-y-1">
-                                        {categories.map((item) => {
-                                            const Icon = item.icon;
-
-                                            return (
-                                                <button
-                                                    key={item.name}
-                                                    className="
-                                            flex w-full items-center gap-3
-                                            rounded-xl px-3 py-2
-                                            text-sm
-                                            cursor-pointer
-                                            transition-all duration-200
-                                            hover:bg-primary
-                                            hover:text-white
-                                            hover:shadow-sm
-                                        "
+                                        {beritaTerbaru.length > 0 ? (
+                                            beritaTerbaru.map((item) => (
+                                                <Link
+                                                    key={item.id}
+                                                    href={route("berita.show", item.slug)}
+                                                    className="group flex gap-3"
                                                 >
-                                                    <Icon size={16} />
-                                                    <span>{item.name}</span>
-                                                </button>
-                                            );
-                                        })}
+                                                    <img
+                                                        src={getBeritaImageUrl(item.images)}
+                                                        alt={item.judul}
+                                                        className="h-20 w-24 rounded-lg object-cover"
+                                                    />
+
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="flex flex-wrap items-center gap-2">
+                                                            <span className="text-xs text-slate-500">
+                                                                {formatDate(item.tanggal)}
+                                                            </span>
+
+                                                            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
+                                                                {item.kategori?.nama_kategori || "Berita"}
+                                                            </span>
+                                                        </div>
+
+                                                        <h4 className="mt-2 line-clamp-2 text-sm font-semibold leading-snug transition group-hover:text-primary">
+                                                            {item.judul}
+                                                        </h4>
+                                                    </div>
+                                                </Link>
+                                            ))
+                                        ) : (
+                                            <p className="text-sm text-slate-500">
+                                                Belum ada berita terbaru.
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
+
+                                <SidebarKategoriBerita kategoriBerita={kategoriBerita} />
                             </aside>
                         </div>
+
                         {/* CTA */}
                         <ContentCTA
                             icon={<FaInstagram size={24} />}
@@ -290,6 +317,7 @@ export default function DetailBerita({ berita, beritaTerbaru }: Props) {
                         />
                     </section>
                 </main>
+
                 <Footer />
             </div>
         </>

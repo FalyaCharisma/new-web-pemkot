@@ -55,19 +55,19 @@ class AppServiceProvider extends ServiceProvider
                 'icon' => 'fa-industry',
                 'children' => array(
                     [
-                        'title' => 'Pesona Kediri Raya',
+                        'title' => 'Pesona Unggulan',
                         'url' => '/form-pesona-kediri',
                         'routes' => ['form-pesona-kediri']
                     ],
                     [
-                        'title' => 'Ada Apa Di Kediri',
-                        'url' => '/ada-apa-kediri',
-                        'routes' => ['ada-apa-kediri', 'form-ada-apa/*', 'list-kategori-aset']
+                        'title' => 'Fasilitas Kota',
+                        'url' => '/list-fasilitas',
+                        'routes' => ['list-fasilitas']
                     ],
                     [
-                        'title' => 'Penghargaan',
-                        'url' => '/list-penghargaan',
-                        'routes' => ['list-penghargaan']
+                        'title' => 'Sekilas Kediri',
+                        'url' => '#',
+                        'routes' => []
                     ],
                     [
                         'title' => 'Visi Dan Misi',
@@ -75,9 +75,9 @@ class AppServiceProvider extends ServiceProvider
                         'routes' => ['form-visimisi']
                     ],
                     [
-                        'title' => 'Perangkat Daerah',
-                        'url' => '/list-opd',
-                        'routes' => ['list-opd', 'form-opd/*']
+                        'title' => 'Lambang Daerah',
+                        'url' => '#',
+                        'routes' => []
                     ],
                     [
                         'title' => 'Sejarah Kota',
@@ -90,14 +90,19 @@ class AppServiceProvider extends ServiceProvider
                         'routes' => ['list-pimpinan']
                     ],
                     [
+                        'title' => 'Perangkat Daerah',
+                        'url' => '/list-opd',
+                        'routes' => ['list-opd', 'form-opd/*']
+                    ],
+                    [
                         'title' => 'Kelurahan',
                         'url' => '/list-kelurahan',
                         'routes' => ['list-kelurahan']
                     ],
                     [
-                        'title' => 'Fasilitas Kota',
-                        'url' => '/list-fasilitas',
-                        'routes' => ['list-fasilitas']
+                        'title' => 'Penghargaan',
+                        'url' => '/list-penghargaan',
+                        'routes' => ['list-penghargaan']
                     ],
                 ),
             ],
@@ -108,34 +113,29 @@ class AppServiceProvider extends ServiceProvider
                 'icon' => 'fa-newspaper',
                 'children' => array(
                     [
-                        'title' => 'Pengumuman',
-                        'url' => '/list-pengumuman',
-                        'routes' => ['list-pengumuman', 'form-pengumuman/*']
-                    ],
-                    [
-                        'title' => 'Berita',
+                        'title' => 'Berita & Pengumuman',
                         'url' => '/list-berita',
                         'routes' => ['list-berita', 'form-berita/*']
                     ],
                     [
-                        'title' => 'Berita Luar',
-                        'url' => '/list-berita-luar',
-                        'routes' => ['list-berita-luar']
+                        'title' => 'Agenda',
+                        'url' => '#',
+                        'routes' => []
                     ],
                     [
-                        'title' => 'Galeri',
+                        'title' => 'Album Foto',
                         'url' => '/list-galeri',
-                        'routes' => ['list-galeri']
+                        'routes' => ['list-galeri', 'form-galeri/*']
+                    ],
+                    [
+                        'title' => 'Video',
+                        'url' => '#',
+                        'routes' => []
                     ],
                     [
                         'title' => 'Dokumen',
                         'url' => '/list-dokumen',
                         'routes' => ['list-dokumen', 'form-dokumen/*']
-                    ],
-                    [
-                        'title' => 'Artikel',
-                        'url' => '/list-artikel',
-                        'routes' => ['list-artikel', 'form-artikel/*']
                     ],
                 ),
             ],
@@ -151,63 +151,6 @@ class AppServiceProvider extends ServiceProvider
                 'routes' => ['list-user'],
                 'icon' => 'fa-user',
             ],
-            // [
-            //     'title' => 'Profil Kota',
-            //     'url' => '#',
-            //     'routes' => ['profil-kota-editor/*'],
-            //     'icon' => 'fa-building',
-            //     'children' => [
-            //         [
-            //             'title' => 'Kediri The Service City',
-            //             'url' => '/profil-kota-editor/1',
-            //             'routes' => ['profil-kota-editor/1']
-            //         ],
-            //         [
-            //             'title' => 'Makna Lambang',
-            //             'url' => '/profil-kota-editor/2',
-            //             'routes' => ['profil-kota-editor/2']
-            //         ],
-                   
-            //         [
-            //             'title' => 'Renstra',
-            //             'url' => '/profil-kota-editor/5',
-            //             'routes' => ['profil-kota-editor/5']
-            //         ],
-            //         [
-            //             'title' => 'Ekonomi',
-            //             'url' => '/profil-kota-editor/6',
-            //             'routes' => ['profil-kota-editor/6']
-            //         ],
-            //     ],
-            // ],
-            // [
-            //     'title' => 'Deskripsi Kota',
-            //     'url' => '#',
-            //     'routes' => ['deskripsi-kota-editor/*'],
-            //     'icon' => 'fa-university',
-            //     'children' => array(
-            //         [
-            //             'title' => 'Kondisi Geografis',
-            //             'url' => '/deskripsi-kota-editor/7',
-            //             'routes' => ['deskripsi-kota-editor/7']
-            //         ],
-            //         [
-            //             'title' => 'Kondisi Demografis',
-            //             'url' => '/deskripsi-kota-editor/8',
-            //             'routes' => ['deskripsi-kota-editor/8']
-            //         ],
-            //         [
-            //             'title' => 'Kebudayaan Dan Kesenian',
-            //             'url' => '/deskripsi-kota-editor/10',
-            //             'routes' => ['deskripsi-kota-editor/10']
-            //         ],
-            //         [
-            //             'title' => 'Kelurahan',
-            //             'url' => '/deskripsi-kota-editor/11',
-            //             'routes' => ['deskripsi-kota-editor/11']
-            //         ],
-            //     ),
-            // ],
         );
     }
 
