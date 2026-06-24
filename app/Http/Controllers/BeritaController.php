@@ -34,7 +34,6 @@ class BeritaController extends Controller
         //
     }
 
-
     /**
      * Show the form for editing the specified resource.
      */
@@ -81,6 +80,17 @@ class BeritaController extends Controller
             $query->latest('tanggal');
         }
 
+        $tanggalMulai = $request->tanggal_mulai;
+        $tanggalSelesai = $request->tanggal_selesai;
+
+        $query->when($tanggalMulai, function ($q) use ($tanggalMulai) {
+            $q->whereDate('tanggal', '>=', $tanggalMulai);
+        });
+
+        $query->when($tanggalSelesai, function ($q) use ($tanggalSelesai) {
+            $q->whereDate('tanggal', '<=', $tanggalSelesai);
+        });
+
         $berita = $query->paginate(12)->withQueryString();
         $beritaEkslusif = $query->clone()->where('eksklusif', 1)->latest('tanggal')->first();
 
@@ -102,21 +112,21 @@ class BeritaController extends Controller
                 'search' => $search,
                 'kategori' => $kategori,
                 'sort' => $sort,
+                'tanggal_mulai' => $tanggalMulai,
+                'tanggal_selesai' => $tanggalSelesai,
             ],
         ]);
     }
 
     public function show($slug)
     {
-        $berita = Berita::with('kategori')
-            ->where('slug',$slug)
-            ->firstOrFail();
+        $berita = Berita::with('kategori')->where('slug', $slug)->firstOrFail();
 
         $beritaTerbaru = Berita::with('kategori')->where('status_published', 1)->where('status_enabled', 1)->orderBy('tanggal', 'desc')->limit(5)->get();
 
-        return Inertia::render('berita/detail',[
-            'berita'=>$berita,
-            'beritaTerbaru'=>$beritaTerbaru
+        return Inertia::render('berita/detail', [
+            'berita' => $berita,
+            'beritaTerbaru' => $beritaTerbaru,
         ]);
     }
 }

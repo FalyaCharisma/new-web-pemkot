@@ -34,18 +34,6 @@ export default function Berita({
     beritaEkslusif,
     filters,
 }: Props) {
-    useEffect(() => {
-        const script = document.createElement("script");
-        script.src = "https://widget.komdigi.go.id/gpr-widget-kominfo.min.js";
-        script.async = true;
-
-        document.body.appendChild(script);
-
-        return () => {
-            document.body.removeChild(script);
-        };
-    }, []);
-
     const categories = [
         {
             id: "",
@@ -66,6 +54,14 @@ export default function Berita({
         filters.kategori ?? "",
     );
 
+    const [search, setSearch] = useState(filters.search ?? "");
+
+    useEffect(() => {
+        setSearch(filters.search ?? "");
+
+        setSelectedKategori(filters.kategori ?? "");
+    }, [filters]);
+
     const scrollLeft = () => {
         scrollRef.current?.scrollBy({
             left: -400,
@@ -85,14 +81,51 @@ export default function Berita({
 
         router.get(
             route("berita"),
+
             {
                 kategori: id,
-                search: filters.search,
+                search: search,
                 sort: filters.sort,
             },
             {
                 preserveScroll: true,
                 preserveState: true,
+            },
+        );
+    };
+
+    const [tanggalMulai, setTanggalMulai] = useState(
+        filters.tanggal_mulai ?? "",
+    );
+
+    const [tanggalSelesai, setTanggalSelesai] = useState(
+        filters.tanggal_selesai ?? "",
+    );
+    const handleFilterTanggal = () => {
+        router.get(
+            route("berita"),
+            {
+                search,
+                kategori: selectedKategori,
+                tanggal_mulai: tanggalMulai,
+                tanggal_selesai: tanggalSelesai,
+                sort: filters.sort,
+            },
+            {
+                preserveScroll: true,
+            },
+        );
+    };
+
+    const handleReset = () => {
+        setTanggalMulai("");
+        setTanggalSelesai("");
+
+        router.get(
+            route("berita"),
+            {},
+            {
+                preserveScroll: true,
             },
         );
     };
@@ -108,8 +141,25 @@ export default function Berita({
                     <HeroPage
                         title="Berita Kota Kediri"
                         breadcrumb="Berita & Pengumuman"
-                        placeholder="Cari informasi..."
+                        placeholder="Cari berita..."
                         description="Pusat informasi resmi Kota Kediri yang menyajikan berita terkini, agenda daerah, dan berbagai informasi publik untuk masyarakat."
+                        searchValue={search}
+                        onSearchChange={(value) => setSearch(value)}
+                        onSearch={(keyword) => {
+                            setSearch(keyword);
+                            router.get(
+                                route("berita"),
+                                {
+                                    search: keyword,
+                                    kategori: selectedKategori,
+                                    sort: filters.sort,
+                                },
+                                {
+                                    preserveState: true,
+                                    preserveScroll: true,
+                                },
+                            );
+                        }}
                     />
 
                     {/* CONTENT */}
@@ -177,35 +227,53 @@ export default function Berita({
 
                         <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
                             {/* FILTER */}
-                            <aside className="rounded-3xl border bg-white p-5 h-fit">
+                            <aside className="h-fit rounded-3xl border bg-white p-5">
                                 <h3 className="font-bold">Filter Berita</h3>
 
                                 <div className="mt-5 space-y-4">
                                     <div>
                                         <label className="mb-2 block text-sm font-medium">
-                                            Kategori
-                                        </label>
-
-                                        <select className="w-full rounded-xl border px-3 py-2">
-                                            <option>Semua Kategori</option>
-                                        </select>
-                                    </div>
-
-                                    <div>
-                                        <label className="mb-2 block text-sm font-medium">
-                                            Tanggal
+                                            Dari Tanggal
                                         </label>
 
                                         <input
                                             type="date"
+                                            value={tanggalMulai}
+                                            onChange={(e) =>
+                                                setTanggalMulai(e.target.value)
+                                            }
                                             className="w-full rounded-xl border px-3 py-2"
                                         />
                                     </div>
 
-                                    <button className="w-full rounded-xl bg-primary py-3 font-semibold text-white">
+                                    <div>
+                                        <label className="mb-2 block text-sm font-medium">
+                                            Sampai Tanggal
+                                        </label>
+
+                                        <input
+                                            type="date"
+                                            value={tanggalSelesai}
+                                            onChange={(e) =>
+                                                setTanggalSelesai(
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className="w-full rounded-xl border px-3 py-2"
+                                        />
+                                    </div>
+
+                                    <button
+                                        onClick={handleFilterTanggal}
+                                        className="w-full rounded-xl bg-primary py-3 font-semibold text-white"
+                                    >
                                         Terapkan Filter
                                     </button>
-                                    <button className="flex w-full items-center justify-center gap-2 rounded-xl border py-3">
+
+                                    <button
+                                        onClick={handleReset}
+                                        className="flex w-full items-center justify-center gap-2 rounded-xl border py-3"
+                                    >
                                         <RotateCcw size={16} />
                                         Reset Filter
                                     </button>
@@ -214,54 +282,6 @@ export default function Berita({
 
                             {/* LIST BERITA */}
                             <div className="space-y-6">
-                                <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-lg">
-                                    <div className="grid lg:grid-cols-[320px_1fr]">
-                                        <img
-                                            src={
-                                                beritaEkslusif?.images?.startsWith(
-                                                    "http",
-                                                )
-                                                    ? beritaEkslusif.images
-                                                    : `/storage/${beritaEkslusif?.images}`
-                                            }
-                                            alt={beritaEkslusif?.judul}
-                                            className="h-full w-full object-cover"
-                                        />
-
-                                        <div className="p-5">
-                                            <p className="text-xs text-muted-foreground">
-                                                <p>
-                                                    {formatDate(
-                                                        beritaEkslusif?.tanggal ||
-                                                            "",
-                                                    )}
-                                                </p>
-                                            </p>
-
-                                            <h2 className="mt-2 text-2xl font-bold leading-tight">
-                                                {beritaEkslusif?.judul}
-                                            </h2>
-
-                                            <p className="mt-3 text-sm text-muted-foreground line-clamp-3">
-                                                {beritaEkslusif?.deskripsi.replace(
-                                                    /<[^>]*>/g,
-                                                    "",
-                                                )}
-                                            </p>
-
-                                            <Link
-                                                href={route(
-                                                    "berita.show",
-                                                    beritaEkslusif?.slug,
-                                                )}
-                                                className="mt-3 inline-flex text-sm font-semibold text-primary"
-                                            >
-                                                Baca Selengkapnya →
-                                            </Link>
-                                        </div>
-                                    </div>
-                                </article>
-
                                 {/* GRID BERITA */}
                                 <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
                                     {berita.data.map((item: Berita) => (

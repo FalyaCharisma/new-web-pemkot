@@ -2,6 +2,8 @@ import { Head } from "@inertiajs/react";
 import { HeaderSolid } from "@/Components/site/HeaderSolid";
 import { Footer } from "@/Components/site/Footer";
 import type { SearchGroupedResult } from "@/types/searchresult";
+import { router } from "@inertiajs/react";
+import { useEffect, useState } from "react";
 
 import {
     Search,
@@ -12,9 +14,15 @@ import {
     MapPin,
     ChevronDown,
     ArrowRight,
+    RotateCcw,
 } from "lucide-react";
 
 import type { LucideIcon } from "lucide-react";
+import { HeroPage } from "@/Components/HeroPage";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
 
 /**
  * TYPES
@@ -28,19 +36,127 @@ interface StatCardProps {
 interface Props {
     keyword: string;
     results: SearchGroupedResult;
+    selectedTypes: string[];
 }
 
 /**
  * PAGE
  */
-export default function SearchIndex({keyword, results}: Props) {
+export default function SearchIndex({
+    keyword,
+    results,
+    selectedTypes: initialTypes,
+}: Props) {
+    const [search, setSearch] = useState(keyword);
+    const sections = [
+        {
+            key: "berita",
+            title: "Berita",
+            data: results.berita.items,
+            total: results.berita.total,
+            href: route("berita", {
+                search: keyword,
+            }),
+        },
+        {
+            key: "agenda",
+            title: "Agenda",
+            data: results.agenda.items,
+            total: results.agenda.total,
+            href: route("agenda.index", {
+                search: keyword,
+            }),
+        },
+        {
+            key: "fasilitas",
+            title: "Fasilitas Kota",
+            data: results.fasilitas.items,
+            total: results.fasilitas.total,
+            href: route("fasilitas-kota.index", {
+                search: keyword,
+            }),
+        },
+        {
+            key: "penghargaan",
+            title: "Penghargaan",
+            data: results.penghargaan.items,
+            total: results.penghargaan.total,
+            href: route("penghargaan", {
+                search: keyword,
+            }),
+        },
+        {
+            key: "dokumen",
+            title: "Dokumen",
+            data: results.dokumen.items,
+            total: results.dokumen.total,
+            href: route("dokumen.index", {
+                search: keyword,
+            }),
+        },
 
-    const categoryColor: Record<keyof SearchGroupedResult, string> = {
-        berita: 'bg-blue-500',
-        agenda: 'bg-green-500',
-        fasilitas: 'bg-yellow-500',
-        penghargaan: 'bg-purple-500',
+        {
+            key: "galeri",
+            title: "Galeri",
+            data: results.galeri.items,
+            total: results.galeri.total,
+            href: route("galeri.index", {
+                search: keyword,
+            }),
+        },
+    ];
+
+    const filters = [
+        {
+            label: "Berita",
+            value: "berita",
+        },
+        {
+            label: "Agenda",
+            value: "agenda",
+        },
+        {
+            label: "Penghargaan",
+            value: "penghargaan",
+        },
+        {
+            label: "Fasilitas Kota",
+            value: "fasilitas",
+        },
+        {
+            label: "Dokumen",
+            value: "dokumen",
+        },
+
+        {
+            label: "Galeri",
+            value: "galeri",
+        },
+    ];
+
+    const [selectedTypes, setSelectedTypes] = useState<string[]>(
+        initialTypes ?? [],
+    );
+    const handleReset = () => {
+        setSelectedTypes([]);
+
+        router.get(route("search"), {
+            search: keyword,
+        });
     };
+
+    const [selectedAlbum, setSelectedAlbum] = useState<any>(null);
+    useEffect(() => {
+        if (selectedAlbum) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
+        }
+
+        return () => {
+            document.body.style.overflow = "auto";
+        };
+    }, [selectedAlbum]);
 
     return (
         <>
@@ -51,44 +167,20 @@ export default function SearchIndex({keyword, results}: Props) {
 
                 <main className="pt-16 mb-20">
                     {/* HERO */}
-                    <section
-                        className="relative h-[340px] bg-cover bg-center"
-                        style={{
-                            backgroundImage:
-                                "url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1600')",
+                    <HeroPage
+                        title="Hasil Pencarian"
+                        description="Temukan berita, agenda, fasilitas kota dan penghargaan Kota Kediri."
+                        breadcrumb="Pencarian"
+                        placeholder="Cari informasi..."
+                        searchValue={search}
+                        onSearchChange={setSearch}
+                        onSearch={(keyword) => {
+                            router.get(route("search"), {
+                                search: keyword,
+                                type: selectedTypes,
+                            });
                         }}
-                    >
-                        <div className="absolute inset-0 bg-black/20" />
-
-                        <div className="relative container mx-auto px-6 pt-12">
-                            <div className="max-w-4xl mx-auto">
-                                <div className="bg-white rounded-full p-3 flex items-center shadow-xl">
-                                    <Search className="w-5 h-5 text-slate-400 ml-4" />
-
-                                    <input
-                                        defaultValue={ keyword }
-                                        className="flex-1 px-4 py-3 outline-none text-lg"
-                                    />
-
-                                    <button className="w-16 h-16 rounded-full bg-amber-400 flex items-center justify-center">
-                                        <Search className="w-6 h-6 text-white" />
-                                    </button>
-                                </div>
-
-                                <div className="flex justify-center gap-4 mt-8">
-                                    <button className="flex items-center gap-2 rounded-full bg-primary px-8 py-4 font-semibold text-white">
-                                        Akses Fasilitas Publik
-                                        <ArrowRight size={18} />
-                                    </button>
-
-                                    <button className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-8 py-4 font-semibold text-white">
-                                        Jelajahi Kota Kediri
-                                        <ArrowRight size={18} />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+                    />
 
                     {/* CONTENT */}
                     <section className="-mt-10 relative z-10">
@@ -109,38 +201,68 @@ export default function SearchIndex({keyword, results}: Props) {
                                             Kategori
                                         </h4>
 
-                                        <div className="space-y-4 text-sm">
-                                            {[
-                                                "Agenda / Acara",
-                                                "Berita",
-                                                "Penghargaan & Prestasi",
-                                                "Fasilitas Kota",
-                                            ].map((item) => (
+                                        <div className="space-y-4">
+                                            {filters.map((item) => (
                                                 <label
-                                                    key={item}
+                                                    key={item.value}
                                                     className="flex items-center gap-3"
                                                 >
-                                                    <input type="checkbox" />
-                                                    {item}
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedTypes.includes(
+                                                            item.value,
+                                                        )}
+                                                        onChange={() => {
+                                                            if (
+                                                                selectedTypes.includes(
+                                                                    item.value,
+                                                                )
+                                                            ) {
+                                                                setSelectedTypes(
+                                                                    selectedTypes.filter(
+                                                                        (i) =>
+                                                                            i !==
+                                                                            item.value,
+                                                                    ),
+                                                                );
+                                                            } else {
+                                                                setSelectedTypes(
+                                                                    [
+                                                                        ...selectedTypes,
+
+                                                                        item.value,
+                                                                    ],
+                                                                );
+                                                            }
+                                                        }}
+                                                    />
+
+                                                    {item.label}
                                                 </label>
                                             ))}
                                         </div>
+                                        <button
+                                            onClick={() => {
+                                                router.get(
+                                                    route("search"),
 
-                                        <div className="border-t my-6" />
+                                                    {
+                                                        search: keyword,
 
-                                        <h4 className="font-semibold mb-4">
-                                            Tahun
-                                        </h4>
-
-                                        <select className="w-full border rounded-xl p-3">
-                                            <option>Semua Tahun</option>
-                                            <option>2025</option>
-                                            <option>2024</option>
-                                            <option>2023</option>
-                                        </select>
-
-                                        <button className="w-full mt-8 bg-teal-800 text-white py-4 rounded-full font-semibold">
+                                                        type: selectedTypes,
+                                                    },
+                                                );
+                                            }}
+                                            className="w-full rounded-xl bg-primary py-3 font-semibold text-white mt-4"
+                                        >
                                             Terapkan Filter
+                                        </button>
+                                        <button
+                                            onClick={handleReset}
+                                            className="flex w-full items-center justify-center gap-2 rounded-xl border py-3 mt-2"
+                                        >
+                                            <RotateCcw size={16} />
+                                            Reset Filter
                                         </button>
                                     </aside>
 
@@ -152,51 +274,140 @@ export default function SearchIndex({keyword, results}: Props) {
                                                 <h1 className="text-4xl font-bold">
                                                     Hasil pencarian untuk{" "}
                                                     <span className="text-teal-800">
-                                                        { keyword }
+                                                        {keyword}
                                                     </span>
                                                 </h1>
 
                                                 <p className="text-slate-500 mt-2">
                                                     Ditemukan{" "}
-                                                    {results.berita.length +
-                                                        results.agenda.length +
-                                                        results.fasilitas.length +
-                                                        results.penghargaan.length}{" "}
+                                                    {results.berita.total +
+                                                        results.agenda.total +
+                                                        results.fasilitas
+                                                            .total +
+                                                        results.penghargaan
+                                                            .total}{" "}
                                                     hasil
                                                 </p>
                                             </div>
-
-                                            <button className="border rounded-full px-5 py-3 flex items-center gap-2">
-                                                Terbaru
-                                                <ChevronDown size={18} />
-                                            </button>
                                         </div>
+                                        <div className="mt-6 space-y-12">
+                                            {sections.map((section) => {
+                                                if (section.data.length === 0)
+                                                    return null;
 
-                                        {/* STATS */}
-                                        <div className="grid md:grid-cols-4 gap-4 mt-8">
-                                            <StatCard
-                                                icon={FileText}
-                                                title="Total Hasil"
-                                                value="24"
-                                            />
-                                            <StatCard
-                                                icon={Calendar}
-                                                title="Agenda"
-                                                value="8"
-                                            />
-                                            <StatCard
-                                                icon={Newspaper}
-                                                title="Berita"
-                                                value="10"
-                                            />
-                                            <StatCard
-                                                icon={Trophy}
-                                                title="Penghargaan"
-                                                value="3"
-                                            />
+                                                return (
+                                                    <div key={section.key}>
+                                                        <div className="mb-5 flex items-center gap-3">
+                                                            <div className="h-2.5 w-2.5 rounded-full bg-primary" />
+
+                                                            <h2 className="text-2xl font-bold">
+                                                                {section.title}
+                                                            </h2>
+
+                                                            <span className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-semibold text-primary">
+                                                                {section.total}{" "}
+                                                                hasil
+                                                            </span>
+                                                        </div>
+
+                                                        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                                                            {section.data.map(
+                                                                (
+                                                                    item,
+                                                                    index,
+                                                                ) => (
+                                                                    <div
+                                                                        key={
+                                                                            index
+                                                                        }
+                                                                        onClick={() => {
+                                                                            if (
+                                                                                item.type ===
+                                                                                "galeri"
+                                                                            ) {
+                                                                                setSelectedAlbum(
+                                                                                    item,
+                                                                                );
+
+                                                                                return;
+                                                                            }
+
+                                                                            window.location.href =
+                                                                                item.url;
+                                                                        }}
+                                                                        className="overflow-hidden rounded-2xl border bg-white transition hover:shadow-lg cursor-pointer"
+                                                                    >
+                                                                        <img
+                                                                            src={
+                                                                                item.image ||
+                                                                                "https://placehold.co/600x400?text=No+Image"
+                                                                            }
+                                                                            alt={
+                                                                                item.title
+                                                                            }
+                                                                            className="h-48 w-full object-cover"
+                                                                        />
+
+                                                                        <div className="p-5">
+                                                                            <p className="text-xs text-slate-500">
+                                                                                {
+                                                                                    item.date
+                                                                                }
+                                                                            </p>
+
+                                                                            <h3 className="mt-2 line-clamp-2 text-lg font-semibold">
+                                                                                {
+                                                                                    item.title
+                                                                                }
+                                                                            </h3>
+
+                                                                            <p className="mt-3 line-clamp-3 text-sm text-slate-600">
+                                                                                {
+                                                                                    item.description
+                                                                                }
+                                                                            </p>
+
+                                                                            {item.location && (
+                                                                                <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+                                                                                    <MapPin
+                                                                                        size={
+                                                                                            14
+                                                                                        }
+                                                                                    />
+                                                                                    {
+                                                                                        item.location
+                                                                                    }
+                                                                                </div>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                ),
+                                                            )}
+                                                        </div>
+                                                        {section.total > 3 && (
+                                                            <div className="mt-6 flex justify-end">
+                                                                <a
+                                                                    href={
+                                                                        section.href
+                                                                    }
+                                                                    className="inline-flex items-center gap-2  font-semibold text-primary hover:underline"
+                                                                >
+                                                                    Lihat{" "}
+                                                                    {section.total -
+                                                                        3}{" "}
+                                                                    lainnya
+                                                                    <ArrowRight
+                                                                        size={
+                                                                            16
+                                                                        }
+                                                                    />
+                                                                </a>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
-
-                                        
                                     </div>
                                 </div>
                             </div>
@@ -205,25 +416,46 @@ export default function SearchIndex({keyword, results}: Props) {
                 </main>
 
                 <Footer />
+                {selectedAlbum && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+                        <div className="relative w-full max-w-5xl rounded-2xl bg-white p-4">
+                            <button
+                                onClick={() => setSelectedAlbum(null)}
+                                className="absolute right-4 top-4 z-10 rounded-full bg-black/70 px-3 py-1 text-white"
+                            >
+                                ✕
+                            </button>
+
+                            <Swiper
+                                modules={[Navigation]}
+                                navigation
+                                loop={selectedAlbum.images.length > 1}
+                            >
+                                {selectedAlbum.images.map(
+                                    (img: string, i: number) => (
+                                        <SwiperSlide key={i}>
+                                            <img
+                                                src={img}
+                                                className="h-[70vh] w-full object-contain"
+                                            />
+                                        </SwiperSlide>
+                                    ),
+                                )}
+                            </Swiper>
+
+                            <div className="mt-4">
+                                <h2 className="text-xl font-bold">
+                                    {selectedAlbum.title}
+                                </h2>
+
+                                <p className="text-sm text-gray-500">
+                                    Album • {selectedAlbum.date}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </>
-    );
-}
-
-/**
- * STAT CARD FIX
- */
-function StatCard({ icon: Icon, title, value }: StatCardProps) {
-    return (
-        <div className="border rounded-3xl p-5 flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-teal-800 text-white flex items-center justify-center">
-                <Icon size={20} />
-            </div>
-
-            <div>
-                <p className="text-slate-500 text-sm">{title}</p>
-                <h3 className="text-3xl font-bold">{value}</h3>
-            </div>
-        </div>
     );
 }
