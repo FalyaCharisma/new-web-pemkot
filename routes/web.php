@@ -192,7 +192,6 @@ Route::resource('galeri', GaleriController::class);
 Route::resource('dokumen', DokumenController::class);
 Route::resource('agenda', AgendaController::class);
 Route::resource('pesona-unggulan', PesonaUnggulanController::class);
-Route::resource('search', SearchController::class);
 Route::get('/search', [SearchController::class, 'index'])
     ->name('search');
 
