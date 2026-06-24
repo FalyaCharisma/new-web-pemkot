@@ -101,7 +101,7 @@
                 // var url = "{{url('/imgslider-status')}}/" + id
                 $.ajax({
                     type: 'POST',
-                    url:  "{{ url('/hapus-program-unggulan') }}/" + id,
+                    url:  "{{ url('/hapus-layanan-publik') }}/" + id,
                     data: {
                             _token: CSRF_TOKEN
                         },

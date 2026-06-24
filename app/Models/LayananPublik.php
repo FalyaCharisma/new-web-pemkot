@@ -10,4 +10,5 @@ class LayananPublik extends Model
     use HasFactory;
     protected $table = "layanan_publik";
     protected $guarded = [];
+    
 }

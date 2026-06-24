@@ -15,12 +15,22 @@ import { Footer } from "@/Components/site/Footer";
 import { Berita } from "@/types/berita";
 import { CityMap } from "@/Components/site/CityMap";
 
+type Layanan = {
+    id: number;
+    title: string;
+    desc: string;
+    icon: string | null;
+    url: string | null;
+};
+
+
 type Props = {
     berita: Berita[];
+    layanan: Layanan[];
 };
 
 export default function LandingPage({
-    berita,
+    berita, layanan
 }: Props) {
     return (
         <>
@@ -38,7 +48,7 @@ export default function LandingPage({
 
                 <main>
                     <Hero />
-                    <Services />
+                    <Services layanan={layanan}/>
                     {/* <About /> */}
                     {/* <Statistik /> */}
                     <Agenda />
