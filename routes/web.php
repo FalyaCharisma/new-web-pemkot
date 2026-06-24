@@ -28,7 +28,7 @@ Route::get('/perangkat-daerah/{slug}', [PerangkatDaerahController::class, 'index
 Route::get('/tentang-kediri/{slug?}', [TentangKediriController::class, 'tentangKediri'])->name('tentang-kediri');
 Route::get('/kelurahan/{kecamatan?}', [KelurahanController::class, 'kelurahan']);
 Route::get('/penghargaan', [PenghargaanController::class, 'penghargaan'])->name('penghargaan');
-Route::get('/penghargaan/{id}', [PenghargaanController::class, 'show'])->name('penghargaan.show');
+Route::get('/penghargaan/{slug}', [PenghargaanController::class, 'show'])->name('penghargaan.show');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

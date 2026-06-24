@@ -14,13 +14,16 @@ class PenghargaanController extends Controller
 {
     public function penghargaan(Request $request)
     {
-        $query = Penghargaan::query();
+        $query = Penghargaan::query()
+            ->where('status_enabled', 1);
 
-        // SEARCH FIX
+        // SEARCH
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('judul', 'like', "%{$request->search}%")
-                ->orWhere('deskripsi', 'like', "%{$request->search}%");
+                $search = $request->input('search');
+
+                $q->where('judul', 'like', "%{$search}%")
+                    ->orWhere('deskripsi', 'like', "%{$search}%");
             });
         }
 
@@ -34,7 +37,9 @@ class PenghargaanController extends Controller
             ->withQueryString();
 
         $years = Penghargaan::query()
+            ->where('status_enabled', 1)
             ->selectRaw('YEAR(tanggal) as year')
+            ->whereNotNull('tanggal')
             ->distinct()
             ->orderByDesc('year')
             ->pluck('year');
@@ -49,11 +54,20 @@ class PenghargaanController extends Controller
         ]);
     }
 
-    public function show($id)
+    public function show($slug)
     {
-        $penghargaan = Penghargaan::findOrFail($id);
+        $penghargaan = Penghargaan::where('slug', $slug)
+            ->where('status_enabled', 1)
+            ->firstOrFail();
 
-        $penghargaanLainnya = Penghargaan::where('id', '!=', $id)->latest('tanggal')->limit(5)->get();
+        $penghargaan->increment('count_view');
+        $penghargaan->refresh();
+
+        $penghargaanLainnya = Penghargaan::where('status_enabled', 1)
+            ->where('id', '!=', $penghargaan->id)
+            ->latest('tanggal')
+            ->limit(5)
+            ->get();
 
         return Inertia::render('penghargaan/detail', [
             'penghargaan' => $penghargaan,
