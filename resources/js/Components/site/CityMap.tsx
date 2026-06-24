@@ -2,69 +2,14 @@ import { useEffect, useState } from "react";
 import { MapPin } from "lucide-react";
 import { SectionLabel } from "./SectionLabel";
 import { icon } from "leaflet";
+import { Peta } from "@/types/peta";
 
-type Landmark = {
-    id: string;
-    name: string;
-    category: string;
-    desc: string;
-    lat: number;
-    lng: number;
-};
+interface Props {
+    peta: Peta[];
+}
 
-const landmarks: Landmark[] = [
-    {
-        id: "simpang-lima",
-        name: "Jembatan Brawijaya",
-        category: "Landmark",
-        desc: "Ikon Kota Kediri terinspirasi Arc de Triomphe.",
-        lat: -7.8443,
-        lng: 112.0526,
-    },
-    {
-        id: "kelud",
-        name: "Gunung Klotok",
-        category: "Wisata Alam",
-        desc: "Gunung berapi aktif dengan pemandangan kawah.",
-        lat: -7.9302,
-        lng: 112.3083,
-    },
-    {
-        id: "goa-selomangleng",
-        name: "Goa Selomangleng",
-        category: "Sejarah",
-        desc: "Situs purbakala peninggalan Kerajaan Kediri.",
-        lat: -7.8089,
-        lng: 111.9847,
-    },
-    {
-        id: "masjid-agung",
-        name: "Masjid Agung Kediri",
-        category: "Religi",
-        desc: "Pusat kegiatan religi warga Kota Kediri.",
-        lat: -7.8166,
-        lng: 112.0118,
-    },
-    {
-        id: "balai-kota",
-        name: "Balai Kota Kediri",
-        category: "Pemerintahan",
-        desc: "Pusat pemerintahan Kota Kediri.",
-        lat: -7.8222,
-        lng: 112.0177,
-    },
-    {
-        id: "alun-alun",
-        name: "Alun-Alun Kediri",
-        category: "Publik",
-        desc: "Ruang publik favorit di jantung kota.",
-        lat: -7.8197,
-        lng: 112.0124,
-    },
-];
-
-export function CityMap() {
-    const [selected, setSelected] = useState<Landmark>(landmarks[0]);
+export function CityMap({ peta }: Props) {
+    const [selected, setSelected] = useState<Peta>(peta[0]);
     const [MapComps, setMapComps] = useState<any>(null);
 
     useEffect(() => {
@@ -96,6 +41,10 @@ export function CityMap() {
             mounted = false;
         };
     }, []);
+
+    const openGoogleMaps = (lat: number, lng: number) => {
+        window.open(`https://www.google.com/maps?q=${lat},${lng}`, "_blank");
+    };
 
     return (
         <section id="budaya" className="relative overflow-hidden mb-28">
@@ -130,7 +79,7 @@ export function CityMap() {
                                     attribution="&copy; OpenStreetMap contributors"
                                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                 />
-                                {landmarks.map((l) => (
+                                {peta.map((l) => (
                                     <MapComps.Marker
                                         key={l.id}
                                         position={[l.lat, l.lng]}
@@ -144,11 +93,32 @@ export function CityMap() {
                                         }}
                                     >
                                         <MapComps.Popup>
-                                            <strong>{l.name}</strong>
-                                            <br />
-                                            <span style={{ fontSize: 12 }}>
-                                                {l.desc}
-                                            </span>
+                                            <div className="min-w-[180px]">
+                                                <strong>{l.name}</strong>
+
+                                                <p
+                                                    style={{
+                                                        fontSize: 12,
+                                                        marginTop: 4,
+                                                    }}
+                                                >
+                                                    {l.desc}
+                                                </p>
+
+                                                <div className="mt-2 flex justify-center">
+                                                    <button
+                                                        onClick={() =>
+                                                            openGoogleMaps(
+                                                                l.lat,
+                                                                l.lng,
+                                                            )
+                                                        }
+                                                        className="rounded-lg bg-[#0F5D58] px-3 py-1.5 text-sm text-white hover:opacity-90 text-[11px]"
+                                                    >
+                                                        Buka di Google Maps
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </MapComps.Popup>
                                     </MapComps.Marker>
                                 ))}
@@ -179,7 +149,7 @@ export function CityMap() {
                         </div>
 
                         <div className="flex-1 overflow-auto rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
-                            {landmarks.map((l) => {
+                            {peta.map((l) => {
                                 const active = l.id === selected.id;
                                 return (
                                     <button

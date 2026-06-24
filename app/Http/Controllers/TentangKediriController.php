@@ -51,7 +51,19 @@ class TentangKediriController extends Controller
 
         $jumlahKelurahan = Kelurahan::count();
 
-        $sejarah = SejarahKota::where('status_enabled', 1)->orderBy('tahun')->get();
+        $sejarah = SejarahKota::query()
+            ->where('status_enabled',1)
+            ->orderBy('tahun')
+            ->get()
+            ->map(function($item){
+                return [
+                    'id'=>$item->id,
+                    'tahun'=>$item->tahun,
+                    'judul'=>$item->judul,
+                    'deskripsi'=>strip_tags($item->keterangan),
+
+                ];
+            });
 
         $visi = TentangKota::where([['status_enabled', 1], ['title', 'visi']])->first();
 

@@ -56,7 +56,7 @@ const navigation = [
         description:
           "Informasi tentang pembagian wilayah kelurahan di Kota Kediri.",
         icon: Map,
-        href: 'kelurahan/35.71.02',
+        href: '/kelurahan',
       },
       {
         title: "Penghargaan",

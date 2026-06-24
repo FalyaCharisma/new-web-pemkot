@@ -14,23 +14,19 @@ import { News } from "@/Components/site/News";
 import { Footer } from "@/Components/site/Footer";
 import { Berita } from "@/types/berita";
 import { CityMap } from "@/Components/site/CityMap";
-
-type Layanan = {
-    id: number;
-    title: string;
-    desc: string;
-    icon: string | null;
-    url: string | null;
-};
-
+import {Peta} from "@/types/peta";
+import { Layanan } from "@/types/layanan";
+import { Agenda as AgendaType } from "@/types/agenda";
 
 type Props = {
     berita: Berita[];
     layanan: Layanan[];
+    peta: Peta[];
+    agenda: AgendaType[];
 };
 
 export default function LandingPage({
-    berita, layanan
+    berita, layanan, peta, agenda
 }: Props) {
     return (
         <>
@@ -51,9 +47,9 @@ export default function LandingPage({
                     <Services layanan={layanan}/>
                     {/* <About /> */}
                     {/* <Statistik /> */}
-                    <Agenda />
+                    <Agenda agenda={agenda} />
                     <Culture />
-                    <CityMap />
+                    <CityMap peta={peta} />
                     <Tourism />
                     <Harmony />
                     <News berita={berita} />

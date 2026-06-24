@@ -33,7 +33,7 @@ export default function Index({
                 return <LambangDaerah />;
 
             case "sejarah-kediri":
-                return <SejarahKediri />;
+                return <SejarahKediri sejarah={sejarah}/>;
 
             case "profil-pimpinan":
                 return <ProfilPimpinan pimpinan={pimpinan} />;

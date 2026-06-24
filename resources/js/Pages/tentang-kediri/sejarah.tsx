@@ -1,44 +1,16 @@
 import { Landmark, Crown, Building2, History } from "lucide-react";
+import { Sejarah } from "@/types/sejarah";
 
-export default function SejarahKediri() {
-    const sejarah = [
-        {
-            icon: Crown,
-            tahun: "879 M",
-            judul: "Awal Berdirinya Kediri",
-            deskripsi:
-                "Hari Jadi Kota Kediri ditetapkan berdasarkan Prasasti Harinjing yang diterbitkan pada tahun 879 Masehi pada masa pemerintahan Rakai Kayuwangi.",
-        },
-        {
-            icon: Landmark,
-            tahun: "1042 M",
-            judul: "Kerajaan Kediri",
-            deskripsi:
-                "Wilayah Kediri berkembang menjadi pusat pemerintahan dan kebudayaan yang melahirkan berbagai karya sastra serta tokoh penting dalam sejarah Nusantara.",
-        },
-        {
-            icon: History,
-            tahun: "Masa Kolonial",
-            judul: "Perkembangan Kota",
-            deskripsi:
-                "Kediri berkembang sebagai pusat perdagangan dan aktivitas ekonomi yang didukung oleh letaknya yang strategis di sepanjang Sungai Brantas.",
-        },
-        {
-            icon: Building2,
-            tahun: "Saat Ini",
-            judul: "Kota Kediri Modern",
-            deskripsi:
-                "Kota Kediri terus berkembang sebagai pusat perdagangan, jasa, pendidikan, industri, dan pariwisata dengan semangat MAPAN (Maju, Agamis, Produktif, Aman, dan Ngangeni).",
-        },
-    ];
+interface Props {
+    sejarah: Sejarah[];
+}
 
+export default function SejarahKediri({ sejarah }: Props) {
     return (
         <div className="space-y-10">
             {/* Header */}
             <div>
-                <h2 className="text-3xl font-bold">
-                    Sejarah Kota Kediri
-                </h2>
+                <h2 className="text-3xl font-bold">Sejarah Kota Kediri</h2>
 
                 <div className="mt-3 h-1 w-20 rounded-full bg-primary" />
             </div>
@@ -65,34 +37,27 @@ export default function SejarahKediri() {
                 <div className="absolute left-5 top-0 h-full w-1 rounded-full bg-primary/20" />
 
                 <div className="space-y-8">
-                    {sejarah.map((item, index) => {
-                        const Icon = item.icon;
-
-                        return (
-                            <div
-                                key={index}
-                                className="relative flex gap-6"
-                            >
-                                <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-white">
-                                    <Icon size={20} />
-                                </div>
-
-                                <div className="flex-1 rounded-2xl border bg-white p-6 shadow-sm">
-                                    <span className="text-sm font-semibold text-primary">
-                                        {item.tahun}
-                                    </span>
-
-                                    <h4 className="mt-1 text-lg font-semibold">
-                                        {item.judul}
-                                    </h4>
-
-                                    <p className="mt-3 text-slate-600">
-                                        {item.deskripsi}
-                                    </p>
-                                </div>
+                    {sejarah.map((item) => (
+                        <div key={item.id} className="relative flex gap-6">
+                            <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-white">
+                                <History size={20} />
                             </div>
-                        );
-                    })}
+
+                            <div className="flex-1 rounded-2xl border bg-white p-6 shadow-sm">
+                                <span className="text-sm font-semibold text-primary">
+                                    {item.tahun}
+                                </span>
+
+                                <h4 className="mt-1 text-lg font-semibold">
+                                    {item.judul}
+                                </h4>
+
+                                <p className="mt-3 text-slate-600">
+                                    {item.deskripsi}
+                                </p>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
