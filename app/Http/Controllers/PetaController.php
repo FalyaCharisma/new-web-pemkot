@@ -83,6 +83,8 @@ class PetaController extends Controller
             'menu' => 'required|string',
             'category' => 'nullable|string',
             'desc' => 'nullable|string',
+             'jam_buka' => 'nullable|date_format:H:i',
+    'jam_tutup' => 'nullable|date_format:H:i',
         ]);
 
         if (isset($request->id)) {
@@ -94,6 +96,8 @@ class PetaController extends Controller
                 'lat' => $request->lat,
                 'lng' => $request->lng,
                 'menu' => $request->menu,
+                 'jam_buka' => $request->jam_buka,
+    'jam_tutup' => $request->jam_tutup,
                 'updated_at' => Carbon::now('Asia/Jakarta'),
             ]);
 
@@ -108,6 +112,8 @@ class PetaController extends Controller
                 'lat' => $request->lat,
                 'lng' => $request->lng,
                 'menu' => $request->menu,
+                  'jam_buka' => $request->jam_buka,
+    'jam_tutup' => $request->jam_tutup,
                 'created_at' => Carbon::now('Asia/Jakarta'),
             ]);
 
