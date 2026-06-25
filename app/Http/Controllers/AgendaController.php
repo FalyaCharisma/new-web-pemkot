@@ -73,7 +73,36 @@ class AgendaController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $today = Carbon::today();
+
+        $agenda = Agenda::query()
+            ->where('status_enabled', 1)
+            ->findOrFail($id);
+
+        $agenda->is_ongoing = $today->betweenIncluded(
+            Carbon::parse($agenda->tanggal_mulai)->startOfDay(),
+            Carbon::parse($agenda->tanggal_selesai)->startOfDay()
+        );
+
+        $agendaLainnya = Agenda::query()
+        ->where('status_enabled', 1)
+        ->where('id', '!=', $agenda->id)
+        ->orderByDesc('tanggal_mulai')
+        ->take(5)
+        ->get()
+        ->map(function ($item) use ($today) {
+            $item->is_ongoing = $today->betweenIncluded(
+                Carbon::parse($item->tanggal_mulai)->startOfDay(),
+                Carbon::parse($item->tanggal_selesai)->startOfDay()
+            );
+
+            return $item;
+        });
+
+        return Inertia::render('agenda/detail', [
+            'agenda' => $agenda,
+            'agendaLainnya' => $agendaLainnya,
+        ]);
     }
 
     /**
