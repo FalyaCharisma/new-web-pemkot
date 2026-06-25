@@ -38,14 +38,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     //*************************************** ADMIN PAGE *************************************************
-    Route::controller(UserController::class)->group(function(){
+    Route::controller(UserController::class)->group(function () {
         Route::get('list-user', 'list_user')->name('list_user');
         Route::get('value-user/{id}', 'value_user')->name('value_user');
         Route::post('update-user', 'update_user')->name('update_user');
     });
 
-    //*************************************** HOME PAGE *************************************************    
-    Route::controller(HomeController::class)->group(function(){
+    //*************************************** HOME PAGE *************************************************
+    Route::controller(HomeController::class)->group(function () {
         Route::get('banner-beranda', 'banner_beranda')->name('banner_beranda');
         Route::get('update-status-banner/{status}/{id}', 'update_status_banner')->name('update_status_banner');
         Route::post('upload-banner', 'upload_banner')->name('upload_banner');
@@ -53,24 +53,24 @@ Route::middleware('auth')->group(function () {
         Route::post('/hapus-banner/{id}', 'hapus_banner')->name('hapus_banner');
     });
 
-    //*************************************** PROGRAM UNGGULAN PAGE *************************************************    
-    Route::controller(LayananPublikController::class)->group(function() {
+    //*************************************** PROGRAM UNGGULAN PAGE *************************************************
+    Route::controller(LayananPublikController::class)->group(function () {
         Route::get('/list-layanan-publik', 'list_layanan_publik')->name('list_layanan_publik');
         Route::get('/form-layanan-publik/{id}', 'form_layanan_publik')->name('form_layanan_publik');
         Route::post('/update-layanan-publik', 'update_layanan_publik')->name('update_layanan_publik');
         Route::post('/hapus-layanan-publik/{id}', 'hapus_layanan_publik')->name('hapus_layanan_publik');
     });
 
-    //*************************************** FASILITAS PAGE *************************************************    
-    Route::controller(FasilitasKotaController::class)->group(function() {
+    //*************************************** FASILITAS PAGE *************************************************
+    Route::controller(FasilitasKotaController::class)->group(function () {
         Route::get('/list-fasilitas', 'list_fasilitas')->name('list_fasilitas');
-        Route::get('/form-fasilitas/{id}', 'form_fasilitas')->name('form_fasilitas');   
-        Route::post('/update-fasilitas', 'update_fasilitas')->name('update_fasilitas'); 
+        Route::get('/form-fasilitas/{id}', 'form_fasilitas')->name('form_fasilitas');
+        Route::post('/update-fasilitas', 'update_fasilitas')->name('update_fasilitas');
         Route::post('/hapus-fasilitas/{id}', 'hapus_fasilitas')->name('hapus_fasilitas');
         Route::get('/get-sub-kategori', 'get_sub_kategori')->name('get_sub_kategori');
     });
 
-    //*************************************** PETA INTERAKTIF *************************************************    
+    //*************************************** PETA INTERAKTIF *************************************************
     Route::controller(PetaController::class)->group(function () {
         Route::get('/peta-interaktif', 'list_peta_interaktif')->name('list_peta_interaktif');
         Route::get('/form-peta-interaktif/{id}', 'form_peta_interaktif')->name('form_peta_interaktif');
@@ -78,8 +78,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/hapus-peta-interaktif/{id}', 'hapus_peta_interaktif')->name('hapus_peta_interaktif');
     });
 
-    //*************************************** TENTANG KEDIRI PAGE *************************************************    
-    Route::controller(TentangKediriController::class)->group(function() {
+    //*************************************** TENTANG KEDIRI PAGE *************************************************
+    Route::controller(TentangKediriController::class)->group(function () {
         // Sejarah
         Route::get('/list-sejarah', 'list_sejarah')->name('list_sejarah');
         Route::post('/update-sejarah', 'update_sejarah')->name('update_sejarah');
@@ -95,10 +95,19 @@ Route::middleware('auth')->group(function () {
         Route::get('/form-pimpinan/{id}', 'form_pimpinan')->name('form-pimpinan');
         Route::post('/update-pimpinan', 'update_pimpinan')->name('update_pimpinan');
         Route::post('/hapus-pimpinan/{id}', 'hapus_pimpinan')->name('hapus_pimpinan');
+        // Sekilas
+        Route::get('/sekilas-kota', 'sekilasKota');
+        Route::post('/update-sekilas-kota', 'updateSekilas')->name('update_sekilas_kota');
+        Route::get('/geografis', 'geografis')->name('geografis');
+        Route::post('/update-geografis', 'updateGeografis')->name('update_geografis');
+        Route::get('/value-geografis/{id}', 'valueGeografis');
+
+        Route::post('/hapus-geografis/{id}', 'hapusGeografis');
+        Route::post('/update-statistik-kota',  'updateStatistikKota')->name('update_statistik_kota');
     });
 
-    //*************************************** PERANGKAT DAERAH PAGE *************************************************    
-    Route::controller(PerangkatDaerahController::class)->group(function() {
+    //*************************************** PERANGKAT DAERAH PAGE *************************************************
+    Route::controller(PerangkatDaerahController::class)->group(function () {
         // OPD
         Route::get('/list-opd', 'list_opd')->name('list_opd');
         Route::get('/form-opd/{id}', 'form_opd')->name('form-opd');
@@ -116,8 +125,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/hapus-kategori-opd/{id}', 'hapus_kategori_opd')->name('hapus_kategori_opd');
     });
 
-    //*************************************** KELURAHAN PAGE *************************************************    
-    Route::controller(KelurahanController::class)->group(function() {
+    //*************************************** KELURAHAN PAGE *************************************************
+    Route::controller(KelurahanController::class)->group(function () {
         Route::post('/update-kelurahan', 'update_kelurahan')->name('update_kelurahan');
         Route::get('/list-kelurahan', 'list_kelurahan')->name('list_kelurahan');
         Route::get('/value-kelurahan/{id}', 'value_kelurahan')->name('value_kelurahan');
@@ -125,16 +134,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/sync-kecamatan', 'sync_kecamatan')->name('sync_kecamatan');
     });
 
-    //*************************************** PENGHARGAAN PAGE *************************************************    
-    Route::controller(PenghargaanController::class)->group(function() {
+    //*************************************** PENGHARGAAN PAGE *************************************************
+    Route::controller(PenghargaanController::class)->group(function () {
         Route::get('/list-penghargaan', 'list_penghargaan')->name('list_penghargaan');
         Route::get('/form-penghargaan/{id}', 'form_penghargaan')->name('form_penghargaan');
         Route::post('/update-penghargaan', 'update_penghargaan')->name('update_penghargaan');
         Route::post('/hapus-penghargaan/{id}', 'hapus_penghargaan')->name('hapus_penghargaan');
     });
 
-    //*************************************** BERITA PAGE *************************************************    
-    Route::controller(BeritaController::class)->group(function(){
+    //*************************************** BERITA PAGE *************************************************
+    Route::controller(BeritaController::class)->group(function () {
         Route::get('/list-kategori-berita', 'list_kategori_berita')->name('list_kategori');
         Route::post('/update-kategori', 'update_kategori')->name('update_kategori');
         Route::get('/valuekategori/{id}', 'valuekategori')->name('valuekategori');
@@ -151,8 +160,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/hapus-berita-luar/{id}', 'hapus_berita_luar')->name('hapus_berita_luar');
     });
 
-    //*************************************** GALERI PAGE *************************************************    
-    Route::controller(GaleriController::class)->group(function(){
+    //*************************************** GALERI PAGE *************************************************
+    Route::controller(GaleriController::class)->group(function () {
         Route::get('/list-galeri', 'list_galeri')->name('list_galeri');
         Route::get('/form-galeri/{id}', 'form_galeri')->name('form_galeri');
         Route::get('/data-foto/{id}', 'data_foto')->name('data_foto');
@@ -162,27 +171,26 @@ Route::middleware('auth')->group(function () {
         Route::post('/hapus-album/{id}', 'hapus_album')->name('hapus_album');
     });
 
-    //*************************************** DOKUMEN PAGE *************************************************    
-    Route::controller(DokumenController::class)->group(function(){
+    //*************************************** DOKUMEN PAGE *************************************************
+    Route::controller(DokumenController::class)->group(function () {
         Route::get('/list-dokumen', 'list_dokumen')->name('list_dokumen');
         Route::get('/form-dokumen/{id}', 'form_dokumen')->name('form_dokumen');
         Route::post('/update-dokumen', 'update_dokumen')->name('update_dokumen');
         Route::get('/update-status-dokumen/{status}/{id}', 'update_status_dokumen')->name('update_status_dokumen');
         Route::post('/hapus-dokumen/{id}', 'hapus_dokumen')->name('hapus_dokumen');
-    });   
+    });
 
-    //*************************************** FEEDBACK PAGE *************************************************    
-    Route::controller(FeedbackController::class)->group(function(){
+    //*************************************** FEEDBACK PAGE *************************************************
+    Route::controller(FeedbackController::class)->group(function () {
         Route::get('/list-feedback', 'list_feedback')->name('list_feedback');
     });
 
-    //*************************************** USER SETTING *************************************************   
-    Route::controller(UserController::class)->group(function(){
+    //*************************************** USER SETTING *************************************************
+    Route::controller(UserController::class)->group(function () {
         Route::get('list-user', 'list_user')->name('list_user');
         Route::get('value-user/{id}', 'value_user')->name('value_user');
         Route::post('update-user', 'update_user')->name('update_user');
     });
-
 });
 
 Route::resource('fasilitas-kota', FasilitasKotaController::class);
@@ -192,8 +200,6 @@ Route::resource('galeri', GaleriController::class);
 Route::resource('dokumen', DokumenController::class);
 Route::resource('agenda', AgendaController::class);
 Route::resource('pesona-unggulan', PesonaUnggulanController::class);
-Route::get('/search', [SearchController::class, 'index'])
-    ->name('search');
-
+Route::get('/search', [SearchController::class, 'index'])->name('search');
 
 require __DIR__ . '/auth.php';

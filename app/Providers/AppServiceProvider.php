@@ -66,8 +66,8 @@ class AppServiceProvider extends ServiceProvider
                     ],
                     [
                         'title' => 'Sekilas Kediri',
-                        'url' => '#',
-                        'routes' => []
+                        'url' => '/sekilas-kota',
+                        'routes' => ['sekilas-kota']
                     ],
                     [
                         'title' => 'Visi Dan Misi',

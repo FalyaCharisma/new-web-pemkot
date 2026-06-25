@@ -12,7 +12,7 @@ import SidebarItem from "@/Components/site/SidebarItem";
 export default function Index({
     kategori,
     kategoriList,
-
+    kecamatan,
     sekilas,
     visi,
     misi,
@@ -20,11 +20,12 @@ export default function Index({
     sejarah,
     pimpinan,
     statistik,
+    geografis
 }: any) {
     const renderContent = () => {
         switch (kategori.slug) {
             case "sekilas":
-                return <Sekilas data={sekilas} statistik={statistik} />;
+                return <Sekilas sekilas={sekilas} statistik={statistik} kecamatan={kecamatan} geografis={geografis}/>;
 
             case "visi-misi":
                 return <VisiMisi visi={visi} misi={misi} />;

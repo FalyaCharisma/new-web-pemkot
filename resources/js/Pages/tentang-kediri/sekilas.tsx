@@ -1,166 +1,200 @@
 import {
-MapPinned,
-Building2,
-Users,
-UserRound,
-UserRoundCheck,
+    MapPinned,
+    Building2,
+    Users,
+    UserRound,
+    UserRoundCheck,
 } from "lucide-react";
 
-interface Props {
-data: any;
-statistik: any;
+interface SekilasKota {
+    id: number;
+    title: string;
+    deskripsi: string;
+    gambar: string | null;
 }
 
-export default function Sekilas({ data, statistik }: Props) {
-return (
-<div className="space-y-10">
-    {/* Header */}
-    <div>
-        <h2 className="text-3xl font-bold">Sekilas Tentang Kediri</h2>
+interface Statistik {
+    kecamatan: number;
+    kelurahan: number;
+    luas_wilayah: string;
+    laki_laki: string;
+    perempuan: string;
+}
 
-        <div className="mt-3 h-1 w-20 rounded-full bg-primary" />
-    </div>
+interface Kecamatan {
+    id: number;
+    nama: string;
+    jumlah_kelurahan: number;
+}
 
-    {/* Profil */}
-    <div className="grid gap-8 lg:grid-cols-2">
-        <div>
-            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8a2VkaXJpfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60"
-                alt="Kota Kediri" className="h-full w-full rounded-3xl object-cover shadow-md" />
-        </div>
+interface Geografis {
+    id: number;
+    deskripsi: string;
+}
 
-        <div>
+interface Props {
+    sekilas: SekilasKota;
+    statistik: Statistik;
+    kecamatan: Kecamatan[];
+    geografis: Geografis[];
+}
 
-            <div className="mt-6 space-y-3">
-                <div className="prose max-w-none text-slate-600">
-                    Kota Kediri adalah kota yang terletak di Provinsi Jawa Timur dan dikenal sebagai pusat perdagangan,
-                    jasa, pendidikan, serta industri. Didukung oleh potensi ekonomi yang kuat, kekayaan sejarah dan
-                    budaya, serta pembangunan yang berkelanjutan, Kota Kediri terus berkembang menjadi kota yang maju,
-                    nyaman, dan berdaya saing. Melalui semangat MAPAN (Maju, Agamis, Produktif, Aman, dan Ngangeni),
-                    Kota Kediri berkomitmen mewujudkan kesejahteraan masyarakat dan kualitas hidup yang lebih baik.
+export default function Sekilas({
+    sekilas,
+    statistik,
+    kecamatan,
+    geografis,
+}: Props) {
+    const formatNumber = (value: string | number) => {
+        return Number(value).toLocaleString("id-ID");
+    };
+
+    const jumlahPenduduk =
+        Number(statistik.laki_laki) + Number(statistik.perempuan);
+
+    return (
+        <div className="space-y-10">
+            <div>
+                <h2 className="text-3xl font-bold">Sekilas Tentang Kediri</h2>
+
+                <div className="mt-3 h-1 w-20 rounded-full bg-primary" />
+            </div>
+
+            {/* Profil */}
+
+            <div className="grid gap-8 lg:grid-cols-2">
+                <div>
+                    <img
+                        src={sekilas.gambar ?? "/noimage.png"}
+                        alt="Sekilas Kota Kediri"
+                        className="h-full w-full rounded-3xl object-cover shadow-md"
+                    />
                 </div>
-                <div className="flex items-center gap-3">
-                    <MapPinned size={20} className="text-primary" />
-                    <span>Posisi antara 111°05' - 112°03' BT</span>
-                </div>
 
-                <div className="flex items-center gap-3">
-                    <MapPinned size={20} className="text-primary" />
-                    <span>Posisi antara 7°45' - 7°55' LS</span>
-                </div>
+                <div className="space-y-4">
+                    <div
+                        className="prose max-w-none text-slate-600"
+                        dangerouslySetInnerHTML={{
+                            __html: sekilas.deskripsi,
+                        }}
+                    />
 
-                <div className="flex items-center gap-3">
-                    <MapPinned size={20} className="text-primary" />
-                    <span>Ketinggian rata-rata 67 Mdpl</span>
-                </div>
+                    {geografis.map((item) => (
+                        <div key={item.id} className="flex items-center gap-3">
+                            <MapPinned size={20} className="text-primary" />
 
-                <div className="flex items-center gap-3">
-                    <MapPinned size={20} className="text-primary" />
-                    <span>Tingkat kemiringan 0 - 40%</span>
+                            <span>{item.deskripsi}</span>
+                        </div>
+                    ))}
                 </div>
             </div>
-        </div>
-    </div>
 
-    {/* Luas Wilayah */}
-    <div className="overflow-hidden rounded-3xl border bg-white shadow-sm">
-        <div className="p-8">
-            <h2 className=" text-4xl text-center font-bold">
-                63,40 km²
-            </h2>
+            {/* Luas */}
 
-            <p className="mt-2 text-slate-500 text-center">
-                Luas wilayah administratif
-            </p>
-        </div>
+            <div className="overflow-hidden rounded-3xl border bg-white shadow-sm">
+                <div className="p-8">
+                    <h2 className="text-center text-4xl font-bold">
+                        {formatNumber(statistik.luas_wilayah)} km²
+                    </h2>
 
-        <div className="grid grid-cols-2 border-t bg-slate-50">
-            <div className="p-2 text-center">
-                <h3 className="text-3xl font-bold text-primary">
-                    3
-                </h3>
+                    <p className="mt-2 text-center text-slate-500">
+                        Luas wilayah administratif
+                    </p>
+                </div>
 
-                <p>Kecamatan</p>
+                <div className="grid grid-cols-2 border-t bg-slate-50">
+                    <div className="p-3 text-center">
+                        <h3 className="text-3xl font-bold text-primary">
+                            {statistik.kecamatan}
+                        </h3>
+
+                        <p>Kecamatan</p>
+                    </div>
+
+                    <div className="border-l p-3 text-center">
+                        <h3 className="text-3xl font-bold text-primary">
+                            {statistik.kelurahan}
+                        </h3>
+
+                        <p>Kelurahan</p>
+                    </div>
+                </div>
             </div>
 
-            <div className="border-l p-2 text-center">
-                <h3 className="text-3xl font-bold text-primary">
-                    46
-                </h3>
+            {/* Kecamatan */}
 
-                <p>Kelurahan</p>
-            </div>
-        </div>
-    </div>
+            <div className="grid gap-4 md:grid-cols-3">
+                {kecamatan.map((item) => (
+                    <div
+                        key={item.id}
+                        className="rounded-2xl border bg-white p-6 text-center shadow-sm"
+                    >
+                        <Building2
+                            size={36}
+                            className="mx-auto mb-3 text-primary"
+                        />
 
-    {/* Kecamatan */}
-    <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border bg-white p-6 text-center shadow-sm">
-            <Building2 size={36} className="mx-auto mb-3 text-primary" />
+                        <h3 className="font-semibold">Kecamatan {item.nama}</h3>
 
-            <h3 className="font-semibold">Kecamatan Mojoroto</h3>
-
-            <p className="mt-2 text-slate-500">14 Kelurahan</p>
-        </div>
-
-        <div className="rounded-2xl border bg-white p-6 text-center shadow-sm">
-            <Building2 size={36} className="mx-auto mb-3 text-primary" />
-
-            <h3 className="font-semibold">Kecamatan Kota</h3>
-
-            <p className="mt-2 text-slate-500">17 Kelurahan</p>
-        </div>
-
-        <div className="rounded-2xl border bg-white p-6 text-center shadow-sm">
-            <Building2 size={36} className="mx-auto mb-3 text-primary" />
-
-            <h3 className="font-semibold">Kecamatan Pesantren</h3>
-
-            <p className="mt-2 text-slate-500">15 Kelurahan</p>
-        </div>
-    </div>
-
-    {/* Statistik Penduduk */}
-    <div className="rounded-3xl border bg-white p-8">
-        <div className="mb-8 text-center">
-            <h3 className="text-2xl font-bold">Statistik Penduduk</h3>
-
-            <p className="mt-2 text-slate-500">
-                Berdasarkan data kependudukan Kota Kediri
-            </p>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-3">
-            <div className="rounded-2xl bg-slate-50 p-6 text-center">
-                <Users size={42} className="mx-auto mb-4 text-primary" />
-
-                <h4 className="text-3xl font-bold text-primary">
-                    {statistik.jumlah_penduduk}
-                </h4>
-
-                <p className="mt-2 text-slate-500">Total Penduduk</p>
+                        <p className="mt-2 text-slate-500">
+                            {item.jumlah_kelurahan} Kelurahan
+                        </p>
+                    </div>
+                ))}
             </div>
 
-            <div className="rounded-2xl bg-slate-50 p-6 text-center">
-                <UserRound size={42} className="mx-auto mb-4 text-primary" />
+            {/* Statistik */}
 
-                <h4 className="text-3xl font-bold text-primary">
-                    {statistik.laki_laki}
-                </h4>
+            <div className="rounded-3xl border bg-white p-8">
+                <div className="mb-8 text-center">
+                    <h3 className="text-2xl font-bold">Statistik Penduduk</h3>
 
-                <p className="mt-2 text-slate-500">Laki-laki</p>
-            </div>
+                    <p className="mt-2 text-slate-500">
+                        Berdasarkan data kependudukan Kota Kediri
+                    </p>
+                </div>
 
-            <div className="rounded-2xl bg-slate-50 p-6 text-center">
-                <UserRoundCheck size={42} className="mx-auto mb-4 text-primary" />
+                <div className="grid gap-6 md:grid-cols-3">
+                    <div className="rounded-2xl bg-slate-50 p-6 text-center">
+                        <Users
+                            size={42}
+                            className="mx-auto mb-4 text-primary"
+                        />
 
-                <h4 className="text-3xl font-bold text-primary">
-                    {statistik.perempuan}
-                </h4>
+                        <h4 className="text-3xl font-bold text-primary">
+                            {formatNumber(jumlahPenduduk)}
+                        </h4>
 
-                <p className="mt-2 text-slate-500">Perempuan</p>
+                        <p className="mt-2 text-slate-500">Total Penduduk</p>
+                    </div>
+
+                    <div className="rounded-2xl bg-slate-50 p-6 text-center">
+                        <UserRound
+                            size={42}
+                            className="mx-auto mb-4 text-primary"
+                        />
+
+                        <h4 className="text-3xl font-bold text-primary">
+                            {formatNumber(statistik.laki_laki)}
+                        </h4>
+
+                        <p className="mt-2 text-slate-500">Laki-laki</p>
+                    </div>
+
+                    <div className="rounded-2xl bg-slate-50 p-6 text-center">
+                        <UserRoundCheck
+                            size={42}
+                            className="mx-auto mb-4 text-primary"
+                        />
+
+                        <h4 className="text-3xl font-bold text-primary">
+                            {formatNumber(statistik.perempuan)}
+                        </h4>
+
+                        <p className="mt-2 text-slate-500">Perempuan</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-);
+    );
 }
