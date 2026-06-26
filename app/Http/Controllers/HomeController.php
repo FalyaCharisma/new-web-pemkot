@@ -38,6 +38,9 @@ class HomeController extends Controller
                     ->addColumn('gambar', function($row){
                         $gambar = '<img src="'. url('storage/banner/' . $row->gambar) .'" width="200">';
                         return $gambar;
+                    })->addColumn('kategori', function($row){
+                        $kategori = $row->kategori;
+                        return $kategori;
                     })->addColumn('status', function($row){
                         if ($row->status_enabled == 1) {
                             $status = '<button type="button" class="btn btn-info" onclick="location.href=`/update-status-banner/2/'.$row->id.'`" style="margin-right:5px; margin-bottom:5px;">
@@ -52,7 +55,7 @@ class HomeController extends Controller
                     })->addColumn('action', function($row){
                         $actionBtn = '<button type="button" class="btn btn-danger" onclick="deletebannerConfirmation('. $row->id . ')" title="Hapus" style="margin-right:5px; margin-bottom:10px;"><i class="fas fa-trash"></i></button>';
                         return $actionBtn;
-                    })->rawColumns(['gambar', 'status', 'action'])
+                    })->rawColumns(['gambar', 'kategori', 'status', 'action'])
                     ->make(true);
             }
 
@@ -86,7 +89,7 @@ class HomeController extends Controller
 
     public function upload_banner(Request $request){
         $request->validate([
-            'banner' => 'image|mimes:jpeg,png,jpg,webp,svg|max:8024'
+            'banner' => 'image|mimes:jpeg,png,jpg,webp,svg|max:8024',
         ],
         [
             'banner.image'=>trans('File yang di upload harus gambar !'),
@@ -103,6 +106,7 @@ class HomeController extends Controller
         try {
             Banner::insert([
                 'gambar' => $fileName,
+                'kategori' => $request->kategori,
                 'status_enabled' => 1,
                 'created_at' => Carbon::now ('Asia/Jakarta')
             ]);

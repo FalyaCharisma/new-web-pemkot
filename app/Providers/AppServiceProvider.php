@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
+use Inertia\Inertia;
+use App\Models\Banner;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -164,5 +166,22 @@ class AppServiceProvider extends ServiceProvider
         if (! app()->runningInConsole()) {
             View::share('appAdminSidebar', $this->_appAdminSidebar());
         }
+        Inertia::share([
+
+        'menuHero' => function () {
+
+            $hero = Banner::where([
+                    'kategori' => 'menu',
+                    'status_enabled' => 1
+                ])
+                ->latest()
+                ->first();
+
+            return $hero
+                ? asset('storage/banner/'.$hero->gambar)
+                : null;
+        }
+
+    ]);
     }
 }
