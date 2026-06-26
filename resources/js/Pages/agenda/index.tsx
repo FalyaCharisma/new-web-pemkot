@@ -1,4 +1,4 @@
-import { Head, router } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import { HeaderSolid } from "@/Components/site/HeaderSolid";
 import { Footer } from "@/Components/site/Footer";
 import { HeroPage } from "@/Components/HeroPage";
@@ -22,11 +22,12 @@ import {
 interface Props {
     timelineAgenda: Agenda[];
     upcomingAgenda: Agenda[];
+    search?: string;
 }
 
 
-export default function Agenda({ timelineAgenda, upcomingAgenda }: Props) {
-    const [search, setSearch] = useState("");
+export default function Agenda({ timelineAgenda, upcomingAgenda, search: initialSearch = "" }: Props) {
+    const [search, setSearch] = useState(initialSearch);
     return (
         <>
         <Head title="Agenda" />
@@ -110,7 +111,10 @@ export default function Agenda({ timelineAgenda, upcomingAgenda }: Props) {
                                                 <CalendarDays size={16} />
                                             </div>
 
-                                            <div className="flex-1 rounded-2xl border bg-slate-50 p-4">
+                                            <Link
+                                                href={route("agenda.show", item.id)}
+                                                className="flex-1 rounded-2xl border bg-slate-50 p-4 transition hover:border-primary hover:shadow-sm"
+                                            >
 
                                                 <div className="flex items-start justify-between gap-3">
 
@@ -128,7 +132,7 @@ export default function Agenda({ timelineAgenda, upcomingAgenda }: Props) {
 
                                                 <div className="mt-3 flex items-center gap-2 text-sm text-slate-500">
                                                     <CalendarDays size={15}/>
-                                                    {item.tanggal_mulai}
+                                                    {item.tanggal_mulai_formatted}
                                                 </div>
 
                                                 <div className="mt-2 flex items-center gap-2 text-sm text-slate-500">
@@ -136,7 +140,7 @@ export default function Agenda({ timelineAgenda, upcomingAgenda }: Props) {
                                                     {item.lokasi_acara}
                                                 </div>
 
-                                            </div>
+                                            </Link>
 
                                         </div>
 
@@ -165,7 +169,10 @@ export default function Agenda({ timelineAgenda, upcomingAgenda }: Props) {
 
                         {/* ================= HERO ================= */}
                         {upcomingAgenda.length > 0 && (
-                            <div className="grid lg:grid-cols-2 gap-6 items-stretch">
+                            <Link
+                                href={route("agenda.show", upcomingAgenda[0].id)}
+                                className="grid lg:grid-cols-2 gap-6 items-stretch group"
+                            >
                                 {/* IMAGE */}
                                 <div className="rounded-2xl overflow-hidden bg-slate-100 aspect-[4/5] lg:aspect-square">
                                     <img
@@ -207,7 +214,7 @@ export default function Agenda({ timelineAgenda, upcomingAgenda }: Props) {
                                     />
 
                                 </div>
-                            </div>
+                            </Link>
                         )}
 
                         {/* ================= SIMPLE LIST (NO CARD OVERKILL) ================= */}
@@ -223,8 +230,9 @@ export default function Agenda({ timelineAgenda, upcomingAgenda }: Props) {
 
                             {upcomingAgenda.slice(1).map(item => (
 
-                            <div
+                            <Link
                                 key={item.id}
+                                href={route("agenda.show", item.id)}
                                 className="rounded-2xl overflow-hidden border bg-white hover:shadow-md transition"
                             >
 
@@ -261,7 +269,7 @@ export default function Agenda({ timelineAgenda, upcomingAgenda }: Props) {
 
                                 </div>
 
-                            </div>
+                            </Link>
 
                             ))}
 
