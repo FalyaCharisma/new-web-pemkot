@@ -26,7 +26,7 @@ use Inertia\Inertia;
 Route::get('/', [LandingPageController::class, 'index']);
 Route::get('/perangkat-daerah/{slug}', [PerangkatDaerahController::class, 'index']);
 Route::get('/tentang-kediri/{slug?}', [TentangKediriController::class, 'tentangKediri'])->name('tentang-kediri');
-Route::get('/kelurahan/{kecamatan?}', [KelurahanController::class, 'kelurahan']);
+Route::get('/kelurahan/{kecamatan?}', [KelurahanController::class, 'kelurahan'])->name('kelurahan');
 Route::get('/penghargaan', [PenghargaanController::class, 'penghargaan'])->name('penghargaan');
 Route::get('/penghargaan/{slug}', [PenghargaanController::class, 'show'])->name('penghargaan.show');
 
@@ -170,6 +170,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/update-album', 'update_album')->name('update_album');
         Route::post('/hapus-foto/{id}', 'hapus_foto')->name('hapus_foto');
         Route::post('/hapus-album/{id}', 'hapus_album')->name('hapus_album');
+        // Featured Video
+        Route::get('/list-video', 'list_video')->name('list_video');
+        Route::get('/form-video/{id}', 'form_video')->name('form_video');
+        Route::post('/store-video', 'store_video')->name('store_video');
+        Route::post('/update-video', 'update_video')->name('update_video');
+        Route::post('/hapus-video/{id}', 'hapus_video')->name('hapus_video');
     });
 
     //*************************************** DOKUMEN PAGE *************************************************
@@ -194,9 +200,8 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-Route::resource('fasilitas-kota', FasilitasKotaController::class)
-->parameters([
-'fasilitas-kota'=>'fasilitas'
+Route::resource('fasilitas-kota', FasilitasKotaController::class)->parameters([
+    'fasilitas-kota' => 'fasilitas',
 ]);
 Route::get('/berita', [BeritaController::class, 'berita'])->name('berita');
 Route::get('/berita/{slug}', [BeritaController::class, 'show'])->name('berita.show');
@@ -205,6 +210,5 @@ Route::resource('dokumen', DokumenController::class);
 Route::resource('agenda', AgendaController::class);
 Route::resource('pesona-unggulan', PesonaUnggulanController::class);
 Route::get('/search', [SearchController::class, 'index'])->name('search');
-
 
 require __DIR__ . '/auth.php';

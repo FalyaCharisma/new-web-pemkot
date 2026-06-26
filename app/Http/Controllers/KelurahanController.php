@@ -13,51 +13,69 @@ class KelurahanController extends Controller
 {
     public function kelurahan(string $kecamatan = null)
     {
-        $kecamatanList = Kecamatan::orderBy('nm_kecamatan')
-            ->get();
+        $search = request('search');
 
-        $selectedKecamatan = $kecamatan
-            ? Kecamatan::where('kd_kecamatan', $kecamatan)->first()
-            : $kecamatanList->first();
+        $kecamatanList = Kecamatan::orderBy('nm_kecamatan')->get();
+
+        $selectedKecamatan = $kecamatan ? Kecamatan::where('kd_kecamatan', $kecamatan)->first() : $kecamatanList->first();
 
         $kelurahan = Kelurahan::with('kecamatan')
-            ->where(
-                'kd_kecamatan',
-                $selectedKecamatan?->kd_kecamatan
-            )
+
+            ->where('kd_kecamatan', $selectedKecamatan?->kd_kecamatan)
+
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($query) use ($search) {
+                    $query
+                        ->where('nm_kelurahan', 'like', "%{$search}%")
+
+                        ->orWhereHas('kecamatan', function ($q) use ($search) {
+                            $q->where('nm_kecamatan', 'like', "%{$search}%");
+                        });
+                });
+            })
+
             ->orderBy('nm_kelurahan')
+
             ->get();
 
         return Inertia::render(
             'kelurahan/index',
+
             [
                 'kecamatanList' => $kecamatanList,
+
                 'selectedKecamatan' => $selectedKecamatan,
+
                 'kelurahan' => $kelurahan,
-            ]
+
+                'search' => $search,
+            ],
         );
     }
 
     // ------------------------------ ADMINPAGE ------------------------------------
     // Datatable Kelurahan
-    public function list_kelurahan(Request $request){
+    public function list_kelurahan(Request $request)
+    {
         if ($request->ajax()) {
             $kelurahan = Kelurahan::where('status_enabled', 1)->get();
             return Datatables::of($kelurahan)
                 ->addIndexColumn()
-                ->addColumn('kelurahan', function($row){
+                ->addColumn('kelurahan', function ($row) {
                     $kelurahan = $row['nm_kelurahan'];
                     return $kelurahan;
-                })->addColumn('action', function($row){
+                })
+                ->addColumn('action', function ($row) {
                     $action = '<button type="button" class="btn btn-warning" onclick="edit(' . $row->id . ')" title="Edit" style="margin-right:5px; margin-bottom:5px;"><i class="fa fa-pen"></i></button>';
-                            // <button type="button" class="btn btn-danger" onclick="deleteConfirmation('. $row->id . ')" title="Delete" style="margin-right:5px; margin-bottom:5px;"><i class="fa fa-trash"></i></button>';
+                    // <button type="button" class="btn btn-danger" onclick="deleteConfirmation('. $row->id . ')" title="Delete" style="margin-right:5px; margin-bottom:5px;"><i class="fa fa-trash"></i></button>';
                     return $action;
-                })->rawColumns(['kelurahan', 'action'])
+                })
+                ->rawColumns(['kelurahan', 'action'])
                 ->make(true);
         }
 
         return view('admin.kelurahan.list-kelurahan');
-    }  
+    }
 
     public function sync_kelurahan()
     {
@@ -82,7 +100,7 @@ class KelurahanController extends Controller
                         [
                             'kd_kecamatan' => $kelurahan->kode_kecamatan,
                             'nm_kelurahan' => $kelurahan->nama_desa_kelurahan,
-                        ]
+                        ],
                     );
                 }
             }
@@ -106,7 +124,7 @@ class KelurahanController extends Controller
                     ['kd_kecamatan' => $kecamatan->kode_kecamatan],
                     [
                         'nm_kecamatan' => $kecamatan->nama_kecamatan,
-                    ]
+                    ],
                 );
             }
             toastr()->success('Kecamatan Berhasil Diperbarui.');
@@ -116,22 +134,23 @@ class KelurahanController extends Controller
     }
 
     // Adminpage - Update Kelurahan
-    public function update_kelurahan(Request $request){        
+    public function update_kelurahan(Request $request)
+    {
         DB::beginTransaction();
-     
-        try{
-            if (isset($request->id)){
-                Kelurahan::where(['id'=>$request->id])->update([
+
+        try {
+            if (isset($request->id)) {
+                Kelurahan::where(['id' => $request->id])->update([
                     'link' => $request->link,
                     'jml_penduduk' => $request->jumlah_penduduk,
-                    'updated_at' => Carbon::now ('Asia/Jakarta')
+                    'updated_at' => Carbon::now('Asia/Jakarta'),
                 ]);
 
                 toastr()->success('Kelurahan Berhasil Diperbarui.');
             }
 
             DB::commit();
-        }catch(\Exception $exception){
+        } catch (\Exception $exception) {
             DB::rollback();
             toastr()->error('Terdapat kesalahan dalam memproses data. Hubungi Programmer!!');
         }
@@ -139,8 +158,9 @@ class KelurahanController extends Controller
         return redirect('/list-kelurahan');
     }
 
-    // Adminpage - Value Kelurahan 
-    public function value_kelurahan($id){
+    // Adminpage - Value Kelurahan
+    public function value_kelurahan($id)
+    {
         $kelurahan = Kelurahan::where('id', $id)->first();
         return response()->json($kelurahan);
     }

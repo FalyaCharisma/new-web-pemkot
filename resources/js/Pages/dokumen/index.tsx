@@ -51,6 +51,7 @@ export default function DokumenIndex({
     filters,
 }: Props) {
     const [viewMode, setViewMode] = useState("grid");
+    const [search, setSearch] = useState(filters.search ?? "");
 
     const formatDate = (date: string) => {
         return new Date(date).toLocaleDateString("id-ID", {
@@ -112,17 +113,20 @@ export default function DokumenIndex({
     };
 
     const fileConfig = {
-        PDF: 'bg-red-50 text-red-600',
-        DOCX: 'bg-blue-50 text-blue-600',
-        DOC: 'bg-blue-50 text-blue-600',
-        XLSX: 'bg-green-50 text-green-600',
-        XLS: 'bg-green-50 text-green-600',
-        PPTX: 'bg-orange-50 text-orange-600',
-        ZIP: 'bg-amber-50 text-amber-600',
+        PDF: "bg-red-50 text-red-600",
+        DOCX: "bg-blue-50 text-blue-600",
+        DOC: "bg-blue-50 text-blue-600",
+        XLSX: "bg-green-50 text-green-600",
+        XLS: "bg-green-50 text-green-600",
+        PPTX: "bg-orange-50 text-orange-600",
+        ZIP: "bg-amber-50 text-amber-600",
     };
-    const ext = dokumen.data[0]?.dokumen.split('.').pop()?.toUpperCase() || 'FILE';
+    const ext =
+        dokumen.data[0]?.dokumen.split(".").pop()?.toUpperCase() || "FILE";
 
-    const badgeClass = fileConfig[ext as keyof typeof fileConfig] ?? 'bg-slate-100 text-slate-600';
+    const badgeClass =
+        fileConfig[ext as keyof typeof fileConfig] ??
+        "bg-slate-100 text-slate-600";
 
     return (
         <>
@@ -136,7 +140,8 @@ export default function DokumenIndex({
                         breadcrumb="Dokumen"
                         description="Kumpulan dokumen resmi Pemerintah Kota Kediri yang dapat diakses masyarakat."
                         placeholder="Cari dokumen..."
-                        searchValue={filters.search}
+                        searchValue={search}
+                        onSearchChange={(value) => setSearch(value)}
                         onSearch={handleSearch}
                     />
 
@@ -144,8 +149,7 @@ export default function DokumenIndex({
                         {/* Filter */}
 
                         <div className="mb-6 grid gap-4 lg:grid-cols-12">
-                            <div className="relative lg:col-span-7">
-                            </div>
+                            <div className="relative lg:col-span-7"></div>
 
                             <div className="lg:col-span-2">
                                 <select
@@ -209,7 +213,9 @@ export default function DokumenIndex({
                                                 className="rounded-2xl border bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
                                             >
                                                 <div className="mb-2">
-                                                    <span className={`rounded-md px-2 py-1 text-xs font-semibold ${badgeClass}`}>
+                                                    <span
+                                                        className={`rounded-md px-2 py-1 text-xs font-semibold ${badgeClass}`}
+                                                    >
                                                         {ext}
                                                     </span>
                                                 </div>
@@ -247,7 +253,9 @@ export default function DokumenIndex({
                                                 <div className="flex items-center gap-5">
                                                     <div className="flex-1">
                                                         <div className="mb-2">
-                                                            <span className={`rounded-md px-2 py-1 text-xs font-semibold ${badgeClass}`}>
+                                                            <span
+                                                                className={`rounded-md px-2 py-1 text-xs font-semibold ${badgeClass}`}
+                                                            >
                                                                 {ext}
                                                             </span>
                                                         </div>
@@ -271,7 +279,9 @@ export default function DokumenIndex({
                                                         target="_blank"
                                                     >
                                                         <button className="flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 hover:shadow-md">
-                                                            <Download size={16} />
+                                                            <Download
+                                                                size={16}
+                                                            />
                                                             Download
                                                         </button>
                                                     </a>

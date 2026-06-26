@@ -2,8 +2,9 @@ import { HeroPage } from "@/Components/HeroPage";
 import { Footer } from "@/Components/site/Footer";
 import { HeaderSolid } from "@/Components/site/HeaderSolid";
 import SidebarItem from "@/Components/site/SidebarItem";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import { Building2, Users, Globe } from "lucide-react";
+import { useState } from "react";
 
 interface Kecamatan {
     kd_kecamatan: string;
@@ -23,13 +24,19 @@ interface Props {
     kecamatanList: Kecamatan[];
     selectedKecamatan: Kecamatan;
     kelurahan: Kelurahan[];
+    search?: string;
 }
 
 export default function KelurahanPage({
     kecamatanList,
+
     selectedKecamatan,
+
     kelurahan,
+
+    search: initialSearch = "",
 }: Props) {
+    const [search, setSearch] = useState(initialSearch);
     return (
         <>
             <Head title="Daftar Kelurahan" />
@@ -40,7 +47,26 @@ export default function KelurahanPage({
                         title="Daftar Kelurahan"
                         breadcrumb="Daftar Kelurahan"
                         placeholder="Cari nama Kecamatan atau Kelurahan..."
-                        description="Jelajahi informasi Perangkat Daerah Kota Kediri untuk mengenal struktur organisasi, tugas pokok dan fungsi, serta peran masing-masing perangkat daerah dalam penyelenggaraan pemerintahan daerah."
+                        description="Jelajahi informasi kelurahan di Kota Kediri untuk mengetahui profil wilayah, jumlah penduduk, dan layanan yang tersedia."
+                        searchValue={search}
+                        onSearchChange={(value) => setSearch(value)}
+                        onSearch={(keyword) => {
+                            router.get(
+                                route("kelurahan"),
+
+                                {
+                                    search: keyword,
+
+                                    kecamatan: selectedKecamatan.kd_kecamatan,
+                                },
+
+                                {
+                                    preserveState: true,
+
+                                    preserveScroll: true,
+                                },
+                            );
+                        }}
                     />
                     <section className="container mx-auto px-4 py-10">
                         <div className="mb-20">
