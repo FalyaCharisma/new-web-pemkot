@@ -18,6 +18,7 @@ import {Peta} from "@/types/peta";
 import { Layanan } from "@/types/layanan";
 import { Agenda as AgendaType } from "@/types/agenda";
 import { FasilitasKota } from "@/types/fasilitas";
+import FloatingReport from '@/Components/site/Floating';
 
 type Props = {
     berita: Berita[];
@@ -57,7 +58,7 @@ export default function LandingPage({
                     <Harmony />
                     <News berita={berita} />
                 </main>
-
+                <FloatingReport />
                 <Footer />
             </div>
         </>

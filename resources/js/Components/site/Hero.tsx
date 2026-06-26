@@ -114,7 +114,7 @@ export function Hero({ hero }: Props) {
                             <button
                                 onClick={() => {
                                     document
-                                        .getElementById("layanan")
+                                        .getElementById("budaya")
                                         ?.scrollIntoView({
                                             behavior: "smooth",
                                         });
