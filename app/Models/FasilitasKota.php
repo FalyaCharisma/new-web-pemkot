@@ -20,4 +20,8 @@ class FasilitasKota extends Model
     {
         return $this->belongsTo(SubKategoriFasilitas::class, 'sub_kategori_id');
     }
+    public function getRouteKeyName()
+{
+    return 'slug';
+}
 }

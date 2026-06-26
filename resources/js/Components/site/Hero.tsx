@@ -1,4 +1,4 @@
-import { Link, router } from "@inertiajs/react";
+import { usePage, Link, router } from "@inertiajs/react";
 import { useState } from "react";
 import {
     Search,
@@ -12,11 +12,13 @@ import {
     Trees,
 } from "lucide-react";
 
-import hero from "@/assets/hero4.png";
 import QuickMenu from "../QuickMenu";
 import MobileMenu from "../MobileMenu";
+type Props = {
+    hero: string | null;
+};
 
-export function Hero() {
+export function Hero({ hero }: Props) {
     const [query, setQuery] = useState("");
 
     const handleSearch = () => {
@@ -32,7 +34,7 @@ export function Hero() {
             {/* Background */}
             <div className="absolute inset-x-0 top-0 h-[85vh]">
                 <img
-                    src={hero}
+                    src={hero ?? ""}
                     alt="Kota Kediri"
                     className="h-full w-full object-cover"
                 />
@@ -109,7 +111,16 @@ export function Hero() {
                                 Akses Layanan Publik
                                 <ArrowRight size={18} />
                             </a>
-                            <button className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-8 py-4 font-semibold text-white backdrop-blur-md transition hover:bg-white/20">
+                            <button
+                                onClick={() => {
+                                    document
+                                        .getElementById("layanan")
+                                        ?.scrollIntoView({
+                                            behavior: "smooth",
+                                        });
+                                }}
+                                className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-8 py-4 font-semibold text-white backdrop-blur-md transition hover:bg-white/20"
+                            >
                                 Jelajahi Kota Kediri
                                 <ArrowRight size={18} />
                             </button>

@@ -68,6 +68,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/update-fasilitas', 'update_fasilitas')->name('update_fasilitas');
         Route::post('/hapus-fasilitas/{id}', 'hapus_fasilitas')->name('hapus_fasilitas');
         Route::get('/get-sub-kategori', 'get_sub_kategori')->name('get_sub_kategori');
+        Route::get('/update-slug-fasilitas', 'update_slug_fasilitas')->name('update_slug_fasilitas');
     });
 
     //*************************************** PETA INTERAKTIF *************************************************
@@ -103,7 +104,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/value-geografis/{id}', 'valueGeografis');
 
         Route::post('/hapus-geografis/{id}', 'hapusGeografis');
-        Route::post('/update-statistik-kota',  'updateStatistikKota')->name('update_statistik_kota');
+        Route::post('/update-statistik-kota', 'updateStatistikKota')->name('update_statistik_kota');
     });
 
     //*************************************** PERANGKAT DAERAH PAGE *************************************************
@@ -193,7 +194,10 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-Route::resource('fasilitas-kota', FasilitasKotaController::class);
+Route::resource('fasilitas-kota', FasilitasKotaController::class)
+->parameters([
+'fasilitas-kota'=>'fasilitas'
+]);
 Route::get('/berita', [BeritaController::class, 'berita'])->name('berita');
 Route::get('/berita/{slug}', [BeritaController::class, 'show'])->name('berita.show');
 Route::resource('galeri', GaleriController::class);
@@ -201,5 +205,6 @@ Route::resource('dokumen', DokumenController::class);
 Route::resource('agenda', AgendaController::class);
 Route::resource('pesona-unggulan', PesonaUnggulanController::class);
 Route::get('/search', [SearchController::class, 'index'])->name('search');
+
 
 require __DIR__ . '/auth.php';

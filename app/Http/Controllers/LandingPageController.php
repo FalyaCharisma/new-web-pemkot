@@ -5,6 +5,8 @@ use App\Models\Berita;
 use App\Models\PetaInteraktif;
 use App\Models\LayananPublik;
 use App\Models\Agenda;
+use App\Models\Banner;
+use App\Models\FasilitasKota;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -15,6 +17,9 @@ class LandingPageController extends Controller
 {
     public function index()
     {
+        $hero = Banner::where('status_enabled', 1)->first();
+        $hero = $hero ? asset('storage/banner/' . $hero->gambar) : null;
+
         $berita = Berita::query()
             ->where('status_published', 1)
             ->where('status_enabled', 1)
@@ -85,11 +90,37 @@ class LandingPageController extends Controller
                 ];
             });
 
+        $wisata = FasilitasKota::with(['kategori'])
+            ->where('status_enabled', 1)
+            ->whereIn('kategori_id', [13, 6, 4, 5, 2])
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'nama' => $item->nama,
+
+                    'foto' => $item->foto ? asset('storage/fasilitas/' . $item->foto) : null,
+
+                    'alamat' => $item->alamat,
+                    'map' => $item->map,
+                    'slug' => $item->slug,
+
+                    'kategori_id' => $item->kategori_id,
+
+                    'kategori' => [
+                        'id' => $item->kategori?->id,
+                        'nama_kategori' => $item->kategori?->nama_kategori,
+                    ],
+                ];
+            });
+
         return Inertia::render('landingpage/index', [
             'berita' => $berita,
             'layanan' => $layanan,
             'peta' => $peta,
             'agenda' => $agenda,
+            'hero' => $hero,
+            'wisata' => $wisata,
         ]);
     }
 }

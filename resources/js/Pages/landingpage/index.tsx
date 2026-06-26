@@ -17,16 +17,19 @@ import { CityMap } from "@/Components/site/CityMap";
 import {Peta} from "@/types/peta";
 import { Layanan } from "@/types/layanan";
 import { Agenda as AgendaType } from "@/types/agenda";
+import { FasilitasKota } from "@/types/fasilitas";
 
 type Props = {
     berita: Berita[];
     layanan: Layanan[];
     peta: Peta[];
     agenda: AgendaType[];
+    hero: string | null;
+    wisata: FasilitasKota[];
 };
 
 export default function LandingPage({
-    berita, layanan, peta, agenda
+    berita, layanan, peta, agenda, hero, wisata
 }: Props) {
     return (
         <>
@@ -43,14 +46,14 @@ export default function LandingPage({
                 <Header />
 
                 <main>
-                    <Hero />
+                    <Hero hero={hero}/>
                     <Services layanan={layanan}/>
                     {/* <About /> */}
                     {/* <Statistik /> */}
                     <Agenda agenda={agenda} />
                     <Culture />
                     <CityMap peta={peta} />
-                    <Tourism />
+                    <Tourism wisata={wisata}/>
                     <Harmony />
                     <News berita={berita} />
                 </main>
