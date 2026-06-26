@@ -10,6 +10,8 @@ use App\Models\FotoAlbum;
 use Exception;
 use Carbon\Carbon;
 use DataTables;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class GaleriController extends Controller
 {

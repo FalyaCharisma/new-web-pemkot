@@ -119,8 +119,8 @@ class AppServiceProvider extends ServiceProvider
                     ],
                     [
                         'title' => 'Agenda',
-                        'url' => '#',
-                        'routes' => []
+                        'url' => '/list-agenda',
+                        'routes' => ['list-agenda', 'form-agenda/*']
                     ],
                     [
                         'title' => 'Album Foto',
@@ -129,8 +129,8 @@ class AppServiceProvider extends ServiceProvider
                     ],
                     [
                         'title' => 'Video',
-                        'url' => '#',
-                        'routes' => []
+                        'url' => '/list-video',
+                        'routes' => ['list-video', 'form-video/*']
                     ],
                     [
                         'title' => 'Dokumen',

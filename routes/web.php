@@ -187,6 +187,14 @@ Route::middleware('auth')->group(function () {
         Route::post('/hapus-dokumen/{id}', 'hapus_dokumen')->name('hapus_dokumen');
     });
 
+    //*************************************** AGENDA PAGE *************************************************
+    Route::controller(AgendaController::class)->group(function () {
+        Route::get('/list-agenda', 'list_agenda')->name('list_agenda');
+        Route::get('/form-agenda/{id}', 'form_agenda')->name('form_agenda');
+        Route::post('/update-agenda', 'update_agenda')->name('update_agenda');
+        Route::post('/hapus-agenda/{id}', 'hapus_agenda')->name('hapus_agenda');
+    });
+
     //*************************************** FEEDBACK PAGE *************************************************
     Route::controller(FeedbackController::class)->group(function () {
         Route::get('/list-feedback', 'list_feedback')->name('list_feedback');

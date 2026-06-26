@@ -28,6 +28,7 @@ interface Props {
 
 export default function Agenda({ timelineAgenda, upcomingAgenda, search: initialSearch = "" }: Props) {
     const [search, setSearch] = useState(initialSearch);
+    console.log(upcomingAgenda);
     return (
         <>
         <Head title="Agenda" />
