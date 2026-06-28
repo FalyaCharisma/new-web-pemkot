@@ -223,7 +223,7 @@ export function Footer() {
 
           {/* Statistik */}
           <div className="lg:col-span-4">
-            <h6 className="mb-5 text-base font-semibold text-primary">
+            {/* <h6 className="mb-5 text-base font-semibold text-primary">
               Statistik Kunjungan
             </h6>
 
@@ -265,9 +265,9 @@ export function Footer() {
                   {totalVisitors.toLocaleString()}
                 </span>
               </div>
-            </div>
+            </div> */}
 
-            <h6 className="mt-6 mb-4 text-base font-semibold text-primary">
+            <h6 className="mb-4 text-base font-semibold text-primary">
               Survey Kepuasan
             </h6>
 

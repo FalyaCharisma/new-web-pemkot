@@ -67,7 +67,7 @@ class LandingPageController extends Controller
             });
 
         $agenda = Agenda::where('status_enabled', 1)
-            ->orderBy('tanggal_mulai')
+            ->orderBy('tanggal_mulai', 'desc')
             ->get()
             ->map(function ($item) {
                 return [
@@ -77,7 +77,7 @@ class LandingPageController extends Controller
                     'judul_acara' => $item->judul_acara,
                     'lokasi_acara' => $item->lokasi_acara,
                     'maps_lokasi' => $item->maps_lokasi,
-                    'banner' => $item->banner ? asset('storage/acara/' . $item->banner) : null,
+                    'banner' => $item->banner ? asset('storage/agenda/' . $item->banner) : null,
                     'deskripsi' => strip_tags($item->deskripsi),
                     'status_enabled' => $item->status_enabled,
                     'created_at' => $item->created_at,

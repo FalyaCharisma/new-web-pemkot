@@ -46,8 +46,8 @@ class FasilitasKotaController extends Controller
         $fasilitas = FasilitasKota::query()
             ->where('status_enabled', 1)
             ->with(['kategori', 'sub_kategori'])
-            ->when($request->kategori, function ($q) use ($request) {
-                $q->where('kategori_id', $request->kategori);
+            ->when($selectedKategori, function ($q) use ($selectedKategori) {
+                $q->where('kategori_id', $selectedKategori);
             })
             ->when($request->sub_kategori, function ($q) use ($request) {
                 $q->whereIn('sub_kategori_id', (array) $request->sub_kategori);
@@ -92,7 +92,6 @@ class FasilitasKotaController extends Controller
         $keywords = explode('-', $slug);
         $stopWords = ['dan', 'di', 'ke', 'dari', 'yang', 'untuk', 'dengan', 'kota', 'kediri'];
 
-      
         $berita = Berita::with('kategori')
             ->get()
             ->map(function ($item) use ($keywords, $stopWords) {
@@ -134,39 +133,21 @@ class FasilitasKotaController extends Controller
 
         if ($berita->count() < 4) {
             $tambahan = Berita::with('kategori')
-                ->whereNotIn(
-                    'id',
-                    $berita->pluck('id'),
-                )
+                ->whereNotIn('id', $berita->pluck('id'))
                 ->latest('tanggal')
                 ->take(4 - $berita->count())
                 ->get();
-            $berita = $berita
-                ->merge($tambahan)
-                ->unique('id')
-                ->values();
+            $berita = $berita->merge($tambahan)->unique('id')->values();
         }
 
-        $agenda = Agenda::latest()
-            ->take(4)
-            ->get();
-        $lainnya = FasilitasKota::where(
-            'id',
-            '!=',
-            $fasilitas->id,
-        )
-            ->inRandomOrder()
-            ->take(3)
-            ->get();
-        return Inertia::render(
-            'fasilitaskota/detail',
-            [
-                'fasilitas' => $fasilitas,
-                'berita' => $berita,
-                'agenda' => $agenda,
-                'lainnya' => $lainnya,
-            ],
-        );
+        $agenda = Agenda::latest()->take(4)->get();
+        $lainnya = FasilitasKota::where('id', '!=', $fasilitas->id)->inRandomOrder()->take(3)->get();
+        return Inertia::render('fasilitaskota/detail', [
+            'fasilitas' => $fasilitas,
+            'berita' => $berita,
+            'agenda' => $agenda,
+            'lainnya' => $lainnya,
+        ]);
     }
     public function edit(string $id)
     {

@@ -1,6 +1,8 @@
 import { Calendar, MapPin, ArrowUpRight } from "lucide-react";
 import { SectionLabel } from "./SectionLabel";
 import { Agenda as AgendaType } from "@/types/agenda";
+import { formatDate } from "../ui/date";
+import { Link } from "@inertiajs/react";
 
 interface Props {
     agenda: AgendaType[];
@@ -84,13 +86,13 @@ export function Agenda({ agenda }: Props) {
 
                                 <span className="inline-flex items-center gap-2">
                                     <Calendar className="size-4 text-gold" />
-                                    {featured.tanggal_mulai_formatted}-
-                                    {featured.tanggal_selesai_formatted}
+                                    {formatDate(featured.tanggal_mulai)}-
+                                    {formatDate(featured.tanggal_selesai)}
                                 </span>
                             </div>
 
                             <a
-                                href={featured.maps_lokasi ?? "#"}
+                                href={route("agenda.show", featured.id)}
                                 target="_blank"
                                 className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-all hover:gap-3"
                             >
@@ -103,64 +105,63 @@ export function Agenda({ agenda }: Props) {
                     {/* Right side events */}
                     <div className="grid h-full grid-rows-3 gap-6">
                         {rest.map((e) => (
-                            <article
-                                key={e.judul_acara}
-                                className="group flex h-full gap-5 overflow-hidden rounded-2xl border border-border bg-gradient-card p-4 transition-colors hover:bg-card"
+                            <Link
+                                key={e.id}
+                                href={route("agenda.show", e.id)} // sesuaikan dengan route kamu
+                                className="block"
                             >
-                                <div className="relative aspect-square w-32 shrink-0 overflow-hidden rounded-xl">
-                                    <img
-                                        src={e.banner}
-                                        alt={e.judul_acara}
-                                        loading="lazy"
-                                        width={400}
-                                        height={400}
-                                        className="size-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                    />
+                                <article className="group flex h-full gap-5 overflow-hidden rounded-2xl border border-border bg-gradient-card p-4 transition-colors hover:bg-card">
+                                    <div className="relative aspect-square w-32 shrink-0 overflow-hidden rounded-xl">
+                                        <img
+                                            src={e.banner}
+                                            alt={e.judul_acara}
+                                            loading="lazy"
+                                            width={400}
+                                            height={400}
+                                            className="size-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                        />
 
-                                    <div className="absolute left-2 top-2 grid size-12 place-items-center rounded-lg bg-background/80 backdrop-blur">
-                                        <span className="font-serif text-lg leading-none">
-                                            {new Date(e.tanggal_mulai)
-                                                .getDate()
-                                                .toString()
-                                                .padStart(2, "0")}
-                                        </span>
+                                        <div className="absolute left-2 top-2 grid size-12 place-items-center rounded-lg bg-background/80 backdrop-blur">
+                                            <span className="font-serif text-lg leading-none">
+                                                {new Date(e.tanggal_mulai)
+                                                    .getDate()
+                                                    .toString()
+                                                    .padStart(2, "0")}
+                                            </span>
 
-                                        <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-gold">
-                                            {new Date(
-                                                e.tanggal_mulai,
-                                            ).toLocaleString(
-                                                "id-ID",
-
-                                                {
+                                            <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-gold">
+                                                {new Date(
+                                                    e.tanggal_mulai,
+                                                ).toLocaleString("id-ID", {
                                                     month: "short",
-                                                },
-                                            )}
-                                        </span>
+                                                })}
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="flex flex-1 flex-col py-1">
-                                    <span className="text-[11px] uppercase tracking-[0.18em] text-gold">
-                                        Agenda Kota Kediri
-                                    </span>
-
-                                    <h3 className="mt-1 text-lg font-semibold leading-snug">
-                                        {e.judul_acara}
-                                    </h3>
-
-                                    <div className="mt-auto flex flex-col gap-1 pt-3 text-xs text-muted-foreground">
-                                        <span className="inline-flex items-center gap-1.5">
-                                            <MapPin className="size-3" />
-                                            {e.lokasi_acara}
+                                    <div className="flex flex-1 flex-col py-1">
+                                        <span className="text-[11px] uppercase tracking-[0.18em] text-gold">
+                                            Agenda Kota Kediri
                                         </span>
 
-                                        <span className="inline-flex items-center gap-1.5">
-                                            <Calendar className="size-3" />
-                                            {e.tanggal_mulai}
-                                        </span>
+                                        <h3 className="mt-1 text-lg font-semibold leading-snug">
+                                            {e.judul_acara}
+                                        </h3>
+
+                                        <div className="mt-auto flex flex-col gap-1 pt-3 text-xs text-muted-foreground">
+                                            <span className="inline-flex items-center gap-1.5">
+                                                <MapPin className="size-3" />
+                                                {e.lokasi_acara}
+                                            </span>
+
+                                            <span className="inline-flex items-center gap-1.5">
+                                                <Calendar className="size-3" />
+                                                {formatDate(e.tanggal_mulai)}
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </article>
+                                </article>
+                            </Link>
                         ))}
                     </div>
                 </div>
