@@ -24,19 +24,19 @@ const footerMenus = [
   {
     title: "Layanan Publik",
     children: [
-      { title: "Lapor Mbak Wali", url: "#" },
-      { title: "Perizinan Online", url: "#" },
-      { title: "PPDB Kediri", url: "#" },
-      { title: "Pajak Daerah", url: "#" },
+      { title: "Lapor Mbak Wali", url: "https://lapormbakwali.kedirikota.go.id" },
+      { title: "Perizinan Online", url: "https://kswi.kedirikota.go.id/" },
+      { title: "Layanan Kependudukan", url: "https://disdukcapil.kedirikota.go.id/sakti/" },
+      { title: "Pajak Daerah", url: "https://pajak.kedirikota.go.id/pbb/login" },
     ],
   },
   {
     title: "Informasi",
     children: [
-      { title: "Berita Kota", url: "#" },
-      { title: "Agenda & Event", url: "#" },
-      { title: "Pengumuman", url: "#" },
-      { title: "Statistik Kota", url: "#" },
+      { title: "Berita Kota", url: "/berita" },
+      { title: "Agenda & Event", url: "/agenda" },
+      { title: "Fasilitas", url: "/fasilitas-kota" },
+      { title: "Statistik Kota", url: "https://satudata.kedirikota.go.id" },
     ],
   },
 ];

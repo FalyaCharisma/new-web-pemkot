@@ -8,6 +8,7 @@ import { HeaderSolid } from "@/Components/site/HeaderSolid";
 import { HeroPage } from "@/Components/HeroPage";
 import { Footer } from "@/Components/site/Footer";
 import SidebarItem from "@/Components/site/SidebarItem";
+import FloatingReport from "@/Components/site/Floating";
 
 export default function Index({
     kategori,
@@ -76,7 +77,7 @@ export default function Index({
                         </div>
                     </section>
                 </main>
-
+<FloatingReport />
                 <Footer />
             </div>
         </>

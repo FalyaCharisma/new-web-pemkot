@@ -27,7 +27,7 @@ export function News({ berita }: Props) {
                         </p>
                     </div>
                     <a
-                        href="#"
+                        href="/berita"
                         className="inline-flex items-center gap-2 self-start rounded-full border border-border bg-surface px-5 py-2.5 text-sm font-medium transition-colors hover:bg-card"
                     >
                         Lihat semua berita

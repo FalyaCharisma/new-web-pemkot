@@ -31,6 +31,7 @@ class GaleriController extends Controller
             ->when($request->search, function ($q) use ($request) {
                 $q->where('judul', 'like', '%' . $request->search . '%');
             })
+            ->orderBy('id', 'desc')
             ->latest()
             ->paginate(6)
             ->through(function ($album) {
@@ -39,13 +40,14 @@ class GaleriController extends Controller
                     'judul' => $album->judul,
                     'created_at' => $album->created_at,
 
-                    'fotos' =>
-                        $album->fotos?->map(
-                            fn($f) => [
-                                'foto' => asset('storage/album/' . $f->foto),
-                                'nama_foto' => $f->nama_foto,
-                            ],
-                        ) ?? [],
+                    'fotos' => $album->fotos->map(function ($f) {
+    return [
+        'foto' => filter_var($f->foto, FILTER_VALIDATE_URL)
+            ? $f->foto
+            : asset('storage/album/' . $f->foto),
+        'nama_foto' => $f->nama_foto,
+    ];
+}),
                 ];
             });
 
@@ -382,8 +384,7 @@ class GaleriController extends Controller
             'id',
 
             $request->id,
-        )
-        ->update([
+        )->update([
             'title' => $request->title,
 
             'description' => $request->description,
@@ -403,8 +404,7 @@ class GaleriController extends Controller
             'id',
 
             $id,
-        )
-        ->update([
+        )->update([
             'status_enabled' => 0,
 
             'updated_at' => Carbon::now('Asia/Jakarta'),
