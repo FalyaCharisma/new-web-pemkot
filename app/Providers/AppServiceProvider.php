@@ -53,13 +53,13 @@ class AppServiceProvider extends ServiceProvider
             [
                 'title' => 'Mengenal Kediri',
                 'url' => '#',
-                'routes' => ['form-pesona-kediri', 'ada-apa-kediri', 'form-ada-apa/*', 'list-kategori-aset', 'list-penghargaan', 'form-visimisi', 'list-opd', 'list-sejarah', 'list-jabatan', 'list-pimpinan', 'list-kelurahan', 'list-kelurahan', 'list-fasilitas', 'form-opd/*'],
+                'routes' => ['list-pesona-unggulan', 'ada-apa-kediri', 'form-ada-apa/*', 'list-kategori-aset', 'list-penghargaan', 'form-visimisi', 'list-opd', 'list-sejarah', 'list-jabatan', 'list-pimpinan', 'list-kelurahan', 'list-kelurahan', 'list-fasilitas', 'form-opd/*'],
                 'icon' => 'fa-industry',
                 'children' => array(
                     [
                         'title' => 'Pesona Unggulan',
-                        'url' => '/form-pesona-kediri',
-                        'routes' => ['form-pesona-kediri']
+                        'url' => '/list-pesona-unggulan',
+                        'routes' => ['list-pesona-unggulan']
                     ],
                     [
                         'title' => 'Fasilitas Kota',

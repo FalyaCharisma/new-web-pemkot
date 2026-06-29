@@ -7,7 +7,10 @@ use App\Models\PesonaUnggulan;
 use App\Models\Berita;
 use App\Models\KategoriBerita;
 use App\Models\PetaInteraktif;
+use App\Models\HighlightPesona;
 use Inertia\Inertia;
+use DataTables;
+use Carbon\Carbon;
 
 class PesonaUnggulanController extends Controller
 {
@@ -178,5 +181,200 @@ class PesonaUnggulanController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+
+    // ===========================
+    // ADMIN PAGE
+    // ===========================
+
+    public function list_pesona_unggulan(Request $request)
+    {
+        $titlepage = "Pesona Unggulan";
+
+        if ($request->ajax()) {
+
+            $pesona = PesonaUnggulan::with('kategori')->where('status_enabled', 1)
+                ->latest()
+                ->get();
+
+            return Datatables::of($pesona)
+                ->addIndexColumn()
+
+                ->addColumn('cover', function ($row) {
+
+                    if (!$row->cover) {
+                        return '-';
+                    }
+
+                    return '<img src="' . asset('storage/pesona/' . $row->cover) . '" width="90">';
+                })
+
+                ->addColumn('judul', function ($row) {
+                    return $row->judul;
+                })
+
+                ->addColumn('kategori', function ($row) {
+                    return $row->kategori->nama_kategori;
+                })
+
+                ->addColumn('views', function ($row) {
+                    return number_format($row->views);
+                })
+
+                ->addColumn('action', function ($row) {
+
+                    return '
+                        <button class="btn btn-primary"
+                            onclick="location.href=`/form-pesona-unggulan/' . $row->id . '`">
+                            <i class="fas fa-edit"></i>
+                        </button>
+
+                        <button class="btn btn-danger"
+                            onclick="deletePesonaConfirmation(' . $row->id . ')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    ';
+                })
+
+                ->rawColumns([
+                    'cover',
+                    'judul',
+                    'kategori',
+                    'views',
+                    'action'
+                ])
+
+                ->make(true);
+        }
+
+        return view('admin.pesona-unggulan.list-pesona-unggulan', compact('titlepage'));
+    }
+
+    public function form_pesona_unggulan($id)
+    {
+        $kategori = KategoriBerita::where('status_enabled', 1)->get();
+
+        if ($id == 'add') {
+
+            $titlepage = 'Tambah Pesona Unggulan';
+
+            $pesona = '';
+
+        } else {
+
+            $titlepage = 'Edit Pesona Unggulan';
+
+            $pesona = PesonaUnggulan::find($id);
+        }
+
+        return view(
+            'admin.pesona-unggulan.form-pesona-unggulan',
+            compact(
+                'titlepage',
+                'pesona',
+                'kategori'
+            )
+        );
+    }
+
+    public function update_pesona_unggulan(Request $request)
+    {
+        $request->validate([
+            'judul' => 'required',
+            'id_kategori' => 'required',
+            'cover' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        if ($request->id) {
+
+            $pesona = PesonaUnggulan::findOrFail($request->id);
+
+            $cover = $pesona->cover;
+
+        } else {
+
+            $pesona = new PesonaUnggulan();
+
+            $cover = null;
+        }
+
+        if ($request->hasFile('cover')) {
+
+            if ($cover) {
+                Storage::disk('public')->delete('pesona/' . $cover);
+            }
+
+            $file = $request->file('cover');
+
+            $cover = 'pesona-' . time() . '.' . $file->extension();
+
+            $file->storeAs(
+                'pesona',
+                $cover,
+                'public'
+            );
+        }
+
+        $pesona->cover = $cover;
+        $pesona->judul = $request->judul;
+        $pesona->slug = Str::slug($request->judul);
+        $pesona->id_kategori = $request->id_kategori;
+        $pesona->deskripsi = $request->deskripsi;
+        $pesona->fyi = $request->fyi;
+        $pesona->judul_video = $request->judul_video;
+        $pesona->deskripsi_video = $request->deskripsi_video;
+        $pesona->url_video = $request->url_video;
+
+        if (!$request->id) {
+            $pesona->views = 0;
+            $pesona->status_enabled = 1;
+        }
+
+        $pesona->save();
+
+        toastr()->success('Pesona Unggulan berhasil disimpan.');
+
+        return redirect('/list-pesona-unggulan');
+    }
+
+    public function hapus_pesona_unggulan($id)
+    {
+        $hapus = PesonaUnggulan::where('id', $id)
+            ->update([
+                'status_enabled' => 0,
+                'updated_at' => Carbon::now('Asia/Jakarta'),
+            ]);
+
+        if ($hapus) {
+
+            $success = true;
+            $message = 'Pesona Unggulan berhasil dihapus';
+
+        } else {
+
+            $success = false;
+            $message = 'Data tidak ditemukan';
+        }
+ 
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
+    }
+
+    public function form_highlight_pesona()
+    {
+        $titlepage = "Highlight Pesona Unggulan";
+
+        $highlight = HighlightPesona::first();
+
+        return view(
+            'admin.pesona-unggulan.form-highlight-pesona',
+            compact(
+                'titlepage',
+                'highlight'
+            )
+        );
     }
 }

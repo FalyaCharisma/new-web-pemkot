@@ -206,6 +206,15 @@ Route::middleware('auth')->group(function () {
         Route::get('value-user/{id}', 'value_user')->name('value_user');
         Route::post('update-user', 'update_user')->name('update_user');
     });
+
+    Route::controller(PesonaUnggulanController::class)->group(function () {
+        Route::get('/list-pesona-unggulan', 'list_pesona_unggulan')->name('list_pesona_unggulan');
+        Route::get('/form-pesona-unggulan/{id}', 'form_pesona_unggulan')->name('form_pesona_unggulan');
+        Route::post('/update-pesona-unggulan', 'update_pesona_unggulan')->name('update_pesona_unggulan');
+        Route::post('/hapus-pesona-unggulan/{id}', 'hapus_pesona_unggulan')->name('hapus_pesona_unggulan');
+        Route::get('/form-highlight-pesona', 'form_highlight_pesona')->name('form_highlight_pesona');
+        Route::get('/update-highlight-pesona', 'update_highlight_pesona')->name('update_highlight_pesona');
+    });
 });
 
 Route::resource('fasilitas-kota', FasilitasKotaController::class)->parameters([
