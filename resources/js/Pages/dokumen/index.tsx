@@ -16,6 +16,7 @@ import {
     RefreshCcw,
     Search,
 } from "lucide-react";
+import FloatingReport from "@/Components/site/Floating";
 
 interface Dokumen {
     id: number;
@@ -430,7 +431,7 @@ export default function DokumenIndex({
                         </div>
                     </section>
                 </main>
-
+<FloatingReport />
                 <Footer />
             </div>
         </>

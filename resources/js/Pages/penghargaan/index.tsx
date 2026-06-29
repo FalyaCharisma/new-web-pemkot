@@ -8,6 +8,7 @@ import type { Penghargaan } from "@/types/penghargaan";
 import Pagination from "@/Components/Pagination";
 
 import { FaInstagram } from "react-icons/fa6";
+import FloatingReport from "@/Components/site/Floating";
 
 interface PaginationLink {
     url: string | null;
@@ -286,7 +287,7 @@ export default function PenghargaanPage({
                         />
                     </section>
                 </main>
-
+<FloatingReport />
                 <Footer />
             </div>
         </>

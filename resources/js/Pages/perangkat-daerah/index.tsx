@@ -7,6 +7,7 @@ import { Head } from "@inertiajs/react";
 import { HeaderSolid } from "@/Components/site/HeaderSolid";
 import { HeroPage } from "@/Components/HeroPage";
 import SidebarItem from "@/Components/site/SidebarItem";
+import FloatingReport from "@/Components/site/Floating";
 
 export default function Index({ kategori, kategoriList }: any) {
     const renderContent = () => {
@@ -65,6 +66,7 @@ export default function Index({ kategori, kategoriList }: any) {
                         </div>
                     </section>
                 </main>
+                <FloatingReport />
                 <Footer />
             </div>
         </>

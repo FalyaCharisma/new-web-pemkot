@@ -1,4 +1,5 @@
 import { HeroPage } from "@/Components/HeroPage";
+import FloatingReport from "@/Components/site/Floating";
 import { Footer } from "@/Components/site/Footer";
 import { HeaderSolid } from "@/Components/site/HeaderSolid";
 import SidebarItem from "@/Components/site/SidebarItem";
@@ -201,6 +202,7 @@ export default function KelurahanPage({
                         </div>
                     </section>
                 </main>
+                <FloatingReport />
                 <Footer />
             </div>
         </>

@@ -11,6 +11,7 @@ import type { SubKategoriFasilitas } from "@/types/subkategori-fasilitas";
 import type { FasilitasKota } from "@/types/fasilitas";
 import type { PaginationLink } from "@/types/paginationlink";
 import Pagination from "@/Components/Pagination";
+import FloatingReport from "@/Components/site/Floating";
 
 interface Props {
     kategori: KategoriFasilitas[];
@@ -370,7 +371,7 @@ export default function AkomodasiIndex({
                         />
                     </section>
                 </main>
-
+<FloatingReport />
                 <Footer />
             </div>
         </>

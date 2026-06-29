@@ -31,7 +31,7 @@ export function Agenda({ agenda }: Props) {
                         </p>
                     </div>
                     <a
-                        href="#"
+                        href="/agenda"
                         className="inline-flex items-center gap-2 self-start rounded-full border border-border bg-surface px-5 py-2.5 text-sm font-medium transition-colors hover:bg-card"
                     >
                         Lihat semua agenda

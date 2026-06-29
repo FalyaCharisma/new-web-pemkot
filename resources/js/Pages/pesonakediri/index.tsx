@@ -32,6 +32,7 @@ import pecel3 from "@/assets/pecel3.jpg";
 import pecel4 from "@/assets/pecel4.jpg";
 import pecel5 from "@/assets/pecel5.jpg";
 import { Peta } from "@/types/peta";
+import FloatingReport from "@/Components/site/Floating";
 
 const images = [pecel2, pecel3, pecel4, pecel5, pecel];
 const icons = {
@@ -480,6 +481,7 @@ export default function PesonaKediriIndex({ pesona, kategori, peta }: Props) {
                         />
                     </section>
                 </main>
+                <FloatingReport />
                 <Footer />
             </div>
         </>

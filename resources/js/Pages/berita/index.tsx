@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { formatDate } from "@/Components/ui/date";
 import Pagination from "@/Components/Pagination";
+import FloatingReport from "@/Components/site/Floating";
 
 interface Props {
     berita: {
@@ -545,7 +546,7 @@ export default function Berita({
                         />
                     </section>
                 </main>
-
+<FloatingReport />
                 <Footer />
             </div>
         </>

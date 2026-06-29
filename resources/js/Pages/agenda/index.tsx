@@ -18,6 +18,7 @@ import {
     Landmark,
     Users,
 } from "lucide-react";
+import FloatingReport from "@/Components/site/Floating";
 
 interface Props {
     timelineAgenda: Agenda[];
@@ -292,6 +293,7 @@ export default function Agenda({ timelineAgenda, upcomingAgenda, search: initial
                     />
                 </section>
             </main>
+            <FloatingReport />
             <Footer />
         </div>
         </>
