@@ -166,6 +166,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/list-galeri', 'list_galeri')->name('list_galeri');
         Route::get('/form-galeri/{id}', 'form_galeri')->name('form_galeri');
         Route::get('/data-foto/{id}', 'data_foto')->name('data_foto');
+        Route::post('/store-foto-galeri', 'store_foto')->name('store_foto_galeri');
+        Route::post('/update-foto-galeri/{id}', 'update_foto')->name('update_foto_galeri');
         Route::post('dropzone/store', 'dropzoneStore')->name('dropzone.store');
         Route::post('/update-album', 'update_album')->name('update_album');
         Route::post('/hapus-foto/{id}', 'hapus_foto')->name('hapus_foto');
