@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\PesonaUnggulan;
 use App\Models\Berita;
 use App\Models\KategoriBerita;
+use App\Models\KategoriFasilitas;
 use App\Models\PetaInteraktif;
 use App\Models\HighlightPesona;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use DataTables;
 use Carbon\Carbon;
@@ -27,6 +29,9 @@ class PesonaUnggulanController extends Controller
             })
             ->latest()
             ->get();
+        
+        $highlight = HighlightPesona::with('kategori')->first();
+        // dd($highlight);
 
         $peta = PetaInteraktif::with('kategoriFasilitas')->where('menu', 'pesona')
             ->get()
@@ -48,6 +53,7 @@ class PesonaUnggulanController extends Controller
             'pesona' => $pesona,
             'kategori' => $kategori,
             'peta' => $peta,
+            'highlight' => $highlight,
         ]);
     }
 
@@ -283,7 +289,8 @@ class PesonaUnggulanController extends Controller
         $request->validate([
             'judul' => 'required',
             'id_kategori' => 'required',
-            'cover' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'images' => 'nullable|array|max:9',
+            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         if ($request->id) {
@@ -347,12 +354,9 @@ class PesonaUnggulanController extends Controller
             ]);
 
         if ($hapus) {
-
             $success = true;
             $message = 'Pesona Unggulan berhasil dihapus';
-
         } else {
-
             $success = false;
             $message = 'Data tidak ditemukan';
         }
@@ -366,15 +370,112 @@ class PesonaUnggulanController extends Controller
     public function form_highlight_pesona()
     {
         $titlepage = "Highlight Pesona Unggulan";
+        $kategori = KategoriFasilitas::where('status_enabled', 1)->get();
 
         $highlight = HighlightPesona::first();
 
         return view(
             'admin.pesona-unggulan.form-highlight-pesona',
             compact(
+                'kategori',
                 'titlepage',
                 'highlight'
             )
         );
+    }
+
+    public function update_highlight_pesona(Request $request)
+    {
+        $request->validate([
+            'kategori_label' => 'required|string|max:255',
+            'judul' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
+
+            'images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+
+            'highlight1_icon' => 'nullable|string|max:100',
+            'highlight2_icon' => 'nullable|string|max:100',
+            'highlight3_icon' => 'nullable|string|max:100',
+
+            'highlight1_judul' => 'nullable|string|max:255',
+            'highlight2_judul' => 'nullable|string|max:255',
+            'highlight3_judul' => 'nullable|string|max:255',
+
+            'highlight1_deskripsi' => 'nullable|string',
+            'highlight2_deskripsi' => 'nullable|string',
+            'highlight3_deskripsi' => 'nullable|string',
+
+            'cta_judul' => 'nullable|string|max:255',
+            'cta_deskripsi' => 'nullable|string',
+            'cta_button' => 'nullable|string|max:255',
+            'cta_kategori' => 'nullable|integer',
+            'cta_keyword' => 'nullable|string|max:255',
+        ]);
+
+        $highlight = HighlightPesona::first();
+
+        if (!$highlight) {
+            $highlight = new HighlightPesona();
+        }
+
+        // upload galeri jika ada
+        if ($request->hasFile('images')) {
+
+            // hapus gambar lama
+            if (!empty($highlight->images)) {
+
+                foreach ($highlight->images as $image) {
+
+                    Storage::disk('public')->delete(
+                        'pesona/highlight/' . $image
+                    );
+                }
+            }
+
+            $images = [];
+
+            foreach ($request->file('images') as $file) {
+
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+                $file->storeAs(
+                    'pesona/',
+                    $filename,
+                    'public'
+                );
+
+                $images[] = $filename;
+            }
+
+            $highlight->images = $images;
+        }
+
+        $highlight->kategori_label = $request->kategori_label;
+        $highlight->judul = $request->judul;
+        $highlight->deskripsi = $request->deskripsi;
+
+        $highlight->highlight1_icon = $request->highlight1_icon;
+        $highlight->highlight1_judul = $request->highlight1_judul;
+        $highlight->highlight1_deskripsi = $request->highlight1_deskripsi;
+
+        $highlight->highlight2_icon = $request->highlight2_icon;
+        $highlight->highlight2_judul = $request->highlight2_judul;
+        $highlight->highlight2_deskripsi = $request->highlight2_deskripsi;
+
+        $highlight->highlight3_icon = $request->highlight3_icon;
+        $highlight->highlight3_judul = $request->highlight3_judul;
+        $highlight->highlight3_deskripsi = $request->highlight3_deskripsi;
+
+        $highlight->cta_judul = $request->cta_judul;
+        $highlight->cta_deskripsi = $request->cta_deskripsi;
+        $highlight->cta_button = $request->cta_button;
+        $highlight->cta_kategori = $request->cta_kategori;
+        $highlight->cta_keyword = $request->cta_keyword;
+
+        $highlight->save();
+
+        return redirect()
+            ->back()
+            ->with('success', 'Highlight Pesona berhasil diperbarui.');
     }
 }
