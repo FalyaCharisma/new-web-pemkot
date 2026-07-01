@@ -139,7 +139,7 @@ export default function DokumenIndex({
                     <HeroPage
                         title="Dokumen Publik"
                         breadcrumb="Dokumen"
-                        description="Kumpulan dokumen resmi Pemerintah Kota Kediri yang dapat diakses masyarakat."
+                        description=""
                         placeholder="Cari dokumen..."
                         searchValue={search}
                         onSearchChange={(value) => setSearch(value)}
