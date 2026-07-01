@@ -13,7 +13,12 @@ export default function Login() {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route("login"));
+        
+        post(route("login"), {
+            onSuccess: () => {
+                window.location.href = route("dashboard");
+            },
+        });
     };
 
     return (
