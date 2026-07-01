@@ -1,11 +1,11 @@
 @extends('admin.layouts.app')
 
+@section('title', 'Pesona Unggulan')
+
 @section('content')
 
 <div class="container">
-
     <div class="page-inner">
-
         <div class="page-header">
 
             <h3 class="fw-bold mb-3">
@@ -31,15 +31,10 @@
             </ul>
 
         </div>
-
-        <form action="{{ route('update_highlight_pesona') }}" method="POST">
-
+        <form action="{{ route('update_highlight_pesona') }}" method="POST" enctype="multipart/form-data">
             @csrf
-
             <input type="hidden" name="id" value="{{ $highlight->id ?? '' }}">
-
             <div class="row">
-
                 <div class="col-lg-12 mb-3">
 
                     <button
@@ -62,9 +57,7 @@
                     </button>
 
                 </div>
-
                 @include('admin.validation')
-
                 <!-- LEFT -->
                 <div class="col-md-7">
 
@@ -75,18 +68,20 @@
                         </div>
 
                         <div class="card-body">
-
+                            
                             <div class="form-group">
+                                <label>Kategori</label>
+                                <select class="form-control select2" name="kategori_label">
+                                    <option value="">Pilih Kategori</option>
+                                    @foreach($kategori as $item)
+                                        <option
+                                            value="{{ $item->id }}"
+                                            {{ old('kategori_label', $highlight->kategori_label ?? '') == $item->id ? 'selected' : '' }}>
 
-                                <label>Badge / Kategori</label>
-
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    name="kategori_label"
-                                    placeholder="Contoh : KULINER KHAS"
-                                    value="{{ $highlight->kategori_label ?? '' }}">
-
+                                            {{ $item->nama_kategori }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <div class="form-group">
@@ -117,20 +112,24 @@
                             <h5 class="mb-3">Highlight Card 1</h5>
 
                             <div class="form-group">
+                                <label>Icon Lucide</label>
 
-                                <label>Icon</label>
-
-                                <select
+                                <input
+                                    type="text"
                                     class="form-control"
-                                    name="highlight1_icon">
+                                    name="highlight1_icon"
+                                    placeholder="Contoh: Barrel, Sparkles, UtensilsCrossed"
+                                    value="{{ old('highlight1_icon', $highlight->highlight1_icon ?? '') }}">
 
-                                    <option value="barrel" {{ ($highlight->highlight1_icon ?? '')=='barrel' ? 'selected':'' }}>Barrel</option>
-
-                                    <option value="sparkles" {{ ($highlight->highlight1_icon ?? '')=='sparkles' ? 'selected':'' }}>Sparkles</option>
-
-                                    <option value="utensils" {{ ($highlight->highlight1_icon ?? '')=='utensils' ? 'selected':'' }}>Utensils</option>
-
-                                </select>
+                                <small class="text-muted">
+                                    Pilih nama icon dari
+                                    <a
+                                        href="https://lucide.dev/icons/"
+                                        target="_blank">
+                                        Lucide Icons
+                                    </a>.
+                                    Contoh: <b>Barrel</b>, <b>Sparkles</b>, <b>UtensilsCrossed</b>, <b>MapPin</b>, <b>Camera</b>.
+                                </small>
 
                             </div>
 
@@ -162,20 +161,25 @@
                             <h5 class="mb-3">Highlight Card 2</h5>
 
                             <div class="form-group">
+                                <label>Icon Lucide</label>
 
-                                <label>Icon</label>
-
-                                <select
+                                <input
+                                    type="text"
                                     class="form-control"
-                                    name="highlight2_icon">
+                                    name="highlight2_icon"
+                                    placeholder="Contoh: MapPin"
+                                    value="{{ old('highlight2_icon', $highlight->highlight2_icon ?? '') }}">
+                                
+                                <small class="text-muted">
+                                    Pilih nama icon dari
+                                    <a
+                                        href="https://lucide.dev/icons/"
+                                        target="_blank">
+                                        Lucide Icons
+                                    </a>.
+                                    Contoh: <b>Barrel</b>, <b>Sparkles</b>, <b>UtensilsCrossed</b>, <b>MapPin</b>, <b>Camera</b>.
+                                </small>
 
-                                    <option value="barrel" {{ ($highlight->highlight2_icon ?? '')=='barrel' ? 'selected':'' }}>Barrel</option>
-
-                                    <option value="sparkles" {{ ($highlight->highlight2_icon ?? '')=='sparkles' ? 'selected':'' }}>Sparkles</option>
-
-                                    <option value="utensils" {{ ($highlight->highlight2_icon ?? '')=='utensils' ? 'selected':'' }}>Utensils</option>
-
-                                </select>
 
                             </div>
 
@@ -208,19 +212,25 @@
 
                             <div class="form-group">
 
-                                <label>Icon</label>
+                                <label>Icon Lucide</label>
 
-                                <select
+                                <input
+                                    type="text"
                                     class="form-control"
-                                    name="highlight3_icon">
+                                    name="highlight3_icon"
+                                    placeholder="Contoh: Camera"
+                                    value="{{ old('highlight3_icon', $highlight->highlight3_icon ?? '') }}">
+                                
+                                <small class="text-muted">
+                                    Pilih nama icon dari
+                                    <a
+                                        href="https://lucide.dev/icons/"
+                                        target="_blank">
+                                        Lucide Icons
+                                    </a>.
+                                    Contoh: <b>Barrel</b>, <b>Sparkles</b>, <b>UtensilsCrossed</b>, <b>MapPin</b>, <b>Camera</b>.
+                                </small>
 
-                                    <option value="barrel" {{ ($highlight->highlight3_icon ?? '')=='barrel' ? 'selected':'' }}>Barrel</option>
-
-                                    <option value="sparkles" {{ ($highlight->highlight3_icon ?? '')=='sparkles' ? 'selected':'' }}>Sparkles</option>
-
-                                    <option value="utensils" {{ ($highlight->highlight3_icon ?? '')=='utensils' ? 'selected':'' }}>Utensils</option>
-
-                                </select>
 
                             </div>
 
@@ -252,10 +262,74 @@
                     </div>
 
                 </div>
-
                 <!-- RIGHT -->
                 <div class="col-md-5">
 
+                    <!-- GALERI -->
+                    <div class="card mb-3">
+
+                        <div class="card-header">
+                            <h5>Galeri Highlight</h5>
+                        </div>
+
+                        <div class="card-body">
+
+                            <div
+                                id="images-preview"
+                                class="row">
+
+                                @if(!empty($highlight) && !empty($highlight->images))
+
+                                    @foreach($highlight->images as $image)
+
+                                        <div class="col-6 mb-3">
+
+                                            <img
+                                                src="{{ asset('storage/pesona/'.$image) }}"
+                                                class="img-fluid rounded shadow">
+
+                                        </div>
+
+                                    @endforeach
+
+                                @else
+
+                                    <div class="col-12">
+
+                                        <img
+                                            src="{{ asset('assets/images/noimage.png') }}"
+                                            class="img-fluid rounded">
+
+                                    </div>
+
+                                @endif
+
+                            </div>
+
+                            <div class="form-group mt-3">
+
+                                <label>Upload Gambar</label>
+
+                                <input
+                                    type="file"
+                                    name="images[]"
+                                    id="images"
+                                    multiple
+                                    class="form-control">
+
+                                <small class="text-danger">
+
+                                    Maksimal 9 gambar (jpg, jpeg, png, webp)
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- CTA -->
                     <div class="card">
 
                         <div class="card-header">
@@ -303,26 +377,6 @@
 
                             <div class="form-group">
 
-                                <label>Kategori Fasilitas</label>
-
-                                <select
-                                    class="form-control"
-                                    name="cta_kategori">
-
-                                    <option value="1" {{ ($highlight->cta_kategori ?? '')==1 ? 'selected':'' }}>Wisata</option>
-
-                                    <option value="2" {{ ($highlight->cta_kategori ?? '')==2 ? 'selected':'' }}>Hotel</option>
-
-                                    <option value="3" {{ ($highlight->cta_kategori ?? '')==3 ? 'selected':'' }}>Transportasi</option>
-
-                                    <option value="4" {{ ($highlight->cta_kategori ?? '')==4 ? 'selected':'' }}>Kuliner</option>
-
-                                </select>
-
-                            </div>
-
-                            <div class="form-group">
-
                                 <label>Keyword Pencarian</label>
 
                                 <input
@@ -339,13 +393,56 @@
                     </div>
 
                 </div>
-
             </div>
-
         </form>
-
     </div>
-
 </div>
 
+<script>
+
+const input = document.getElementById('images');
+const preview = document.getElementById('images-preview');
+
+input.addEventListener('change', function () {
+
+    if(this.files.length > 9){
+
+        Swal.fire({
+            icon:'warning',
+            title:'Oops...',
+            text:'Maksimal hanya boleh upload 9 gambar.'
+        });
+
+        this.value = "";
+        preview.innerHTML = "";
+
+        return;
+    }
+
+    preview.innerHTML = "";
+
+    [...this.files].forEach(file => {
+
+        const reader = new FileReader();
+
+        reader.onload = function(e){
+
+            preview.innerHTML += `
+                <div class="col-md-6 mb-3">
+                    <img
+                        src="${e.target.result}"
+                        class="img-fluid rounded shadow"
+                        style="height:170px;width:100%;object-fit:cover;">
+                </div>
+            `;
+
+        }
+
+        reader.readAsDataURL(file);
+
+    });
+
+});
+
+</script>
 @endsection

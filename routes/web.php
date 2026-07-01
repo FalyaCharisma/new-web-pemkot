@@ -215,7 +215,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/update-pesona-unggulan', 'update_pesona_unggulan')->name('update_pesona_unggulan');
         Route::post('/hapus-pesona-unggulan/{id}', 'hapus_pesona_unggulan')->name('hapus_pesona_unggulan');
         Route::get('/form-highlight-pesona', 'form_highlight_pesona')->name('form_highlight_pesona');
-        Route::get('/update-highlight-pesona', 'update_highlight_pesona')->name('update_highlight_pesona');
+        Route::post('/update-highlight-pesona', 'update_highlight_pesona')->name('update_highlight_pesona');
     });
 });
 

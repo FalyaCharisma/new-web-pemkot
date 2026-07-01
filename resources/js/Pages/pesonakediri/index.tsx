@@ -5,19 +5,16 @@ import { HeroPage } from "@/Components/HeroPage";
 import { useState, useRef } from "react";
 import { ContentCTA } from "@/Components/ContentCTA";
 import type { PesonaUnggulan } from "@/types/unggulan";
+import type { HighlightPesona } from "@/types/highlight-pesona";
 
 import {
     Sparkles,
     UtensilsCrossed,
-    Barrel,
     MapPinned,
     Landmark,
     ShoppingBag,
     ChevronLeft,
     ChevronRight,
-    Coffee,
-    Theater,
-    Moon,
     Clock3,
     Building2,
     Bus,
@@ -26,30 +23,17 @@ import {
     GraduationCap,
 } from "lucide-react";
 
-import pecel from "@/assets/pecel.jpeg";
-import pecel2 from "@/assets/pecel2.webp";
-import pecel3 from "@/assets/pecel3.jpg";
-import pecel4 from "@/assets/pecel4.jpg";
-import pecel5 from "@/assets/pecel5.jpg";
 import { Peta } from "@/types/peta";
 import FloatingReport from "@/Components/site/Floating";
 
-const images = [pecel2, pecel3, pecel4, pecel5, pecel];
 const icons = {
     Building2,
-
     Bus,
-
     HeartPulse,
-
     UtensilsCrossed,
-
     ShoppingBag,
-
     Trees,
-
     GraduationCap,
-
     Landmark,
 };
 
@@ -57,9 +41,10 @@ interface Props {
     pesona: PesonaUnggulan[];
     kategori?: number;
     peta: Peta[];
+    highlight: HighlightPesona;
 }
 
-export default function PesonaKediriIndex({ pesona, kategori, peta }: Props) {
+export default function PesonaKediriIndex({ pesona, kategori, peta, highlight }: Props) {
     const [activeItinerary, setActiveItinerary] = useState(0);
 
     const active = peta[activeItinerary];
@@ -67,9 +52,12 @@ export default function PesonaKediriIndex({ pesona, kategori, peta }: Props) {
         ? `https://maps.google.com/maps?q=${active.lat},${active.lng}&z=15&output=embed`
         : "";
 
-    const [selectedImage, setSelectedImage] = useState(images[0]);
-
-    const [search, setSearch] = useState("");
+    const images =
+        highlight.images?.map(
+            (img) => `/storage/pesona/${img}`
+        ) ?? [];
+    
+    const [selectedImage, setSelectedImage] = useState(images[0] ?? "");
 
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -90,6 +78,24 @@ export default function PesonaKediriIndex({ pesona, kategori, peta }: Props) {
             });
         }
     };
+
+    const highlightItems = [
+        {
+            icon: highlight.highlight1_icon,
+            title: highlight.highlight1_judul,
+            description: highlight.highlight1_deskripsi,
+        },
+        {
+            icon: highlight.highlight2_icon,
+            title: highlight.highlight2_judul,
+            description: highlight.highlight2_deskripsi,
+        },
+        {
+            icon: highlight.highlight3_icon,
+            title: highlight.highlight3_judul,
+            description: highlight.highlight3_deskripsi,
+        },
+    ];
 
     return (
         <>
@@ -227,104 +233,64 @@ export default function PesonaKediriIndex({ pesona, kategori, peta }: Props) {
                                     {/* Right */}
                                     <div className="p-8">
                                         <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                                            KULINER KHAS
+                                            {highlight.kategori?.nama_kategori}
                                         </span>
 
                                         <h3 className="mt-4 text-4xl font-bold">
-                                            Nasi Pecel Tumpang
+                                            {highlight.judul}
                                         </h3>
 
                                         <p className="mt-4 leading-relaxed text-slate-600">
-                                            Nasi Pecel Tumpang adalah kuliner
-                                            khas Kediri yang terdiri dari nasi
-                                            putih, sayuran rebus, dan sambal
-                                            tumpang berbahan tempe semangit yang
-                                            dimasak dengan bumbu khas.
+                                            {highlight.deskripsi}
                                         </p>
 
                                         <div className="mt-6 grid gap-4 md:grid-cols-3">
-                                            <div className="rounded-xl bg-slate-50 p-4">
-                                                <div className="flex items-start gap-3">
-                                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                                                        <Barrel className="h-5 w-5 text-primary" />
-                                                    </div>
+                                            {highlightItems.map((item, index) => {
+                                                const Icon =
+                                                    icons[item.icon as keyof typeof icons] ?? Sparkles;
 
-                                                    <div>
-                                                        <h4 className="font-semibold text-slate-900">
-                                                            Asal Usul
-                                                        </h4>
+                                                return (
+                                                    <div
+                                                        key={index}
+                                                        className="rounded-xl bg-slate-50 p-4"
+                                                    >
+                                                        <div className="flex items-start gap-3">
+                                                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                                                                <Icon className="h-5 w-5 text-primary" />
+                                                            </div>
 
-                                                        <p className="mt-1 text-sm text-slate-500">
-                                                            Berasal dari tradisi
-                                                            masyarakat Kediri
-                                                            sejak zaman dahulu.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                                            <div>
+                                                                <h4 className="font-semibold">
+                                                                    {item.title}
+                                                                </h4>
 
-                                            <div className="rounded-xl bg-slate-50 p-4">
-                                                <div className="flex items-start gap-3">
-                                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                                                        <Sparkles className="h-5 w-5 text-primary" />
+                                                                <p className="mt-1 text-sm text-slate-500">
+                                                                    {item.description}
+                                                                </p>
+                                                            </div>
+                                                        </div>
                                                     </div>
-
-                                                    <div>
-                                                        <h4 className="font-semibold">
-                                                            Keunikan
-                                                        </h4>
-                                                        <p className="mt-1 text-sm text-slate-500">
-                                                            Sambal tumpang
-                                                            dengan cita rasa
-                                                            yang berbeda.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="rounded-xl bg-slate-50 p-4">
-                                                <div className="flex items-start gap-3">
-                                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                                                        <UtensilsCrossed className="h-5 w-5 text-primary" />
-                                                    </div>
-
-                                                    <div>
-                                                        <h4 className="font-semibold">
-                                                            Cocok Untuk
-                                                        </h4>
-                                                        <p className="mt-1 text-sm text-slate-500">
-                                                            Sarapan, makan
-                                                            siang, hingga
-                                                            oleh-oleh.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                                );
+                                            })}
                                         </div>
 
                                         <div className="mt-8 rounded-2xl bg-primary p-6 text-white">
                                             <h4 className="text-xl font-bold">
-                                                Ingin mencicipi Nasi Pecel
-                                                Tumpang?
+                                                {highlight.cta_judul}
                                             </h4>
 
                                             <p className="mt-2 text-sm text-white/80">
-                                                Temukan rumah makan dan warung
-                                                terbaik yang menyajikan Nasi
-                                                Pecel Tumpang di Kota Kediri.
+                                                {highlight.cta_deskripsi}
                                             </p>
 
                                             <Link
-                                                href={route(
-                                                    "fasilitas-kota.index",
-                                                    {
-                                                        kategori: 4,
-                                                        search: "Nasi Pecel",
-                                                    },
-                                                )}
-                                                className="mt-4 inline-flex rounded-xl bg-white px-5 py-3 font-medium text-primary transition hover:bg-slate-100"
+                                                href={route("fasilitas-kota.index", {
+                                                    kategori: highlight.cta_kategori,
+                                                    search: highlight.cta_keyword,
+                                                })}
+                                                className="mt-4 inline-flex rounded-xl bg-white px-5 py-3 font-medium text-primary"
                                             >
-                                                Cari Kuliner Terkait →
+                                                {highlight.cta_button}
                                             </Link>
                                         </div>
                                     </div>

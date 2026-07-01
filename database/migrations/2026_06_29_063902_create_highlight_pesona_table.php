@@ -6,18 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::create('highlight_pesona', function (Blueprint $table) {
-
             $table->id();
 
-            // Badge
-            $table->string('kategori_label')->nullable();
+            $table->string('kategori_label');
 
-            // Informasi utama
-            $table->string('judul')->nullable();
+            $table->string('judul');
+
             $table->longText('deskripsi')->nullable();
+
+            // Array gambar
+            $table->json('images')->nullable();
 
             // Highlight Card 1
             $table->string('highlight1_icon')->nullable();
@@ -42,10 +46,12 @@ return new class extends Migration
             $table->string('cta_keyword')->nullable();
 
             $table->timestamps();
-
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('highlight_pesona');
