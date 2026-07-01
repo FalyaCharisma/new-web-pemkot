@@ -31,16 +31,16 @@
             <form action="{{ route('update_berita') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="col-lg-12 my-3">
-                    <button type="button" class="btn btn-danger" onclick="window.history.back();">
+                    <button type="button" class="btn btn-danger me-2" onclick="window.history.back();">
                         <i class="fa fa-arrow-left me-2"></i> Kembali
                     </button>
-                    <button type="submit" id="simpan" name="status_published" value="0" class="btn btn-warning">
+                    <button type="submit" id="simpan" name="status_published" value="0" class="btn btn-warning me-2">
                         <i class="fas fa-save"></i> Draft
                     </button>
-                    <button type="submit" id="simpan" name="status_published" value="1" class="btn btn-primary ">
+                    <button type="submit" id="simpan" name="status_published" value="1" class="btn btn-primary me-2">
                         <i class="fas fa-arrow-up"></i> Publish
                     </button>
-                    <button type="button" class="btn btn-warning" onclick="location.href='/list-kategori-berita'">
+                    <button type="button" class="btn btn-warning me-2" onclick="location.href='/list-kategori-berita'">
                             <span class="btn-label">
                                 <i class="fa fa-list me-2"></i>
                             </span>
@@ -84,7 +84,7 @@
                                     <label for="tanggal" class="form-label">Tanggal</label>
                                     <input type="date" class="form-control" name="tanggal" value="{{ $berita == [] ? '' : $berita['tanggal'] }}">
                                 </div>
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <div id="fotoberita-preview" class="text-center">
                                         <img src="{{ empty($berita) ? asset('assets/images/noimage.png') : asset('storage/berita/' . $berita['images']) }}" width="50%">
                                     </div>
@@ -94,7 +94,42 @@
                                     <p id="logowarning" class="logowarning text-danger">
                                         <i>* Tipe file harus berupa .jpg, .png, .jpeg, .webp, .svg dengan size max 2MB</i><br>
                                     </p>
+                                </div> -->
+
+                                <div class="form-group">
+                                    <label for="images">Link Gambar</label>
+
+                                    <input
+                                        type="url"
+                                        id="images"
+                                        name="images"
+                                        class="form-control"
+                                        value="{{ old('images', $berita->images ?? '') }}"
+                                    >
+
+                                    <div class="mt-3 text-center">
+                                        <img
+                                            id="previewImage"
+                                            src="{{ old('images', $berita->images ?? asset('assets/images/noimage.png')) }}"
+                                            class="img-fluid rounded"
+                                            style="max-width:500px"
+                                            onerror="this.src='{{ asset('assets/images/noimage.png') }}'"
+                                        >
+                                    </div>
                                 </div>
+
+                                <script>
+                                document.getElementById('images').addEventListener('input', function () {
+                                    const preview = document.getElementById('previewImage');
+
+                                    if (this.value.trim() !== '') {
+                                        preview.src = this.value;
+                                    } else {
+                                        preview.src = "{{ asset('assets/images/noimage.png') }}";
+                                    }
+                                });
+                                </script>
+                                
                                 <div class="form-group">
                                     <label for="eksklusif" class="form-label">
                                         <input type="checkbox" name="eksklusif" value="1" {{ isset($berita['eksklusif']) && $berita['eksklusif'] == 1 ? 'checked' : '' }}> Berita Eksklusif
