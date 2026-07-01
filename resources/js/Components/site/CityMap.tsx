@@ -52,9 +52,9 @@ export function CityMap({ peta }: Props) {
                 <div className="max-w-2xl">
                     <SectionLabel>Jelajahi Kota</SectionLabel>
                     <h2 className="mt-5 text-4xl font-bold tracking-tight md:text-5xl">
-                        Peta Interaktif{" "}
+                        Mau kemana {" "}
                         <span className="font-serif italic text-gold">
-                            Kota Kediri
+                            hari ini
                         </span>
                     </h2>
                     <p className="mt-5 text-muted-foreground">

@@ -19,9 +19,9 @@ export function Agenda({ agenda }: Props) {
                     <div className="max-w-2xl">
                         <SectionLabel>Agenda &amp; Event Kota</SectionLabel>
                         <h2 className="mt-5 text-4xl font-bold tracking-tight md:text-5xl">
-                            Jadwal kegiatan{" "}
+                            Kota Kediri{" "}
                             <span className="font-serif italic text-gold">
-                                Kota Kediri
+                                Terkini
                             </span>
                         </h2>
                         <p className="mt-5 max-w-xl text-muted-foreground">

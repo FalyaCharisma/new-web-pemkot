@@ -81,41 +81,11 @@ export default function OpdGrid({ opd }: { opd: Opd[] }) {
                         {/* BODY */}
 
                         <div className="overflow-y-auto p-8 max-h-[75vh]">
-                            <div className="flex gap-6">
-                                <img
-                                    src={
-                                        selected.logo
-                                            ? `/storage/opd/${selected.logo}`
-                                            : "/logo.png"
-                                    }
-                                    className="w-32 h-32 object-contain"
-                                />
-
-                                <div>
-                                    <h3 className="font-semibold text-lg">
-                                        {selected.nama}
-                                    </h3>
-
-                                    <p className="text-slate-500">
-                                        {selected.alamat}
-                                    </p>
-
-                                    {selected.email && (
-                                        <p className="mt-2">
-                                            📧 {selected.email}
-                                        </p>
-                                    )}
-
-                                    {selected.telepon && (
-                                        <p>☎ {selected.telepon}</p>
-                                    )}
-                                </div>
-                            </div>
-
+                           
                             <div className="prose prose-slate max-w-none mt-8">
                                 <div
                                     dangerouslySetInnerHTML={{
-                                        __html: selected.deskripsi ?? "",
+                                        __html: selected.detail_opd ?? "",
                                     }}
                                 />
                             </div>

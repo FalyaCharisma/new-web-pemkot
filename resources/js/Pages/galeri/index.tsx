@@ -2,15 +2,22 @@ import { Head, router } from "@inertiajs/react";
 import { HeaderSolid } from "@/Components/site/HeaderSolid";
 import { Footer } from "@/Components/site/Footer";
 import { HeroPage } from "@/Components/HeroPage";
-import { useState, useEffect } from "react";
+import { useState, useEffect, type SyntheticEvent } from "react";
 import type { FeaturedVideos } from "@/types/featured-videos";
 import type { PaginatedAlbums } from "@/types/album";
 import { getYoutubeEmbedUrl } from "@/helpers/youtube";
 import Pagination from "@/Components/Pagination";
+ 
+import {
+    Image as ImageIcon,
+    Video,
+    FolderOpen,
+    RotateCcw,
+} from "lucide-react";
 
-import { Image as ImageIcon, Video, FolderOpen, RotateCcw } from "lucide-react";
-
-import { FaYoutube } from "react-icons/fa6";
+import {
+  FaYoutube,
+} from "react-icons/fa6";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
@@ -18,7 +25,6 @@ import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import FloatingReport from "@/Components/site/Floating";
 
 interface Props {
     videos: FeaturedVideos[];
@@ -28,13 +34,63 @@ interface Props {
     totalAlbum: number;
 }
 
-export default function GaleriIndex({
-    videos,
-    albums,
-    totalAlbum,
-    totalFoto,
-    totalVideo,
-}: Props) {
+const PLACEHOLDER_IMAGE = "https://placehold.co/600x400?text=Galeri";
+
+const getGalleryImageUrl = (foto?: string | null) => {
+    if (!foto) {
+        return PLACEHOLDER_IMAGE;
+    }
+
+    const value = foto.trim();
+
+    if (!value) {
+        return PLACEHOLDER_IMAGE;
+    }
+
+    if (value.startsWith("http://") || value.startsWith("https://")) {
+        return value;
+    }
+
+    if (value.startsWith("/storage/")) {
+        return value;
+    }
+
+    if (value.startsWith("storage/")) {
+        return `/${value}`;
+    }
+
+    if (value.startsWith("/")) {
+        return value;
+    }
+
+    // Upload admin GaleriController disimpan ke storage/app/public/galeri.
+    return `/storage/galeri/${value}`;
+};
+
+const handleGalleryImageError = (
+    event: SyntheticEvent<HTMLImageElement, Event>
+) => {
+    const image = event.currentTarget;
+
+    if (image.dataset.fallbackApplied === "true") {
+        return;
+    }
+
+    const currentSrc = image.getAttribute("src") || "";
+
+    // Beberapa link lama masih http. Coba https sekali sebelum placeholder.
+    if (currentSrc.startsWith("http://")) {
+        image.dataset.fallbackApplied = "true";
+        image.src = currentSrc.replace("http://", "https://");
+        return;
+    }
+
+    image.dataset.fallbackApplied = "true";
+    image.src = PLACEHOLDER_IMAGE;
+};
+
+export default function GaleriIndex( { videos, albums, totalAlbum, totalFoto, totalVideo }:Props) {
+
     const [search, setSearch] = useState("");
 
     const [year, setYear] = useState<string>("all");
@@ -42,9 +98,9 @@ export default function GaleriIndex({
     const years = Array.from(
         new Set(
             (albums?.data ?? []).map((a) =>
-                new Date(a.created_at).getFullYear(),
-            ),
-        ),
+                new Date(a.created_at).getFullYear()
+            )
+        )
     );
 
     const filteredAlbums = (albums?.data ?? []).filter((album) => {
@@ -53,45 +109,22 @@ export default function GaleriIndex({
         return new Date(album.created_at).getFullYear().toString() === year;
     });
 
-    // const galleries = filteredAlbums.map((album) => ({
-    //     category: "Album",
-    //     title: album.judul,
-    //     cover: album.fotos?.[0]?.foto
-    //         ? `/storage/album/${album.fotos[0].foto}`
-    //         : "https://placehold.co/600x400",
 
-    //     images: album.fotos?.map(
-    //         (foto) => `/storage/album/${foto.foto}`
-    //     ) || [],
+    const galleries = filteredAlbums.map((album) => {
+        const images = (album.fotos ?? []).map((foto) =>
+            getGalleryImageUrl(foto.foto)
+        );
 
-    //     date: new Date(album.created_at).toLocaleDateString("id-ID"),
-    //     count: `${album.fotos?.length ?? 0} Foto`,
-    // }));
-
-    const getImageUrl = (path?: string) => {
-        if (!path) {
-            return "https://placehold.co/600x400";
-        }
-
-        // kalau sudah URL lengkap
-        if (path.startsWith("http://") || path.startsWith("https://")) {
-            return path.replace("http://", "https://");
-        }
-
-        // kalau file lokal
-        return `/storage/album/${path}`;
-    };
-
-    const galleries = filteredAlbums.map((album) => ({
-        category: "Album",
-        title: album.judul,
-
-        images: album.fotos?.map((foto) => foto.foto) ?? [],
-
-        date: new Date(album.created_at).toLocaleDateString("id-ID"),
-        count: `${album.fotos?.length ?? 0} Foto`,
-    }));
-
+        return {
+            category: "Album",
+            title: album.judul,
+            cover: images[0] ?? PLACEHOLDER_IMAGE,
+            images,
+            date: new Date(album.created_at).toLocaleDateString("id-ID"),
+            count: `${album.fotos?.length ?? 0} Foto`,
+        };
+    });
+    
     const [selectedItem, setSelectedItem] = useState<any>(null);
 
     useEffect(() => {
@@ -115,6 +148,7 @@ export default function GaleriIndex({
                         breadcrumb="Galeri"
                         placeholder="Cari album..."
                         description="Jelajahi momen terbaik Kota Kediri..."
+
                         searchValue={search}
                         onSearchChange={(value) => setSearch(value)}
                         onSearch={(keyword) => {
@@ -126,14 +160,16 @@ export default function GaleriIndex({
                                 {
                                     preserveState: true,
                                     preserveScroll: true,
-                                },
+                                }
                             );
                         }}
                     />
 
                     <section className="container mx-auto px-4 py-10">
+
                         {/* STATISTIK */}
                         <div className="grid gap-5 md:grid-cols-3">
+
                             {/* FOTO */}
                             <div className="rounded-2xl border bg-white p-6 shadow-sm">
                                 <div className="flex items-center gap-4">
@@ -146,8 +182,7 @@ export default function GaleriIndex({
                                         </h3>
                                         <p className="font-semibold">Foto</p>
                                         <p className="text-sm text-muted-foreground">
-                                            Koleksi foto kegiatan dan keindahan
-                                            Kota Kediri
+                                            Koleksi foto kegiatan dan keindahan Kota Kediri
                                         </p>
                                     </div>
                                 </div>
@@ -165,8 +200,7 @@ export default function GaleriIndex({
                                         </h3>
                                         <p className="font-semibold">Video</p>
                                         <p className="text-sm text-muted-foreground">
-                                            Koleksi video kegiatan dan profil
-                                            Kota Kediri
+                                            Koleksi video kegiatan dan profil Kota Kediri
                                         </p>
                                     </div>
                                 </div>
@@ -189,10 +223,12 @@ export default function GaleriIndex({
                                     </div>
                                 </div>
                             </div>
+
                         </div>
 
                         {/* FILTER + GRID */}
                         <div className="mt-10 grid gap-6 lg:grid-cols-[280px_1fr]">
+
                             {/* FILTER */}
                             <aside className="h-fit rounded-2xl border bg-white p-6 shadow-sm">
                                 <h3 className="mb-5 text-lg font-semibold">
@@ -200,11 +236,10 @@ export default function GaleriIndex({
                                 </h3>
 
                                 <div className="space-y-4">
+
                                     <select
                                         value={year}
-                                        onChange={(e) =>
-                                            setYear(e.target.value)
-                                        }
+                                        onChange={(e) => setYear(e.target.value)}
                                         className="w-full rounded-xl border p-3"
                                     >
                                         <option value="all">Semua Tahun</option>
@@ -236,11 +271,9 @@ export default function GaleriIndex({
                                     >
                                         <div className="relative aspect-[4/3]">
                                             <img
-                                                src={
-                                                    item.images?.[0] ||
-                                                    "https://placehold.co/600x400"
-                                                }
+                                                src={item.cover || item.images?.[0] || PLACEHOLDER_IMAGE}
                                                 alt={item.title}
+                                                onError={handleGalleryImageError}
                                                 className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                                             />
 
@@ -260,10 +293,10 @@ export default function GaleriIndex({
                                 ))}
                             </div>
                         </div>
-
+                        
                         <Pagination links={albums.links} />
 
-                        {/* HIGHLIGHT VIDEO */}
+                                                {/* HIGHLIGHT VIDEO */}
                         <div className="mt-10">
                             <div className="mb-5">
                                 <h2 className="text-2xl font-bold">
@@ -271,8 +304,7 @@ export default function GaleriIndex({
                                 </h2>
 
                                 <p className="text-muted-foreground">
-                                    Video pilihan yang menampilkan pesona,
-                                    budaya, dan aktivitas Kota Kediri.
+                                    Video pilihan yang menampilkan pesona, budaya, dan aktivitas Kota Kediri.
                                 </p>
                             </div>
 
@@ -292,22 +324,21 @@ export default function GaleriIndex({
                                             // ambil youtube id
                                             const videoId = item.video_url
                                                 ? item.video_url.match(
-                                                      /(?:youtube\.com\/.*v=|youtu\.be\/)([^&?/]+)/,
-                                                  )?.[1]
+                                                    /(?:youtube\.com\/.*v=|youtu\.be\/)([^&?/]+)/
+                                                )?.[1]
                                                 : null;
 
                                             return (
                                                 <SwiperSlide key={item.id}>
                                                     <div className="grid lg:grid-cols-[1.4fr_1fr]">
+
                                                         {/* VIDEO */}
                                                         <div className="aspect-video">
                                                             <iframe
                                                                 loading="lazy"
                                                                 className="h-full w-full"
                                                                 src={`${getYoutubeEmbedUrl(item.video_url)}?rel=0&mute=1`}
-                                                                title={
-                                                                    item.title
-                                                                }
+                                                                title={item.title}
                                                                 allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                                 allowFullScreen
                                                             />
@@ -324,46 +355,23 @@ export default function GaleriIndex({
                                                             </h2>
 
                                                             <p className="mt-4 text-muted-foreground">
-                                                                {
-                                                                    item.description
-                                                                }
+                                                                {item.description}
                                                             </p>
 
-                                                            <div className="mt-8 rounded-2xl bg-red-50 border border-red-100 p-5">
+                                                           <div className="mt-8 rounded-2xl bg-red-50 border border-red-100 p-5">
                                                                 <div className="flex items-start gap-4">
                                                                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-red-600 text-white">
-                                                                        <FaYoutube
-                                                                            size={
-                                                                                22
-                                                                            }
-                                                                        />
+                                                                        <FaYoutube size={22} />
                                                                     </div>
 
                                                                     <div className="flex-1">
                                                                         <h3 className="font-semibold text-slate-900">
-                                                                            Tonton
-                                                                            video
-                                                                            selengkapnya
+                                                                            Tonton video selengkapnya
                                                                         </h3>
 
                                                                         <p className="mt-1 text-sm text-slate-600">
-                                                                            Saksikan
-                                                                            berbagai
-                                                                            video
-                                                                            destinasi
-                                                                            wisata,
-                                                                            budaya,
-                                                                            dan
-                                                                            aktivitas
-                                                                            menarik
-                                                                            Kota
-                                                                            Kediri
-                                                                            di
-                                                                            kanal
-                                                                            resmi
-                                                                            Pemkot
-                                                                            Kediri
-                                                                            TV.
+                                                                            Saksikan berbagai video destinasi wisata, budaya, dan aktivitas menarik
+                                                                            Kota Kediri di kanal resmi Pemkot Kediri TV.
                                                                         </p>
 
                                                                         <a
@@ -373,13 +381,13 @@ export default function GaleriIndex({
                                                                             className="mt-4 inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
                                                                         >
                                                                             <FaYoutube />
-                                                                            Buka
-                                                                            Channel
+                                                                            Buka Channel
                                                                         </a>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
+
                                                     </div>
                                                 </SwiperSlide>
                                             );
@@ -392,6 +400,7 @@ export default function GaleriIndex({
                         {selectedItem && (
                             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
                                 <div className="relative w-full max-w-4xl rounded-2xl bg-white p-4">
+
                                     {/* CLOSE BUTTON */}
                                     <button
                                         onClick={() => setSelectedItem(null)}
@@ -401,26 +410,32 @@ export default function GaleriIndex({
                                     </button>
 
                                     {/* SWIPER */}
-                                    {selectedItem.images.map(
-                                        (img: string, i: number) => (
-                                            <SwiperSlide key={i}>
-                                                <img
-                                                    src={img}
-                                                    alt={`${selectedItem.title} ${i + 1}`}
-                                                    className="h-full w-full object-cover"
-                                                />
-                                            </SwiperSlide>
-                                        ),
+                                    {selectedItem?.images?.length > 0 && (
+                                        <Swiper
+                                            key={selectedItem?.title}
+                                            modules={[Navigation]}
+                                            navigation
+                                            pagination={{ clickable: true }}
+                                            loop={selectedItem.images.length > 1}
+                                        >
+                                            {(selectedItem?.images || []).map((img: string, i: number) => (
+                                                <SwiperSlide key={i}>
+                                                    <img
+                                                        src={img}
+                                                        alt={`${selectedItem.title} ${i + 1}`}
+                                                        onError={handleGalleryImageError}
+                                                        className="h-[70vh] w-full object-contain"
+                                                    />
+                                                </SwiperSlide>
+                                            ))}
+                                        </Swiper>
                                     )}
+
                                     {/* INFO */}
                                     <div className="mt-4">
-                                        <h2 className="text-xl font-bold">
-                                            {selectedItem.title}
-                                        </h2>
+                                        <h2 className="text-xl font-bold">{selectedItem.title}</h2>
                                         <p className="text-sm text-gray-500">
-                                            {selectedItem.category} •{" "}
-                                            {selectedItem.date ||
-                                                selectedItem.duration}
+                                            {selectedItem.category} • {selectedItem.date || selectedItem.duration}
                                         </p>
                                     </div>
                                 </div>
@@ -428,7 +443,7 @@ export default function GaleriIndex({
                         )}
                     </section>
                 </main>
-                <FloatingReport />
+
                 <Footer />
             </div>
         </>

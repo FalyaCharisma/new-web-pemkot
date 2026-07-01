@@ -16,9 +16,9 @@ export function News({ berita }: Props) {
                     <div className="max-w-2xl">
                         <SectionLabel>Kabar Terbaru</SectionLabel>
                         <h2 className="mt-5 text-4xl font-bold tracking-tight md:text-5xl">
-                            Berita{" "}
+                            Kota Kediri{" "}
                             <span className="font-serif italic text-gold">
-                                Kota Kediri
+                                hari ini
                             </span>
                         </h2>
                         <p className="mt-4 max-w-4xl text-muted-foreground md:text-lg">

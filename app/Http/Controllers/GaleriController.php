@@ -2,21 +2,50 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use App\Models\FeaturedVideo;
 use App\Models\Album;
+use App\Models\FeaturedVideo;
 use App\Models\FotoAlbum;
-use Exception;
 use Carbon\Carbon;
 use DataTables;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class GaleriController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Helper untuk membaca foto galeri.
+     * Jika database berisi URL lengkap, pakai langsung.
+     * Jika database berisi nama file lokal, arahkan ke storage/galeri.
+     */
+    private function resolveFotoUrl(?string $foto): string
+    {
+        if (!$foto) {
+            return 'https://placehold.co/600x400?text=Galeri';
+        }
+
+        $value = trim($foto);
+
+        if (filter_var($value, FILTER_VALIDATE_URL)) {
+            return $value;
+        }
+
+        if (str_starts_with($value, '/storage/')) {
+            return url($value);
+        }
+
+        if (str_starts_with($value, 'storage/')) {
+            return url('/' . $value);
+        }
+
+        if (str_starts_with($value, '/')) {
+            return url($value);
+        }
+
+        return asset('storage/galeri/' . $value);
+    }
+
+    /**
+     * Public page galeri.
      */
     public function index(Request $request)
     {
@@ -24,7 +53,7 @@ class GaleriController extends Controller
 
         $albums = Album::with([
             'fotos' => function ($query) {
-                $query->where('status_enabled', 1);
+                $query->where('status_enabled', 1)->orderBy('id', 'asc');
             },
         ])
             ->where('status_enabled', 1)
@@ -32,22 +61,20 @@ class GaleriController extends Controller
                 $q->where('judul', 'like', '%' . $request->search . '%');
             })
             ->orderBy('id', 'desc')
-            ->latest()
             ->paginate(6)
             ->through(function ($album) {
                 return [
                     'id' => $album->id,
                     'judul' => $album->judul,
                     'created_at' => $album->created_at,
-
                     'fotos' => $album->fotos->map(function ($f) {
-    return [
-        'foto' => filter_var($f->foto, FILTER_VALIDATE_URL)
-            ? $f->foto
-            : asset('storage/album/' . $f->foto),
-        'nama_foto' => $f->nama_foto,
-    ];
-}),
+                        return [
+                            'id' => $f->id,
+                            'foto' => $this->resolveFotoUrl($f->foto),
+                            'foto_raw' => $f->foto,
+                            'nama_foto' => $f->nama_foto,
+                        ];
+                    }),
                 ];
             });
 
@@ -64,49 +91,31 @@ class GaleriController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //
@@ -114,52 +123,55 @@ class GaleriController extends Controller
 
     // ------------------------------------------------- ADMINPAGE ----------------------------------------------
 
-    // Adminpage - List Album
     public function list_galeri(Request $request)
     {
         if ($request->ajax()) {
-            $album = Album::where('status_enabled', 1)->orderBy('created_at', 'desc')->get();
+            $album = Album::where('status_enabled', 1)->orderBy('id', 'desc')->get();
+
             return Datatables::of($album)
                 ->addIndexColumn()
                 ->addColumn('judul', function ($row) {
-                    $judul = $row['judul'];
-                    return $judul;
+                    return e($row->judul);
+                })
+                ->addColumn('jumlah_foto', function ($row) {
+                    return FotoAlbum::where('id_album', $row->id)
+                        ->where('status_enabled', 1)
+                        ->count() . ' Foto';
                 })
                 ->addColumn('tanggal', function ($row) {
-                    $tanggal = date('d-m-Y', strtotime($row['created_at']));
-                    return $tanggal;
+                    return $row->created_at ? date('d-m-Y H:i', strtotime($row->created_at)) : '-';
                 })
                 ->addColumn('action', function ($row) {
-                    $actionBtn =
-                        '<button  type="button" class="btn btn-primary" onclick="location.href=`/form-galeri/' .
-                        $row->id .
-                        '`" title="Edit" style="margin-right:5px; margin-bottom:5px;"><i class="fas fa-edit"></i></button>
-                    <button type="button" class="btn btn-danger" onclick="deletealbumConfirmation(' .
-                        $row->id .
-                        ')" title="Hapus" style="margin-right:5px; margin-bottom:5px;"><i class="fas fa-trash"></i></button>';
-                    return $actionBtn;
+                    return '
+                        <button type="button" class="btn btn-primary btn-sm" onclick="location.href=\'/form-galeri/' . $row->id . '\'" title="Edit" style="margin-right:5px; margin-bottom:5px;">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="deletealbumConfirmation(' . $row->id . ')" title="Hapus" style="margin-right:5px; margin-bottom:5px;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    ';
                 })
-                ->rawColumns(['judul', 'tanggal', 'action'])
+                ->rawColumns(['judul', 'jumlah_foto', 'tanggal', 'action'])
                 ->make(true);
         }
+
         return view('admin.galeri.list-galeri');
     }
 
-    // Adminpage - Form Galeri
     public function form_galeri(Request $request, $id)
     {
-        if ($id == 'add') {
-            $titlepage = 'Tambah Foto';
+        if ($id === 'add') {
+            $titlepage = 'Tambah Album Galeri';
             $table = 'off';
-            $album = '';
+            $album = null;
         } else {
-            $titlepage = 'Edit Foto';
+            $titlepage = 'Edit Album Galeri';
             $table = 'on';
 
-            if ($id == 'view') {
-                $album = Album::where('status_enabled', 1)->latest()->first();
+            if ($id === 'view') {
+                $album = Album::where('status_enabled', 1)->latest('id')->first();
             } else {
-                $album = Album::where('id', $id)->first();
+                $album = Album::where('status_enabled', 1)->where('id', $id)->firstOrFail();
             }
         }
 
@@ -168,114 +180,166 @@ class GaleriController extends Controller
 
     public function data_foto(Request $request, $id)
     {
-        $id_album = Album::where('id', $id)->first();
-        $foto_album = FotoAlbum::where([['id_album', $id_album->id], ['status_enabled', 1]])->get();
+        $album = Album::where('status_enabled', 1)->where('id', $id)->firstOrFail();
+
+        $fotoAlbum = FotoAlbum::where('id_album', $album->id)
+            ->where('status_enabled', 1)
+            ->orderBy('id', 'desc')
+            ->get();
 
         if ($request->ajax()) {
-            return Datatables::of($foto_album)
+            return Datatables::of($fotoAlbum)
                 ->addIndexColumn()
+                ->addColumn('nama_foto', function ($row) {
+                    return e($row->nama_foto ?: '-');
+                })
                 ->addColumn('foto', function ($row) {
-                    $foto = '<img src="' . url('storage/galeri/' . $row->foto . '') . '" width="50%">';
-                    return $foto;
+                    $src = e($this->resolveFotoUrl($row->foto));
+                    return '<img src="' . $src . '" alt="Foto Galeri" style="max-width:140px; max-height:90px; object-fit:cover; border-radius:8px;" onerror="this.src=\'https://placehold.co/300x180?text=Foto+Tidak+Tampil\'">';
                 })
-                ->addColumn('hapus', function ($row) {
-                    $hapus = '<button type="button" class="btn btn-danger" onclick="deletefotoConfirmation(' . $row->id . ')" title="Hapus" style="margin-right:5px; margin-bottom:5px;"><i class="fas fa-trash"></i></button>';
-                    return $hapus;
+                ->addColumn('link_foto', function ($row) {
+                    $url = e($row->foto);
+                    return '<a href="' . $url . '" target="_blank" rel="noopener" style="word-break:break-all;">' . $url . '</a>';
                 })
-                ->rawColumns(['hapus', 'foto'])
+                ->addColumn('action', function ($row) {
+                    $nama = htmlspecialchars(json_encode($row->nama_foto ?? ''), ENT_QUOTES, 'UTF-8');
+                    $foto = htmlspecialchars(json_encode($row->foto ?? ''), ENT_QUOTES, 'UTF-8');
+
+                    return '
+                        <button type="button" class="btn btn-warning btn-sm" onclick="editFoto(' . $row->id . ', ' . $nama . ', ' . $foto . ')" title="Edit" style="margin-right:5px; margin-bottom:5px;">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="deletefotoConfirmation(' . $row->id . ')" title="Hapus" style="margin-right:5px; margin-bottom:5px;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    ';
+                })
+                ->rawColumns(['foto', 'link_foto', 'action'])
                 ->make(true);
         }
 
-        return redirect('/form-foto/view');
+        return redirect('/form-galeri/' . $album->id);
     }
 
+    /**
+     * Nama route lama tetap dipertahankan untuk kompatibilitas.
+     * Sekarang dipakai untuk menyimpan link foto, bukan upload file Dropzone.
+     */
     public function dropzoneStore(Request $request)
     {
-        if ($request->id_album != null) {
-            $id_album = $request->id_album;
-        } else {
-            $album = Album::where('judul', $request->judul_album)->first();
-
-            if ($album == null) {
-                Album::insert([
-                    'judul' => $request->judul_album,
-                    'created_at' => Carbon::now('Asia/Jakarta'),
-                ]);
-
-                $album = Album::latest()->first();
-            }
-
-            $id_album = $album->id;
-        }
-
-        $image = $request->file('file');
-        $imageName = 'galeri-' . time() . '.' . $image->extension();
-        $image->move(storage_path('app/public/galeri'), $imageName);
-
-        FotoAlbum::insert([
-            'id_album' => $id_album,
-            'foto' => $imageName,
-            'created_at' => Carbon::now('Asia/Jakarta'),
-        ]);
-
-        return response()->json(['success' => $imageName]);
+        return $this->store_foto($request);
     }
 
-    // Adminpage - Update Judul Album
+    public function store_foto(Request $request)
+    {
+        $request->validate([
+            'id_album' => ['required', 'exists:album,id'],
+            'nama_foto' => ['required', 'string', 'max:200'],
+            'foto' => ['required', 'url', 'max:255'],
+        ], [
+            'id_album.required' => 'Album tidak ditemukan.',
+            'nama_foto.required' => 'Nama foto wajib diisi.',
+            'foto.required' => 'Link foto wajib diisi.',
+            'foto.url' => 'Link foto harus berupa URL yang valid.',
+        ]);
+
+        $now = Carbon::now('Asia/Jakarta');
+
+        FotoAlbum::create([
+            'id_album' => $request->id_album,
+            'nama_foto' => $request->nama_foto,
+            'foto' => $request->foto,
+            'status_enabled' => 1,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+
+        return redirect('/form-galeri/' . $request->id_album)->with('success', 'Foto berhasil ditambahkan.');
+    }
+
+    public function update_foto(Request $request, $id)
+    {
+        $foto = FotoAlbum::where('status_enabled', 1)->where('id', $id)->firstOrFail();
+
+        $request->validate([
+            'nama_foto' => ['required', 'string', 'max:200'],
+            'foto' => ['required', 'url', 'max:255'],
+        ], [
+            'nama_foto.required' => 'Nama foto wajib diisi.',
+            'foto.required' => 'Link foto wajib diisi.',
+            'foto.url' => 'Link foto harus berupa URL yang valid.',
+        ]);
+
+        $foto->update([
+            'nama_foto' => $request->nama_foto,
+            'foto' => $request->foto,
+            'updated_at' => Carbon::now('Asia/Jakarta'),
+        ]);
+
+        return redirect('/form-galeri/' . $foto->id_album)->with('success', 'Foto berhasil diperbarui.');
+    }
+
     public function update_album(Request $request)
     {
-        Album::where(['id' => $request->id])->update([
-            'judul' => $request->judul_album,
+        $request->validate([
+            'judul_album' => ['required', 'string', 'max:255'],
+        ], [
+            'judul_album.required' => 'Judul album wajib diisi.',
         ]);
 
-        return redirect()->back();
+        $now = Carbon::now('Asia/Jakarta');
+
+        if ($request->filled('id')) {
+            $album = Album::where('status_enabled', 1)->where('id', $request->id)->firstOrFail();
+
+            $album->update([
+                'judul' => $request->judul_album,
+                'updated_at' => $now,
+            ]);
+
+            return redirect('/form-galeri/' . $album->id)->with('success', 'Judul album berhasil diperbarui.');
+        }
+
+        $album = Album::create([
+            'judul' => $request->judul_album,
+            'status_enabled' => 1,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+
+        return redirect('/form-galeri/' . $album->id)->with('success', 'Album berhasil dibuat. Silakan tambahkan link foto.');
     }
 
-    // Adminpage - Hapus Foto
     public function hapus_foto($id)
     {
-        $aktif = FotoAlbum::where(['id' => $id])->update([
+        $aktif = FotoAlbum::where('id', $id)->update([
             'status_enabled' => 0,
             'updated_at' => Carbon::now('Asia/Jakarta'),
         ]);
 
-        //Check data deleted or not
-        if ($aktif == 1) {
-            $success = true;
-            $message = 'Foto Berhasil Dihapus';
-        } else {
-            $success = false;
-            $message = 'Foto Tidak Ditemukan!';
-        }
-
-        //Return response
         return response()->json([
-            'success' => $success,
-            'message' => $message,
+            'success' => $aktif == 1,
+            'message' => $aktif == 1 ? 'Foto berhasil dihapus.' : 'Foto tidak ditemukan.',
         ]);
     }
 
-    // Adminpage - Hapus Album
     public function hapus_album($id)
     {
-        $aktif = Album::where(['id' => $id])->update([
+        $aktif = Album::where('id', $id)->update([
             'status_enabled' => 0,
             'updated_at' => Carbon::now('Asia/Jakarta'),
         ]);
 
-        //Check data deleted or not
         if ($aktif == 1) {
-            $success = true;
-            $message = 'Album Berhasil Dihapus';
-        } else {
-            $success = false;
-            $message = 'Album Tidak Ditemukan!';
+            FotoAlbum::where('id_album', $id)->update([
+                'status_enabled' => 0,
+                'updated_at' => Carbon::now('Asia/Jakarta'),
+            ]);
         }
 
-        //Return response
         return response()->json([
-            'success' => $success,
-            'message' => $message,
+            'success' => $aktif == 1,
+            'message' => $aktif == 1 ? 'Album berhasil dihapus.' : 'Album tidak ditemukan.',
         ]);
     }
 
@@ -285,92 +349,54 @@ class GaleriController extends Controller
             $video = FeaturedVideo::where('status_enabled', 1)->latest()->get();
 
             return Datatables::of($video)
-
                 ->addIndexColumn()
-
                 ->addColumn('title', function ($row) {
                     return $row->title;
                 })
-
                 ->addColumn('video_url', function ($row) {
                     return '<a href="' . $row->video_url . '" target="_blank">Lihat Video</a>';
                 })
-
                 ->addColumn('action', function ($row) {
                     return '
-
-                <button type="button"
-
-                    class="btn btn-primary"
-
-                    onclick="location.href=`/form-video/' .
-                        $row->id .
-                        '`">
-
-                    <i class="fas fa-edit"></i>
-
-                </button>
-
-
-                <button type="button"
-
-                    class="btn btn-danger"
-
-                    onclick="deleteVideoConfirmation(' .
-                        $row->id .
-                        ')">
-
-                    <i class="fas fa-trash"></i>
-
-                </button>
-
-                ';
+                        <button type="button" class="btn btn-primary" onclick="location.href=`/form-video/' . $row->id . '`">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button type="button" class="btn btn-danger" onclick="deleteVideoConfirmation(' . $row->id . ')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    ';
                 })
-
                 ->rawColumns(['video_url', 'action'])
-
                 ->make(true);
         }
 
         return view('admin.galeri.list-video');
     }
+
     public function form_video($id = 'add')
     {
         if ($id == 'add') {
             $titlepage = 'Tambah Video';
-
             $video = null;
         } else {
             $titlepage = 'Edit Video';
-
             $video = FeaturedVideo::findOrFail($id);
         }
 
-        return view(
-            'admin.galeri.form-video',
-
-            compact(
-                'titlepage',
-
-                'video',
-            ),
-        );
+        return view('admin.galeri.form-video', compact('titlepage', 'video'));
     }
+
     public function store_video(Request $request)
     {
         $request->validate([
             'title' => 'required',
-
             'video_url' => 'required',
         ]);
 
         FeaturedVideo::create([
             'title' => $request->title,
-
             'description' => $request->description,
-
             'video_url' => $request->video_url,
-
             'status_enabled' => 1,
         ]);
 
@@ -378,19 +404,13 @@ class GaleriController extends Controller
 
         return redirect('/list-video');
     }
+
     public function update_video(Request $request)
     {
-        FeaturedVideo::where(
-            'id',
-
-            $request->id,
-        )->update([
+        FeaturedVideo::where('id', $request->id)->update([
             'title' => $request->title,
-
             'description' => $request->description,
-
             'video_url' => $request->video_url,
-
             'updated_at' => Carbon::now('Asia/Jakarta'),
         ]);
 
@@ -398,21 +418,16 @@ class GaleriController extends Controller
 
         return redirect('/list-video');
     }
+
     public function hapus_video($id)
     {
-        $aktif = FeaturedVideo::where(
-            'id',
-
-            $id,
-        )->update([
+        $aktif = FeaturedVideo::where('id', $id)->update([
             'status_enabled' => 0,
-
             'updated_at' => Carbon::now('Asia/Jakarta'),
         ]);
 
         return response()->json([
             'success' => $aktif,
-
             'message' => 'Video berhasil dihapus',
         ]);
     }
