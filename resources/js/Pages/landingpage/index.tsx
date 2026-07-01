@@ -19,6 +19,7 @@ import { Layanan } from "@/types/layanan";
 import { Agenda as AgendaType } from "@/types/agenda";
 import { FasilitasKota } from "@/types/fasilitas";
 import FloatingReport from '@/Components/site/Floating';
+import logo from "@/assets/logo.png";
 
 type Props = {
     berita: Berita[];
@@ -35,13 +36,15 @@ export default function LandingPage({
     return (
         <>
             <Head
-                title="Pemerintah Kota Kediri — Harmoni, Maju, dan Berbudaya"
+                title="Pemerintah Kota Kediri — Maju, Agamis, Produktif, Aman, Ngangeni"
             >
                 <meta
                     name="description"
                     content="Portal resmi Pemerintah Kota Kediri. Layanan publik, agenda kota, wisata, budaya, dan inisiatif smart city untuk warga & pengunjung."
                 />
             </Head>
+
+               <link rel="icon" href={logo} />
 
             <div className="bg-background text-foreground">
                 <Header />
