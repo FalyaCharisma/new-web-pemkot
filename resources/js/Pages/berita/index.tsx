@@ -198,7 +198,7 @@ export default function Berita({
         router.get(
             route("berita"),
             {
-                search,
+                search: searchKeyword,
                 kategori: selectedKategori,
                 tanggal_mulai: tanggalMulai,
                 tanggal_selesai: tanggalSelesai,

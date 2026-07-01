@@ -113,7 +113,7 @@ export function Agenda({ agenda }: Props) {
                                 <article className="group flex h-full gap-5 overflow-hidden rounded-2xl border border-border bg-gradient-card p-4 transition-colors hover:bg-card">
                                     <div className="relative aspect-square w-32 shrink-0 overflow-hidden rounded-xl">
                                         <img
-                                            src={e.banner}
+                                            src={e.banner ?? ""}
                                             alt={e.judul_acara}
                                             loading="lazy"
                                             width={400}

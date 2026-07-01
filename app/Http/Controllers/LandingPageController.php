@@ -33,7 +33,7 @@ class LandingPageController extends Controller
                     'slug' => $item->slug,
                     'tanggal' => $item->tanggal,
                     'author' => $item->author,
-                    'image_url' => filter_var($item->images, FILTER_VALIDATE_URL) ? $item->images : asset('storage/berita/' . $item->images),
+                    'images' => filter_var($item->images, FILTER_VALIDATE_URL) ? $item->images : asset('storage/berita/' . $item->images),
 
                     'deskripsi' => Str::limit(strip_tags($item->deskripsi), 80),
                 ];

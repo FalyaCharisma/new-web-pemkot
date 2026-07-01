@@ -20,7 +20,7 @@ export default function UpdateProfileInformation({
     const { data, setData, patch, errors, processing, recentlySuccessful } =
         useForm({
             name: user.name,
-            email: user.email,
+            email: user.username,
         });
 
     const submit: FormEventHandler = (e) => {
@@ -73,7 +73,7 @@ export default function UpdateProfileInformation({
 
                     <InputError className="mt-2" message={errors.email} />
                 </div>
-
+{/* 
                 {mustVerifyEmail && user.email_verified_at === null && (
                     <div>
                         <p className="mt-2 text-sm text-gray-800">
@@ -95,7 +95,7 @@ export default function UpdateProfileInformation({
                             </div>
                         )}
                     </div>
-                )}
+                )} */}
 
                 <div className="flex items-center gap-4">
                     <PrimaryButton disabled={processing}>Save</PrimaryButton>

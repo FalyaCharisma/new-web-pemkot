@@ -49,7 +49,7 @@ export function Tourism({ wisata }: Props) {
                     {filters.map((f) => (
                         <button
                             key={f}
-                            onClick={() => setFilter(f)}
+                            onClick={() => setFilter(f ?? "")}
                             className={`rounded-full border px-4 py-2 text-xs font-medium uppercase tracking-[0.12em] transition-colors ${
                                 filter === f
                                     ? "border-gold bg-gold text-gold-foreground"

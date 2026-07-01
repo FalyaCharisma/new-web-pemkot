@@ -44,7 +44,7 @@ export function News({ berita }: Props) {
                                 className="group flex gap-5 rounded-2xl border bg-white p-4 transition hover:shadow-md"
                             >
                                 <img
-                                    src={item.image_url}
+                                    src={item.images}
                                     alt={item.judul}
                                     className="h-36 w-56 shrink-0 rounded-xl object-cover"
                                 />
