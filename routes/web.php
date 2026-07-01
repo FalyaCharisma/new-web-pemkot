@@ -166,6 +166,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/list-galeri', 'list_galeri')->name('list_galeri');
         Route::get('/form-galeri/{id}', 'form_galeri')->name('form_galeri');
         Route::get('/data-foto/{id}', 'data_foto')->name('data_foto');
+        Route::post('/store-foto-galeri', 'store_foto')->name('store_foto_galeri');
+        Route::post('/update-foto-galeri/{id}', 'update_foto')->name('update_foto_galeri');
         Route::post('dropzone/store', 'dropzoneStore')->name('dropzone.store');
         Route::post('/update-album', 'update_album')->name('update_album');
         Route::post('/hapus-foto/{id}', 'hapus_foto')->name('hapus_foto');
@@ -205,6 +207,15 @@ Route::middleware('auth')->group(function () {
         Route::get('list-user', 'list_user')->name('list_user');
         Route::get('value-user/{id}', 'value_user')->name('value_user');
         Route::post('update-user', 'update_user')->name('update_user');
+    });
+
+    Route::controller(PesonaUnggulanController::class)->group(function () {
+        Route::get('/list-pesona-unggulan', 'list_pesona_unggulan')->name('list_pesona_unggulan');
+        Route::get('/form-pesona-unggulan/{id}', 'form_pesona_unggulan')->name('form_pesona_unggulan');
+        Route::post('/update-pesona-unggulan', 'update_pesona_unggulan')->name('update_pesona_unggulan');
+        Route::post('/hapus-pesona-unggulan/{id}', 'hapus_pesona_unggulan')->name('hapus_pesona_unggulan');
+        Route::get('/form-highlight-pesona', 'form_highlight_pesona')->name('form_highlight_pesona');
+        Route::get('/update-highlight-pesona', 'update_highlight_pesona')->name('update_highlight_pesona');
     });
 });
 

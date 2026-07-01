@@ -331,6 +331,7 @@ export default function PesonaKediriIndex({ pesona, kategori, peta }: Props) {
                                 </div>
                             </div>
                         )}
+                        
                         {/* ITINERARY + MAP */}
                         {!kategori && (
                             <div className="mt-10 overflow-hidden rounded-3xl border bg-white shadow-sm">
