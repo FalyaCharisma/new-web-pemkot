@@ -26,7 +26,7 @@ class LayananPublikController extends Controller
                         $deskripsi = substr(strip_tags($row['deskripsi'], '<p><a><br>'),0, 150) . '...';
                         return $deskripsi;
                     })->addColumn('gambar', function($row){
-                        $gambar = '<img src="'. url('storage/layanan-publik/'. $row->gambar .''). '" width="100%">';
+                        $gambar = '<img src="'. url('storage/layanan-publik/'. $row->gambar .''). '" width="50%">';
                         return $gambar;
                     })->addColumn('link', function($row){
                         $link = $row->link;
