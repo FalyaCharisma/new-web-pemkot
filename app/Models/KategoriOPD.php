@@ -13,6 +13,6 @@ class KategoriOPD extends Model
 
     public function opd()
     {
-        return $this->hasMany(Opd::class, 'kategori', 'id');
+        return $this->hasMany(OPD::class, 'kategori', 'id');
     }
 }
