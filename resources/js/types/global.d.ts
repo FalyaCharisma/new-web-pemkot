@@ -6,9 +6,12 @@ import { PageProps as AppPageProps } from './';
 declare global {
     interface Window {
         axios: AxiosInstance;
+
+        dataLayer: any[];
+
+        gtag?: (...args: any[]) => void;
     }
 
-    /* eslint-disable no-var */
     var route: typeof ziggyRoute;
 }
 

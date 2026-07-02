@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Third Party Services
@@ -34,5 +33,7 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
+    'google_analytics' => [
+        'measurement_id' => env('GA_MEASUREMENT_ID'),
+    ],
 ];
