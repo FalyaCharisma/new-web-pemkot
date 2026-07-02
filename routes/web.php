@@ -231,5 +231,7 @@ Route::resource('agenda', AgendaController::class);
 Route::resource('pesona-unggulan', PesonaUnggulanController::class);
 Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/analytics/statistics', [AnalyticsController::class, 'statistics']);
+Route::post('/feedback', [FeedbackController::class,'store']);
+Route::get('/feedback/statistics', [FeedbackController::class, 'statistics']);
 
 require __DIR__ . '/auth.php';

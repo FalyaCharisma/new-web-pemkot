@@ -21,6 +21,7 @@ import logo from "@/assets/logo.png";
 import lapormbak from "@/assets/112.jpg";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import FeedbackModal from "./FeedbackModal";
 
 const footerMenus = [
     {
@@ -81,40 +82,42 @@ const socials = [
     },
 ];
 
-const survey = [
+const surveyTemplate = [
     {
         label: "Sangat Puas",
-        percent: 60,
         icon: SmilePlus,
         color: "text-green-600",
     },
     {
         label: "Puas",
-        percent: 25,
         icon: Smile,
         color: "text-emerald-500",
     },
     {
         label: "Cukup Puas",
-        percent: 10,
         icon: Meh,
         color: "text-amber-500",
     },
     {
         label: "Tidak Puas",
-        percent: 5,
         icon: Frown,
         color: "text-red-500",
     },
 ];
-
 export function Footer() {
+    const [showFeedback, setShowFeedback] = useState(false);
     const [stats, setStats] = useState({
         online: 0,
         totalVisitors: 0,
     });
 
     const [loadingStats, setLoadingStats] = useState(true);
+    const [survey, setSurvey] = useState<
+        {
+            label: string;
+            percent: number;
+        }[]
+    >([]);
 
     useEffect(() => {
         axios
@@ -128,6 +131,12 @@ export function Footer() {
             .finally(() => {
                 setLoadingStats(false);
             });
+        axios
+            .get("/feedback/statistics")
+            .then((res) => {
+                setSurvey(res.data.survey);
+            })
+            .catch(console.error);
     }, []);
 
     return (
@@ -316,21 +325,25 @@ export function Footer() {
                         </h6>
 
                         <div className="grid grid-cols-4 gap-2">
-                            {survey.map((item) => {
+                            {surveyTemplate.map((item, index) => {
+                                const data = survey.find(
+                                    (s) => s.label === item.label,
+                                );
+
                                 const Icon = item.icon;
 
                                 return (
                                     <div
                                         key={item.label}
                                         className="
-                      rounded-xl
-                      border
-                      border-primary/10
-                      bg-white
-                      p-3
-                      text-center
-                      shadow-sm
-                    "
+                rounded-xl
+                border
+                border-primary/10
+                bg-white
+                p-3
+                text-center
+                shadow-sm
+            "
                                     >
                                         <Icon
                                             className={`mx-auto h-8 w-8 ${item.color}`}
@@ -341,12 +354,31 @@ export function Footer() {
                                         </p>
 
                                         <p className="mt-1 text-xs font-semibold text-primary">
-                                            {item.percent}%
+                                            {data?.percent ?? 0}%
                                         </p>
                                     </div>
                                 );
                             })}
                         </div>
+                        <div className="rounded-2xl border border-primary/10 bg-white p-5 shadow-sm mt-4">
+                            <p className="text-sm text-muted-foreground mb-4">
+                                Bantu kami meningkatkan kualitas website
+                                Pemerintah Kota Kediri dengan memberikan
+                                penilaian.
+                            </p>
+
+                            <button
+                                onClick={() => setShowFeedback(true)}
+                                className="w-full rounded-xl bg-primary px-4 py-3 text-white transition hover:bg-primary/90"
+                            >
+                                Beri Penilaian
+                            </button>
+                        </div>
+
+                        <FeedbackModal
+                            open={showFeedback}
+                            onClose={() => setShowFeedback(false)}
+                        />
                     </div>
                 </div>
             </div>
