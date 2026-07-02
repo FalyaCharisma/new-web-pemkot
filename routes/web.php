@@ -19,6 +19,7 @@ use App\Http\Controllers\LayananPublikController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PetaController;
+use App\Http\Controllers\AnalyticsController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -229,5 +230,6 @@ Route::resource('dokumen', DokumenController::class);
 Route::resource('agenda', AgendaController::class);
 Route::resource('pesona-unggulan', PesonaUnggulanController::class);
 Route::get('/search', [SearchController::class, 'index'])->name('search');
+Route::get('/analytics/statistics', [AnalyticsController::class, 'statistics']);
 
 require __DIR__ . '/auth.php';
