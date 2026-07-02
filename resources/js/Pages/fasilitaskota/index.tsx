@@ -205,13 +205,12 @@ export default function AkomodasiIndex({
 
                                                     <span
                                                         className={`text-xs ${
-                                                            index === 0
+                                                            selectedKategori === item.id
                                                                 ? "text-white/80"
-                                                                : "text-slate-500"
+                                                                : "text-primary/80"
                                                         }`}
                                                     >
-                                                        {item.fasilitas_count}{" "}
-                                                        fasilitas
+                                                        {item.fasilitas_count} fasilitas
                                                     </span>
                                                 </button>
                                             );
