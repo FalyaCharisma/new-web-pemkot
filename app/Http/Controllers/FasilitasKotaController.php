@@ -32,7 +32,7 @@ class FasilitasKotaController extends Controller
                     $query->where('status_enabled', 1);
                 },
             ])
-            ->orderBy('nama_kategori')
+            ->orderBy('id')
             ->get();
 
         $subKategori = SubKategoriFasilitas::query()
