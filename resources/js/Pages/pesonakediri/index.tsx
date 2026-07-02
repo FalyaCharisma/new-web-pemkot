@@ -6,36 +6,9 @@ import { useState, useRef } from "react";
 import { ContentCTA } from "@/Components/ContentCTA";
 import type { PesonaUnggulan } from "@/types/unggulan";
 import type { HighlightPesona } from "@/types/highlight-pesona";
-
-import {
-    Sparkles,
-    UtensilsCrossed,
-    MapPinned,
-    Landmark,
-    ShoppingBag,
-    ChevronLeft,
-    ChevronRight,
-    Clock3,
-    Building2,
-    Bus,
-    HeartPulse,
-    Trees,
-    GraduationCap,
-} from "lucide-react";
-
 import { Peta } from "@/types/peta";
 import FloatingReport from "@/Components/site/Floating";
-
-const icons = {
-    Building2,
-    Bus,
-    HeartPulse,
-    UtensilsCrossed,
-    ShoppingBag,
-    Trees,
-    GraduationCap,
-    Landmark,
-};
+import * as LucideIcons from "lucide-react";
 
 interface Props {
     pesona: PesonaUnggulan[];
@@ -45,6 +18,9 @@ interface Props {
 }
 
 export default function PesonaKediriIndex({ pesona, kategori, peta, highlight }: Props) {
+
+    const icons = LucideIcons as unknown as Record<string, React.ElementType>;
+
     const [activeItinerary, setActiveItinerary] = useState(0);
 
     const active = peta[activeItinerary];
@@ -135,7 +111,7 @@ export default function PesonaKediriIndex({ pesona, kategori, peta, highlight }:
                                 onClick={scrollPrev}
                                 className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-primary text-white p-3 shadow-lg hover:scale-105 transition"
                             >
-                                <ChevronLeft className="w-5 h-5" />
+                                <LucideIcons.ChevronLeft className="w-5 h-5" />
                             </button>
 
                             {/* container scroll */}
@@ -186,7 +162,7 @@ export default function PesonaKediriIndex({ pesona, kategori, peta, highlight }:
                                 onClick={scrollNext}
                                 className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-primary text-white p-3 shadow-lg hover:scale-105 transition"
                             >
-                                <ChevronRight className="w-5 h-5" />
+                                <LucideIcons.ChevronRight className="w-5 h-5" />
                             </button>
                         </div>
 
@@ -247,7 +223,7 @@ export default function PesonaKediriIndex({ pesona, kategori, peta, highlight }:
                                         <div className="mt-6 grid gap-4 md:grid-cols-3">
                                             {highlightItems.map((item, index) => {
                                                 const Icon =
-                                                    icons[item.icon as keyof typeof icons] ?? Sparkles;
+                                                    icons[item.icon as keyof typeof icons] ?? LucideIcons.Barrel;
 
                                                 return (
                                                     <div
@@ -255,7 +231,7 @@ export default function PesonaKediriIndex({ pesona, kategori, peta, highlight }:
                                                         className="rounded-xl bg-slate-50 p-4"
                                                     >
                                                         <div className="flex items-start gap-3">
-                                                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                                                            <div className="flex h-10 w-15 items-center justify-center rounded-lg bg-primary/10 p-2">
                                                                 <Icon className="h-5 w-5 text-primary" />
                                                             </div>
 
@@ -290,7 +266,7 @@ export default function PesonaKediriIndex({ pesona, kategori, peta, highlight }:
                                                 })}
                                                 className="mt-4 inline-flex rounded-xl bg-white px-5 py-3 font-medium text-primary"
                                             >
-                                                {highlight.cta_button}
+                                                {highlight.cta_button} →
                                             </Link>
                                         </div>
                                     </div>
@@ -320,7 +296,7 @@ export default function PesonaKediriIndex({ pesona, kategori, peta, highlight }:
                                                 const Icon =
                                                     icons[
                                                         item.icon as keyof typeof icons
-                                                    ] ?? MapPinned;
+                                                    ] ?? LucideIcons.MapPinned;
 
                                                 return (
                                                     <button
@@ -372,7 +348,7 @@ export default function PesonaKediriIndex({ pesona, kategori, peta, highlight }:
                                                                     {item.jam_buka &&
                                                                         item.jam_tutup && (
                                                                             <div className="mt-2 flex items-center gap-2 text-xs text-slate-500">
-                                                                                <Clock3 className="h-4 w-4 text-primary" />
+                                                                                <LucideIcons.Clock3 className="h-4 w-4 text-primary" />
 
                                                                                 <span className="font-medium">
                                                                                     Buka
@@ -439,7 +415,7 @@ export default function PesonaKediriIndex({ pesona, kategori, peta, highlight }:
 
                         {/* CTA Bottom */}
                         <ContentCTA
-                            icon={<MapPinned size={24} />}
+                            icon={<LucideIcons.MapPinned size={24} />}
                             title="Temukan lebih banyak pengalaman di Kota Kediri!"
                             description="Jelajahi destinasi, kuliner, budaya, dan berbagai fasilitas terbaik di Kediri Raya."
                             buttonText="Jelajahi Fasilitas Kota"

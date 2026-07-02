@@ -221,7 +221,7 @@ class PesonaUnggulanController extends Controller
                 })
 
                 ->addColumn('kategori', function ($row) {
-                    return $row->kategori->nama_kategori;
+                    return $row->kategori?->nama_kategori ?? '-';
                 })
 
                 ->addColumn('views', function ($row) {
