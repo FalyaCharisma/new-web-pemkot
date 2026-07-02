@@ -43,12 +43,12 @@ export default function FloatingReport() {
             {/* LAPOR MBAK WALI */}
             <div className="group relative">
                 <button className="h-16 w-16 rounded-full bg-white border-[3px] border-blue-500 shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110">
-    <img
-        src="/assets/images/112.jpg"
-        alt="Lapor Mbak Wali"
-        className="h-10 w-10 object-contain"
-    />
-</button>
+                    <img
+                        src="/assets/images/112.jpg"
+                        alt="Lapor Mbak Wali"
+                        className="h-10 w-10 object-contain"
+                    />
+                </button>
 
                 {/* Tooltip */}
                 <div className="absolute right-20 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-xl bg-slate-900 px-4 py-2 text-sm text-white shadow-lg opacity-0 invisible transition-all duration-300 group-hover:opacity-100 group-hover:visible">

@@ -35,5 +35,8 @@ return [
     ],
     'google_analytics' => [
         'measurement_id' => env('GA_MEASUREMENT_ID'),
+        'property_id'    => env('GA_PROPERTY_ID'),
+        'credentials'    => env('GA_CREDENTIALS'),
     ],
+    
 ];
