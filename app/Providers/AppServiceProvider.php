@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
         return array(
             [
                 'title' => 'Dashboard',
-                'url' => '/dashboard',
+                'url' => '/banner-beranda',
                 'routes' => ['dashboard'],
                 'icon' => 'fa-cubes',
             ],

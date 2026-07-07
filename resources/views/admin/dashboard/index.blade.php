@@ -10,7 +10,7 @@
             <h3 class="fw-bold mb-3">Dashboard</h3>
             </div>
         </div>
-        <div class="row">
+        <!-- <div class="row">
             <div class="col-md-8">
             <div class="card card-round">
                 <div class="card-header">
@@ -66,7 +66,7 @@
         </div>
     </div>
 
-</div>
+</div> -->
         </div>
     </div>
 </div>
