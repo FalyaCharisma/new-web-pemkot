@@ -68,10 +68,10 @@
             @csrf
                 <div class="modal-body">
                     <input type="hidden" class="form-control" name="id" id="id">
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="judul" class="form-label">Jumlah Penduduk</label>
                         <input type="number" class="form-control" name="jumlah_penduduk" id="jumlah_penduduk">
-                    </div>
+                    </div> -->
                     <div class="form-group">
                         <label for="judul" class="form-label">Link Website</label>
                         <input type="text" class="form-control" name="link" id="link">

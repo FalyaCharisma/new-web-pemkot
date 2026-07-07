@@ -142,7 +142,7 @@ class KelurahanController extends Controller
             if (isset($request->id)) {
                 Kelurahan::where(['id' => $request->id])->update([
                     'link' => $request->link,
-                    'jml_penduduk' => $request->jumlah_penduduk,
+                    'jml_penduduk' => null,
                     'updated_at' => Carbon::now('Asia/Jakarta'),
                 ]);
 
