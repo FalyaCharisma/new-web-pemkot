@@ -1,13 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Services\GoogleAnalyticsService;
 
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index() 
+    public function index(GoogleAnalyticsService $ga) 
     {
-        return view('admin.dashboard.index');
+        $analytics = $ga->getDashboardStatistics();
+        $chart = $ga->getVisitorsChart();
+        return view('admin.dashboard.index', compact('analytics', 'chart'));
     }
 }

@@ -4,7 +4,7 @@ import { Footer } from "@/Components/site/Footer";
 import { HeroPage } from "@/Components/HeroPage";
 import { ContentCTA } from "@/Components/ContentCTA";
 import { useState } from "react";
-import type { Penghargaan } from "@/types/penghargaan";
+import type { Berita } from "@/types/berita";
 import Pagination from "@/Components/Pagination";
 
 import { FaInstagram } from "react-icons/fa6";
@@ -18,7 +18,7 @@ interface PaginationLink {
 
 interface Props {
     penghargaan: {
-        data: Penghargaan[];
+        data: Berita[];
         current_page: number;
         last_page: number;
         links: PaginationLink[];
@@ -30,14 +30,14 @@ interface Props {
     };
 }
 
-const getImageUrl = (foto?: string | null) => {
-    if (!foto) return "https://placehold.co/600x400";
+const getImageUrl = (image?: string | null) => {
+    if (!image) return "https://placehold.co/600x400";
 
-    if (foto.startsWith("http")) return foto;
+    if (image.startsWith("http")) return image;
 
-    if (foto.startsWith("/storage")) return foto;
+    if (image.startsWith("/storage")) return image;
 
-    return `/storage/penghargaan/${foto}`;
+    return `/storage/berita/${image}`;
 };
 
 const stripHtml = (value?: string | null) => {
@@ -189,7 +189,8 @@ export default function PenghargaanPage({
                                             Penghargaan belum ditemukan
                                         </h2>
                                         <p className="mt-2 text-sm text-slate-500">
-                                            Coba gunakan kata kunci atau filter tahun yang berbeda.
+                                            Coba gunakan kata kunci atau filter
+                                            tahun yang berbeda.
                                         </p>
                                     </div>
                                 )}
@@ -198,14 +199,16 @@ export default function PenghargaanPage({
                                     <article className="overflow-hidden rounded-2xl border bg-white">
                                         <div className="grid lg:grid-cols-[320px_1fr]">
                                             <img
-                                                src={getImageUrl(featured.foto)}
+                                                src={getImageUrl(featured.images)}
                                                 alt={featured.judul}
                                                 className="h-full w-full object-cover"
                                             />
 
                                             <div className="p-5">
                                                 <p className="mt-2 text-xs text-muted-foreground">
-                                                    {formatTanggal(featured.tanggal)}
+                                                    {formatTanggal(
+                                                        featured.tanggal,
+                                                    )}
                                                 </p>
 
                                                 <h2 className="mt-2 text-2xl font-bold leading-tight">
@@ -213,7 +216,9 @@ export default function PenghargaanPage({
                                                 </h2>
 
                                                 <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">
-                                                    {stripHtml(featured.deskripsi)}
+                                                    {stripHtml(
+                                                        featured.deskripsi,
+                                                    )}
                                                 </p>
 
                                                 <Link
@@ -238,7 +243,7 @@ export default function PenghargaanPage({
                                             className="overflow-hidden rounded-2xl border bg-white transition hover:shadow-md"
                                         >
                                             <img
-                                                src={getImageUrl(item.foto)}
+                                                src={getImageUrl(item.images)}
                                                 alt={item.judul}
                                                 className="h-40 w-full object-cover"
                                             />
@@ -249,7 +254,9 @@ export default function PenghargaanPage({
                                                 </h3>
 
                                                 <p className="mt-2 text-xs text-muted-foreground">
-                                                    {formatTanggal(item.tanggal)}
+                                                    {formatTanggal(
+                                                        item.tanggal,
+                                                    )}
                                                 </p>
 
                                                 <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
@@ -287,7 +294,7 @@ export default function PenghargaanPage({
                         />
                     </section>
                 </main>
-<FloatingReport />
+                <FloatingReport />
                 <Footer />
             </div>
         </>

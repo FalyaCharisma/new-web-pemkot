@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Penghargaan;
+use App\Models\Berita;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -14,8 +15,8 @@ class PenghargaanController extends Controller
 {
     public function penghargaan(Request $request)
     {
-        $query = Penghargaan::query()
-            ->where('status_enabled', 1);
+        $query = Berita::query()
+            ->where([['status_enabled', 1], ['id_kategori', 15]]);
 
         // SEARCH
         if ($request->filled('search')) {
@@ -36,8 +37,9 @@ class PenghargaanController extends Controller
             ->paginate(9)
             ->withQueryString();
 
-        $years = Penghargaan::query()
+        $years = Berita::query()
             ->where('status_enabled', 1)
+            ->where('id_kategori', 15)
             ->selectRaw('YEAR(tanggal) as year')
             ->whereNotNull('tanggal')
             ->distinct()
