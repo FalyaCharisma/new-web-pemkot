@@ -232,14 +232,14 @@ class FasilitasKotaController extends Controller
             $titlepage = 'Edit Fasilitas Kota';
             $fasilitas = FasilitasKota::where('id', $id)->first();
         }
-
+        
         return view('admin.fasilitas.form-fasilitas', compact('titlepage', 'fasilitas', 'kategori', 'sub_kategori'));
     }
 
     public function get_sub_kategori(Request $request)
     {
         $kategori = $request->input('kategori');
-        $sub_kategori = SubKategoriFasilitas::where('kategori_id', $kategori)->get();
+        $sub_kategori = SubKategoriFasilitas::where('kategori_id', $kategori)->orderBy('nama_sub')->get();
 
         return response()->json($sub_kategori);
     }

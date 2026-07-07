@@ -39,27 +39,22 @@
                         <div class="card-body">
                             <input type="hidden" id="id" name="id" value="{{ empty($fasilitas) ? '' : $fasilitas['id'] }}">
                             <div class="form-group">
-                                <label for="kategori"><b>Kategori</b></label>
+                                <label><b>Kategori</b></label>
                                 <select class="form-select form-control-lg" id="kategori" name="kategori" required>
-                                    <option disabled selected>Pilih Kategori</option>
+                                    <option value="">Pilih Kategori</option>
                                     @foreach ($kategori as $item)
-                                        <option value="{{ $item->id }}" 
+                                        <option value="{{ $item->id }}"
                                             {{ (!empty($fasilitas['kategori_id']) && $fasilitas['kategori_id'] == $item->id) ? 'selected' : '' }}>
                                             {{ $item->nama_kategori }}
                                         </option>
                                     @endforeach
                                 </select>
-                            </div> 
+                            </div>
+
                             <div class="form-group">
-                                <label for="sub_kategori"><b>Sub Kategori</b></label>
+                                <label><b>Sub Kategori</b></label>
                                 <select class="form-select form-control-lg" id="sub_kategori" name="sub_kategori" required>
-                                    <option disabled selected>Pilih Sub Kategori</option>
-                                    @foreach ($sub_kategori as $item)
-                                        <option value="{{ $item->id }}" 
-                                            {{ (!empty($fasilitas['sub_kategori_id']) && $fasilitas['sub_kategori_id'] == $item->id) ? 'selected' : '' }}>
-                                            {{ $item->nama_sub }}
-                                        </option>
-                                    @endforeach
+                                    <option value="">Pilih Sub Kategori</option>
                                 </select>
                             </div>                            
 
@@ -126,6 +121,56 @@
             }); 
         }
     }
+</script>
+
+<script>
+$(document).ready(function () {
+
+    function loadSubKategori(kategoriId, selected = null) {
+
+        if (!kategoriId) {
+            $('#sub_kategori').html('<option value="">Pilih Sub Kategori</option>');
+            return;
+        }
+
+        $.ajax({
+            url: "{{ route('get_sub_kategori') }}",
+            type: "GET",
+            data: {
+                kategori: kategoriId
+            },
+            success: function (response) {
+
+                let html = '<option value="">Pilih Sub Kategori</option>';
+
+                $.each(response, function (i, item) {
+
+                    html += `<option value="${item.id}"
+                        ${selected == item.id ? 'selected' : ''}>
+                        ${item.nama_sub}
+                    </option>`;
+                });
+
+                $('#sub_kategori').html(html);
+            }
+        });
+
+    }
+
+    // Saat kategori berubah
+    $('#kategori').on('change', function () {
+        loadSubKategori($(this).val());
+    });
+
+    // Saat halaman edit dibuka
+    @if(!empty($fasilitas['kategori_id']))
+        loadSubKategori(
+            "{{ $fasilitas['kategori_id'] }}",
+            "{{ $fasilitas['sub_kategori_id'] }}"
+        );
+    @endif
+
+});
 </script>
 
 @endsection
