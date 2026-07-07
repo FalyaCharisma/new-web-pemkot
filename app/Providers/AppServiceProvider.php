@@ -76,11 +76,11 @@ class AppServiceProvider extends ServiceProvider
                         'url' => '/form-visimisi',
                         'routes' => ['form-visimisi']
                     ],
-                    [
-                        'title' => 'Lambang Daerah',
-                        'url' => '#',
-                        'routes' => []
-                    ],
+                    // [
+                    //     'title' => 'Lambang Daerah',
+                    //     'url' => '#',
+                    //     'routes' => []
+                    // ],
                     [
                         'title' => 'Sejarah Kota',
                         'url' => '/list-sejarah',
