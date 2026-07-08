@@ -150,7 +150,7 @@ class BeritaController extends Controller
     }
 
 
-        // --------------------------------------- ADMINPAGE -------------------------------------
+    // --------------------------------------- ADMINPAGE -------------------------------------
 
     // Adminpage - List Kategori Berita
     public function list_kategori_berita(Request $request){

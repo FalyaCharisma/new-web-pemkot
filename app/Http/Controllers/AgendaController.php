@@ -179,12 +179,13 @@ class AgendaController extends Controller
 
         return view('admin.agenda.list-agenda');
     }
+
     public function form_agenda($id)
     {
         if ($id == 'add') {
             $titlepage = 'Tambah Agenda';
 
-            $agenda = '';
+            $agenda = null;
         } else {
             $titlepage = 'Edit Agenda';
 
@@ -201,6 +202,7 @@ class AgendaController extends Controller
             ),
         );
     }
+
     public function update_agenda(Request $request)
     {
         $request->validate([

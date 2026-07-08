@@ -32,6 +32,12 @@
                     <button type="submit" class="btn btn-secondary ms-3">
                         <i class="fa fa-paper-plane"></i> Simpan
                     </button>
+                    <button type="button" class="btn btn-warning ms-3" onclick="location.href='/list-kategori-fasilitas'">
+                            <span class="btn-label">
+                                <i class="fa fa-list me-2"></i>
+                            </span>
+                            List Kategori
+                    </button>
                 </div>
                 @include('admin.validation')
                 <div class="col-md-6 mt-2">

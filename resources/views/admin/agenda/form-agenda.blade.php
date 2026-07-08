@@ -68,14 +68,14 @@
                                         Tanggal Mulai
                                     </label>
                                     <input type="date" name="tanggal_mulai" class="form-control" required
-                                        value="{{ $agenda?->tanggal_mulai?->format('Y-m-d') }}">
+                                        value="{{ $agenda?->tanggal_mulai?->format('Y-m-d') ?? '' }}">
                                 </div>
                                 <div class="form-group">
                                     <label>
                                         Tanggal Selesai
                                     </label>
                                     <input type="date" name="tanggal_selesai" class="form-control" required
-                                        value="{{ $agenda?->tanggal_selesai?->format('Y-m-d') }}">
+                                        value="{{ $agenda?->tanggal_selesai?->format('Y-m-d') ?? '' }}">
                                 </div>
                                 <div class="form-group">
                                     <label>

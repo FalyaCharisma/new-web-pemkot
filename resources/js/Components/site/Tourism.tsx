@@ -65,6 +65,7 @@ export function Tourism({ wisata }: Props) {
 
                 <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {filtered.map((i) => (
+                        i.slug ? (
                         <Link
                             key={i.id}
                             href={route("fasilitas-kota.show", {
@@ -97,6 +98,7 @@ export function Tourism({ wisata }: Props) {
                                 </p>
                             </div>
                         </Link>
+                        ) : null
                     ))}
                 </div>
             </div>

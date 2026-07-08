@@ -105,6 +105,13 @@ const navigation = [
                 icon: FileText,
                 href: route("dokumen.index"),
             },
+            {
+                title: "Vidio",
+                description:
+                    "Jelajahi video wisata, budaya, event, dan informasi terbaru Kota Kediri di kanal YouTube resmi.",
+                icon: Video,
+                href: "https://www.youtube.com/channel/UCX6KxXBUbivqWXTku0nnPbA",
+            },
         ],
     },
     {
@@ -192,27 +199,27 @@ export function Header() {
                                 {/* Mega Menu */}
                                 <div
                                     className="
-                    invisible
-                    absolute
-                    left-1/2
-                    top-full
-                    z-50
-                    mt-3
-                    w-[1000px]
-                    max-w-[90vw]
-                    -translate-x-1/2
-                    rounded-2xl
-                    border
-                    border-primary/10
-                    bg-[#F7FAFB]
-                    p-6
-                    opacity-0
-                    shadow-xl
-                    transition-all
-                    duration-200
-                    group-hover:visible
-                    group-hover:opacity-100
-                  "
+                                        invisible
+                                        absolute
+                                        left-1/2
+                                        top-full
+                                        z-50
+                                        mt-3
+                                        w-[1000px]
+                                        max-w-[90vw]
+                                        -translate-x-1/2
+                                        rounded-2xl
+                                        border
+                                        border-primary/10
+                                        bg-[#F7FAFB]
+                                        p-6
+                                        opacity-0
+                                        shadow-xl
+                                        transition-all
+                                        duration-200
+                                        group-hover:visible
+                                        group-hover:opacity-100
+                                    "
                                 >
                                     <div className="container-page py-5">
                                         <div className="grid grid-cols-3 gap-x-8 gap-y-3">
