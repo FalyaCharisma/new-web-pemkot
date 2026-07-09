@@ -23,14 +23,14 @@ class AppServiceProvider extends ServiceProvider
         return array(
             [
                 'title' => 'Dashboard',
-                'url' => '/banner-beranda',
+                'url' => '/dashboard',
                 'routes' => ['dashboard'],
                 'icon' => 'fa-cubes',
             ],
             [
                 'title' => 'Home',
                 'url' => '#',
-                'routes' => ['banner-beranda','list-program-unggulan', 'form-program-unggulan/*', 'list-layanan-digital'],
+                'routes' => ['banner-beranda','list-layanan-publik','form-layanan-publik/*','peta-interaktif','form-peta-interaktif/*'],
                 'icon' => 'fa-home',
                 'children' => array(
                     [
@@ -53,18 +53,18 @@ class AppServiceProvider extends ServiceProvider
             [
                 'title' => 'Mengenal Kediri',
                 'url' => '#',
-                'routes' => ['list-pesona-unggulan', 'ada-apa-kediri', 'form-ada-apa/*', 'list-kategori-aset', 'list-penghargaan', 'form-visimisi', 'list-opd', 'list-sejarah', 'list-jabatan', 'list-pimpinan', 'list-kelurahan', 'list-kelurahan', 'list-fasilitas', 'form-opd/*'],
+                'routes' => ['list-pesona-unggulan', 'form-pesona-unggulan/*', 'list-fasilitas', 'form-fasilitas/*', 'list-kategori-fasilitas', 'sub-kategori-fasilitas/*', 'sekilas-kota', 'form-visimisi', 'list-sejarah', 'list-pimpinan', 'form-pimpinan/*', 'list-jabatan', 'list-opd', 'form-opd/*', 'list-kelurahan', 'list-penghargaan'],
                 'icon' => 'fa-industry',
                 'children' => array(
                     [
                         'title' => 'Pesona Unggulan',
                         'url' => '/list-pesona-unggulan',
-                        'routes' => ['list-pesona-unggulan']
+                        'routes' => ['list-pesona-unggulan', 'form-pesona-unggulan/*']
                     ],
                     [
                         'title' => 'Fasilitas Kota',
                         'url' => '/list-fasilitas',
-                        'routes' => ['list-fasilitas']
+                        'routes' => ['list-fasilitas', 'form-fasilitas/*', 'list-kategori-fasilitas', 'sub-kategori-fasilitas/*']
                     ],
                     [
                         'title' => 'Sekilas Kediri',
@@ -89,7 +89,7 @@ class AppServiceProvider extends ServiceProvider
                     [
                         'title' => 'Daftar Pimpinan',
                         'url' => '/list-pimpinan',
-                        'routes' => ['list-pimpinan']
+                        'routes' => ['list-pimpinan', 'form-pimpinan/*', 'list-jabatan']
                     ],
                     [
                         'title' => 'Perangkat Daerah',
@@ -111,13 +111,13 @@ class AppServiceProvider extends ServiceProvider
             [
                 'title' => 'Pusat Media & Informasi',
                 'url' => '#',
-                'routes' => ['list-pengumuman', 'list-berita', 'list-berita-luar', 'list-galeri', 'list-dokumen', 'list-artikel', 'form-berita/*', 'form-pengumuman/*', 'form-dokumen/*', 'form-artikel/*'],
+                'routes' => ['list-berita', 'form-berita/*', 'list-kategori-berita','list-agenda', 'form-agenda/*', 'list-galeri', 'form-galeri/*', 'list-video', 'form-video/*', 'list-dokumen', 'form-dokumen/*'],
                 'icon' => 'fa-newspaper',
                 'children' => array(
                     [
                         'title' => 'Berita & Pengumuman',
                         'url' => '/list-berita',
-                        'routes' => ['list-berita', 'form-berita/*']
+                        'routes' => ['list-berita', 'form-berita/*', 'list-kategori-berita']
                     ],
                     [
                         'title' => 'Agenda',

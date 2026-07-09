@@ -55,14 +55,14 @@ export function Culture() {
             </div>
 
             <div className="container-page mt-8">
-                <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-2 xl:grid-cols-4">
                     {cards.map((c) => (
                         <Link
                             key={c.title}
                             href={route("pesona-unggulan.index", {
                                 kategori: c.id_kategori,
                             })}
-                            className="group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border shadow-elegant transition-all duration-500 hover:-translate-y-2 hover:shadow-glow block"
+                            className="group relative aspect-[4/5] sm:aspect-[3/4] overflow-hidden rounded-2xl sm:rounded-3xl border border-border shadow-elegant transition-all duration-500 hover:-translate-y-2 hover:shadow-glow block"
                         >
                             <img
                                 src={c.img}
@@ -73,14 +73,14 @@ export function Culture() {
                                 className="size-full object-cover transition-transform duration-[1.2s] group-hover:scale-110"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-                            <div className="absolute inset-x-0 bottom-0 p-7">
-                                <span className="text-[11px] uppercase tracking-[0.22em] text-gold">
+                            <div className="absolute inset-x-0 bottom-0 p-4 sm:p-7">
+                                <span className="text-[9px] sm:text-[11px] uppercase tracking-[0.15em] text-gold">
                                     {c.tag}
                                 </span>
-                                <h3 className="mt-2 font-serif text-2xl text-white">
+                                <h3 className="mt-2 font-serif text-lg sm:text-2xl text-white leading-tight">
                                     {c.title}
                                 </h3>
-                                <p className="mt-2 max-w-xs text-sm text-white/70">
+                                <p className="mt-1 text-xs sm:text-sm text-white/70 line-clamp-2">
                                     {c.desc}
                                 </p>
                             </div>

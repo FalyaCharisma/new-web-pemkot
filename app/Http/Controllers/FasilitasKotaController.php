@@ -428,15 +428,17 @@ class FasilitasKotaController extends Controller
         try {
             if (isset($request->id)) {
                 KategoriFasilitas::where(['id' => $request->id])->update([
-                    'nm_kategori' => $request->nm_kategori,
+                    'nama_kategori' => $request->nama_kategori,
+                    'icon' => $request->icon,
                     'updated_at' => Carbon::now('Asia/Jakarta'),
                 ]);
 
                 toastr()->success('Kategori Fasilitas Berhasil Diubah.');
             } else {
                 KategoriFasilitas::insert([
-                    'nm_kategori' => $request->nm_kategori,
-                    'updated_at' => Carbon::now('Asia/Jakarta'),
+                    'nama_kategori' => $request->nama_kategori,
+                    'icon' => $request->icon,
+                    'created_at' => Carbon::now('Asia/Jakarta'),
                 ]);
 
                 toastr()->success('Kategori Fasilitas Berhasil Ditambahkan.');
@@ -493,5 +495,153 @@ class FasilitasKotaController extends Controller
         toastr()->success('Semua slug fasilitas berhasil diupdate.');
 
         return redirect()->back();
+    }
+
+    // Adminpage - List Kategori Fasilitas
+    public function list_kategori_fasilitas(Request $request){
+        try{
+            if($request->ajax()){
+                $kategori = KategoriFasilitas::withCount('sub_kategori')->orderBy('nama_kategori')->get();
+                return Datatables::of($kategori)
+                ->addIndexColumn()
+                ->addColumn('icon', function ($row) {
+                    return $row->icon;
+                })
+                ->addColumn('nama_kategori', function ($row) {
+                    return $row->nama_kategori;
+                })
+                ->addColumn('sub_count', function ($row) {
+                    return $row->sub_kategori_count;
+                })
+                ->addColumn('status', function ($row) {
+                    return $row->status_enabled
+                        ? '<span class="badge bg-success">Aktif</span>'
+                        : '<span class="badge bg-danger">Nonaktif</span>';
+                })
+                ->addColumn('action', function ($row) {
+                    return '
+                        <button class="btn btn-warning btn-sm" onclick="editkategori('.$row->id.')">
+                            <i class="fa fa-edit"></i>
+                        </button>
+
+                        <a href="'.route('sub_kategori_fasilitas', $row->id).'" class="btn btn-info btn-sm">
+                            <i class="fa fa-list"></i>
+                        </a>
+                        <button class="btn btn-danger btn-sm" onclick="deleteConfirmation('.$row->id.')">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    ';
+                })
+                ->rawColumns(['status', 'action'])
+                ->make(true);
+            }
+        }catch (\Exception $exception){
+            $kategori = [];
+            toastr()->error('Data Gagal Dimuat. Hubungi Programmer!!');
+        }
+
+        return view('admin.fasilitas.list-kategori');
+    }
+
+    public function sub_kategori_fasilitas(Request $request, $kategori_id)
+    {
+        try {
+            if ($request->ajax()) {
+                $subKategori = SubKategoriFasilitas::where('kategori_id', $kategori_id)
+                    ->orderBy('nama_sub', 'asc')
+                    ->get();
+
+                return DataTables::of($subKategori)
+                    ->addIndexColumn()
+                    ->addColumn('nama_sub', function ($row) {
+                        return $row->nama_sub;
+                    })
+                    ->addColumn('status', function ($row) {
+                        return $row->status_enabled
+                            ? '<span class="badge bg-success">Aktif</span>'
+                            : '<span class="badge bg-danger">Nonaktif</span>';
+                    })
+                    ->addColumn('action', function ($row) {
+                        return '
+                            <button class="btn btn-warning btn-sm" onclick="editSubKategori('.$row->id.')">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteConfirmation('.$row->id.')">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        ';
+                    })
+                    ->rawColumns(['status', 'action'])
+                    ->make(true);
+            }
+        } catch (\Exception $e) {
+            toastr()->error('Data gagal dimuat.');
+        }
+
+        $kategori = KategoriFasilitas::findOrFail($kategori_id);
+
+        return view('admin.fasilitas.sub-kategori', compact('kategori'));
+    }
+
+    // Adminpage - Value Sub Kategori Fasilitas
+    public function value_sub_kategori_fasilitas($id){
+        $subkategori = SubKategoriFasilitas::where('id', $id)->first();
+        return response()->json($subkategori);
+    }
+
+    // Adminpage - Update Sub Kategori
+    public function update_sub_kategori_fasilitas(Request $request){        
+        DB::beginTransaction();
+
+        try{
+            if (isset($request->id)){
+                SubKategoriFasilitas::where(['id'=>$request->id])->update([
+                    'kategori_id' => $request->kategori_id,
+                    'nama_sub' => $request->nama_sub,
+                    'updated_at' => Carbon::now ('Asia/Jakarta')
+                ]);
+
+                toastr()->success('Kategori Berhasil Diperbarui.');
+            }else{
+                SubKategoriFasilitas::insert([
+                    'kategori_id' => $request->kategori_id,
+                    'nama_sub' => $request->nama_sub,
+                    'created_at' => Carbon::now ('Asia/Jakarta')
+                ]);
+
+                toastr()->success('Kategori Berita Berhasil Ditambahkan.');
+            }
+
+            DB::commit();
+        }catch(\Exception $exception){
+            DB::rollback();
+            toastr()->error('Terdapat kesalahan dalam memproses data. Hubungi Programmer!!');
+        }
+
+        return redirect()->route('sub_kategori_fasilitas', $request->kategori_id);
+    }
+
+    // Adminpage - Delete Kategori
+    public function hapus_sub_kategori_fasilitas($id){
+      
+        $aktif = SubKategoriFasilitas::where(['id'=>$id])->update([
+            'status_enabled'=>0,
+            'updated_at'=> Carbon::now ('Asia/Jakarta')
+        ]);
+
+        //Check data deleted or not
+        if ($aktif == 1){
+            $success = true;
+            $message = "Data Berhasil Dihapus";
+        }else {
+            $success = false;
+            $message = "Data Tidak Ditemukan!";
+        }
+
+        //Return response
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
     }
 }

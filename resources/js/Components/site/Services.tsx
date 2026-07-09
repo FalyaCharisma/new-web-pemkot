@@ -51,16 +51,16 @@ export function Services({ layanan }: Props) {
                         </div>
 
                         {/* Grid layanan */}
-                        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-3">
                             {layanan.map((s) => (
                                 <a
                                     key={s.id}
                                     href={s.url ?? "#"}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="group rounded-3xl border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+                                    className="group flex h-full flex-col rounded-3xl border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
                                 >
-                                    <div className="flex size-12 items-center justify-center rounded-2xl bg-gold/10">
+                                    <div className="flex size-10 sm:size-12 items-center justify-center rounded-xl bg-gold/10">
                                         {s.icon ? (
                                             <img
                                                 src={s.icon}
@@ -72,16 +72,16 @@ export function Services({ layanan }: Props) {
                                         )}
                                     </div>
 
-                                    <h3 className="mt-5 text-base font-semibold">
+                                    <h3 className="mt-3 text-sm sm:text-base font-semibold leading-snug">
                                         {s.title}
                                     </h3>
 
-                                    <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
+                                    <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
                                         {s.desc}
                                     </p>
 
-                                    <div className="mt-6 flex items-center justify-between">
-                                        <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary">
+                                    <div className="mt-auto pt-3 flex items-center justify-between">
+                                        <span className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-primary">
                                             Buka layanan
                                             <ArrowUpRight className="size-4" />
                                         </span>

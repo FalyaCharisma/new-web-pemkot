@@ -52,8 +52,6 @@ export default function LandingPage({
                 <main>
                     <Hero hero={hero}/>
                     <Services layanan={layanan}/>
-                    {/* <About /> */}
-                    {/* <Statistik /> */}
                     <Agenda agenda={agenda} />
                     <Culture />
                     <CityMap peta={peta} />

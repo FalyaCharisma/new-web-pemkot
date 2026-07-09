@@ -120,6 +120,7 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     font-feature-settings: "ss01", "cv11";
+    overflow-x: hidden;
   }
   ::selection {
     background: oklch(0.72 0.10 145);

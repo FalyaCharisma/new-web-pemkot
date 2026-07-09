@@ -41,36 +41,36 @@ export function News({ berita }: Props) {
                         {berita.map((item) => (
                             <article
                                 key={item.id}
-                                className="group flex gap-5 rounded-2xl border bg-white p-4 transition hover:shadow-md"
+                                className="group flex gap-3 rounded-2xl border bg-white p-3 transition hover:shadow-md md:gap-5 md:p-4"
                             >
                                 <img
                                     src={item.images}
                                     alt={item.judul}
-                                    className="h-36 w-56 shrink-0 rounded-xl object-cover"
+                                    className="h-20 w-20 shrink-0 rounded-xl object-cover md:h-36 md:w-56"
                                 />
 
                                 <div className="min-w-0 flex-1">
-                                    <div className="flex items-center gap-3">
-                                        <span className="rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        <span className="rounded-full bg-primary/10 px-2 py-1 text-[10px] font-medium text-primary md:text-xs">
                                             {item.kategori?.nama_kategori}
                                         </span>
 
-                                        <span className="text-xs text-muted-foreground">
+                                        <span className="text-[10px] text-muted-foreground md:text-xs">
                                             {formatDate(item.tanggal)}
                                         </span>
                                     </div>
 
-                                    <h3 className="mt-3 line-clamp-2 text-xl font-semibold transition-colors group-hover:text-primary">
+                                    <h3 className="mt-2 line-clamp-2 text-base font-semibold transition-colors group-hover:text-primary md:mt-3 md:text-xl">
                                         {item.judul}
                                     </h3>
 
-                                    <p className="mt-2 line-clamp-1 text-sm text-muted-foreground">
+                                    <p className="mt-2 hidden line-clamp-2 text-sm text-muted-foreground md:block">
                                         {item.deskripsi}
                                     </p>
 
                                     <Link
                                         href={route("berita.show", item.slug)}
-                                        className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-primary"
+                                        className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary md:mt-3 md:text-sm"
                                     >
                                         Baca selengkapnya
                                         <ArrowUpRight size={15} />

@@ -62,23 +62,19 @@ const footerMenus = [
 const socials = [
     {
         icon: FaInstagram,
-        url: "#",
+        url: "https://www.instagram.com/pemkotkediri/",
     },
     {
         icon: FaFacebookF,
-        url: "#",
+        url: "https://www.facebook.com/pemkotkediri.nda/?locale=id_ID",
     },
     {
         icon: FaYoutube,
-        url: "#",
-    },
-    {
-        icon: FaXTwitter,
-        url: "https://x.com/kedirikota",
+        url: "https://www.youtube.com/channel/UCX6KxXBUbivqWXTku0nnPbA",
     },
     {
         icon: FaTiktok,
-        url: "https://tiktok.com/@kedirikota",
+        url: "https://www.tiktok.com/@pemkotkediri",
     },
 ];
 
@@ -206,21 +202,21 @@ export function Footer() {
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="
-                        rounded-full
-                        border
-                        border-primary/15
-                        bg-white
-                        p-2.5
-                        text-primary
-                        shadow-sm
-                        transition-all
-                        hover:-translate-y-0.5
-                        hover:border-primary
-                        hover:bg-primary
-                        hover:text-white
-                      "
+                                                rounded-full
+                                                border
+                                                border-primary/15
+                                                bg-white
+                                                p-2.5
+                                                text-primary
+                                                shadow-sm
+                                                transition-all
+                                                hover:-translate-y-0.5
+                                                hover:border-primary
+                                                hover:bg-primary
+                                                hover:text-white
+                                            "
                                         >
-                                            <Icon size={16} />
+                                            <Icon size={23} />
                                         </a>
                                     );
                                 })}

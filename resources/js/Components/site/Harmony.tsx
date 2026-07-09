@@ -4,6 +4,7 @@ import church from "@/assets/gerejamerah.jpg";
 import temple from "@/assets/pura.jpg";
 import vihara from "@/assets/vihara.jpg";
 import kelenteng from "@/assets/kelenteng.png";
+import { useEffect, useState } from "react";
 import {
     Church,
     Landmark,
@@ -46,6 +47,19 @@ const houses = [
 ];
 
 export function Harmony() {
+    const [active, setActive] = useState(0);
+    const [isPaused, setIsPaused] = useState(false);
+
+    useEffect(() => {
+        if (isPaused) return;
+
+        const interval = setInterval(() => {
+            setActive((prev) => (prev + 1) % houses.length);
+        }, 1500);
+
+        return () => clearInterval(interval);
+    }, [isPaused]);
+
     return (
         <section id="harmoni" className="relative overflow-hidden py-14 my-14">
             {/* Background */}
@@ -82,28 +96,37 @@ export function Harmony() {
                 <div className="mt-10 grid gap-6 lg:grid-cols-[1.8fr_1fr]">
                     {/* Left Visual */}
                     <div className="overflow-hidden rounded-[32px] border border-border bg-card">
-                        <div className="grid h-full grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-                            {houses.map((h) => (
+                        <div className="flex h-[420px] overflow-hidden" onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
+                            {houses.map((h, index) => (
                                 <div
                                     key={h.name}
-                                    className="group relative h-[420px] overflow-hidden"
+                                    onClick={() => setActive(index)}
+                                    className={`group relative cursor-pointer overflow-hidden transition-all duration-700 ease-in-out ${
+                                        active === index ? "flex-[6]" : "flex-1"
+                                    }`}
                                 >
                                     <img
                                         src={h.img}
                                         alt={h.name}
-                                        className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                                     />
 
                                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
 
-                                    <div className="absolute bottom-5 left-5">
-                                        <div className="text-[14px] uppercase tracking-[0.22em] text-gold">
+                                    <div
+                                        className={`absolute bottom-5 left-5 transition-all duration-300 ${
+                                            active === index
+                                                ? "opacity-100 translate-y-0"
+                                                : "opacity-0 translate-y-4"
+                                        }`}
+                                    >
+                                        <div className="text-sm uppercase tracking-[0.22em] text-gold">
                                             {h.name}
                                         </div>
 
-                                        {/* <div className="mt-2 text-xl font-semibold text-white">
+                                        <div className="mt-2 text-xl font-semibold text-white">
                                             Kota Kediri
-                                        </div> */}
+                                        </div>
                                     </div>
                                 </div>
                             ))}

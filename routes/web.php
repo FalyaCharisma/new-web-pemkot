@@ -70,6 +70,14 @@ Route::middleware('auth')->group(function () {
         Route::post('/hapus-fasilitas/{id}', 'hapus_fasilitas')->name('hapus_fasilitas');
         Route::get('/get-sub-kategori', 'get_sub_kategori')->name('get_sub_kategori');
         Route::get('/update-slug-fasilitas', 'update_slug_fasilitas')->name('update_slug_fasilitas');
+        Route::get('/list-kategori-fasilitas', 'list_kategori_fasilitas')->name('list_kategori_fasilitas');
+        Route::get('/value-kategori-fasilitas/{id}', 'value_kategori_fasilitas')->name('value_kategori_fasilitas');
+        Route::post('/update-kategori-fasilitas', 'update_kategori_fasilitas')->name('update_kategori_fasilitas');
+        Route::post('/hapus-kategori-fasilitas/{id}', 'hapus_kategori_fasilitas')->name('hapus_kategori_fasilitas');
+        Route::get('/sub-kategori-fasilitas/{id}', 'sub_kategori_fasilitas')->name('sub_kategori_fasilitas');
+        Route::get('/value-sub-kategori-fasilitas/{id}', 'value_sub_kategori_fasilitas')->name('value_sub_kategori_fasilitas');
+        Route::post('/update-sub-kategori-fasilitas', 'update_sub_kategori_fasilitas')->name('update_sub_kategori_fasilitas');
+        Route::post('/hapus-sub-kategori-fasilitas/{id}', 'hapus_sub_kategori_fasilitas')->name('hapus_sub_kategori_fasilitas');
     });
 
     //*************************************** PETA INTERAKTIF *************************************************

@@ -13,7 +13,7 @@ export function Agenda({ agenda }: Props) {
     if (!featured) return null;
 
     return (
-        <section id="agenda" className="relative background-wave">
+        <section id="agenda" className="relative background-wave py-14">
             <div className="container-page">
                 <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
                     <div className="max-w-2xl">
@@ -41,7 +41,7 @@ export function Agenda({ agenda }: Props) {
 
                 <div className="mt-10 grid gap-6 lg:grid-cols-[1.8fr_1fr]">
                     {/* Featured event */}
-                    <article className="group relative overflow-hidden rounded-3xl border border-border shadow-elegant">
+                    <article className="group relative h-[480px] sm:h-[520px] lg:h-auto overflow-hidden rounded-3xl border border-border shadow-elegant">
                         <img
                             src={featured.banner ?? "/noimage.png"}
                             alt={featured.judul_acara}
@@ -53,8 +53,8 @@ export function Agenda({ agenda }: Props) {
 
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
 
-                        <div className="absolute left-6 top-6 flex size-20 flex-col items-center justify-center rounded-2xl bg-gradient-gold text-gold-foreground shadow-elegant">
-                            <span className="font-serif text-3xl leading-none">
+                        <div className="absolute left-4 top-4 sm:left-6 sm:top-6 flex size-16 sm:size-20 flex-col items-center justify-center rounded-2xl bg-gradient-gold text-gold-foreground shadow-elegant">
+                            <span className="font-serif text-2xl sm:text-3xl leading-none">
                                 {new Date(featured.tanggal_mulai)
                                     .getDate()
                                     .toString()
@@ -69,16 +69,16 @@ export function Agenda({ agenda }: Props) {
                             </span>
                         </div>
 
-                        <div className="absolute inset-x-0 bottom-0 p-8 md:p-10">
+                        <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8 md:p-10">
                             <span className="inline-flex rounded-full bg-white/15 px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-gold backdrop-blur">
                                 Agenda Kota Kediri
                             </span>
 
-                            <h3 className="mt-4 max-w-xl text-3xl font-bold leading-tight text-white md:text-4xl">
+                            <h3 className="mt-4 max-w-xl text-2xl sm:text-3xl md:text-4xl font-bold leading-tight text-white">
                                 {featured.judul_acara}
                             </h3>
 
-                            <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/70">
+                            <div className="mt-3 sm:mt-4 flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-2">
                                 <span className="inline-flex items-center gap-2">
                                     <MapPin className="size-4 text-gold" />
                                     {featured.lokasi_acara}

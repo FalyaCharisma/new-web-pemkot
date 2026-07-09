@@ -26,254 +26,286 @@
             <form action="{{ route('update_fasilitas') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="row">
-                    <div class="col-lg-12 my-3">
-                        <button type="button" class="btn btn-danger" onclick="window.history.back();">
-                            <i class="fa fa-arrow-left"></i> Kembali
-                        </button>
-                        <button type="submit" class="btn btn-secondary ms-3">
-                            <i class="fa fa-paper-plane"></i> Simpan
-                        </button>
-                    </div>
+
                     @include('admin.validation')
-                    <div class="col-md-6 mt-2">
-                        <div class="card">
+                    <div class="col-md-12 mt-2">
+                        <div class="row">
                             <div class="card-body">
-                                <input type="hidden" id="id" name="id"
-                                    value="{{ empty($fasilitas) ? '' : $fasilitas['id'] }}">
-                                <div class="form-group">
-                                    <label><b>Kategori</b></label>
-                                    <select class="form-select form-control-lg" id="kategori" name="kategori" required>
-                                        <option value="">Pilih Kategori</option>
-                                        @foreach ($kategori as $item)
-                                            <option value="{{ $item->id }}"
-                                                {{ !empty($fasilitas['kategori_id']) && $fasilitas['kategori_id'] == $item->id ? 'selected' : '' }}>
-                                                {{ $item->nama_kategori }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label><b>Sub Kategori</b></label>
-                                    <select class="form-select form-control-lg" id="sub_kategori" name="sub_kategori"
-                                        required>
-                                        <option value="">Pilih Sub Kategori</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="nama" class="form-label"><b>Nama Fasilitas</b></label>
-                                    <input type="text" class="form-control input-full" id="nama" name="nama"
-                                        value="{{ empty($fasilitas) ? '' : $fasilitas['nama'] }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label><b>Alamat</b></label>
-
-                                    <textarea id="alamat" name="alamat" class="form-control" rows="4">{{ old('alamat', $fasilitas['alamat'] ?? '') }}</textarea>
-
-                                    <small class="text-muted">
-                                        Alamat akan terisi otomatis setelah memilih lokasi di peta.
-                                    </small>
-                                </div>
-                                <div class="form-group">
-                                    <label for="telp" class="form-label"><b>Telepon</b></label>
-                                    <input type="text" class="form-control input-full" id="telp" name="telp"
-                                        value="{{ empty($fasilitas) ? '' : $fasilitas['telp'] }}">
-                                </div>
-                                <div class="form-group">
-                                    <label for="link" class="form-label"><b>Link Website</b></label>
-                                    <input type="text" class="form-control input-full" id="link" name="link"
-                                        value="{{ empty($fasilitas) ? '' : $fasilitas['link'] }}">
-                                </div>
                                 <div class="row">
-
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label><b>Jam Buka</b></label>
-                                            <input type="time" class="form-control" name="jam_buka"
-                                                value="{{ old('jam_buka', $fasilitas['jam_buka'] ?? '') }}">
-                                        </div>
+                                    <div class="col-lg-12 my-3">
+                                        <button type="button" class="btn btn-danger" onclick="window.history.back();">
+                                            <i class="fa fa-arrow-left"></i> Kembali
+                                        </button>
+                                        <button type="submit" class="btn btn-secondary ms-3">
+                                            <i class="fa fa-paper-plane"></i> Simpan
+                                        </button>
+                                        <button type="button" class="btn btn-warning ms-3"
+                                            onclick="location.href='/list-kategori-fasilitas'">
+                                            <span class="btn-label">
+                                                <i class="fa fa-list me-2"></i>
+                                            </span>
+                                            List Kategori
+                                        </button>
                                     </div>
+                                    <div class="col-md-6 mt-2">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <input type="hidden" id="id" name="id"
+                                                    value="{{ empty($fasilitas) ? '' : $fasilitas['id'] }}">
+                                                <div class="form-group">
+                                                    <label><b>Kategori</b></label>
+                                                    <select class="form-select form-control-lg" id="kategori"
+                                                        name="kategori" required>
+                                                        <option value="">Pilih Kategori</option>
+                                                        @foreach ($kategori as $item)
+                                                            <option value="{{ $item->id }}"
+                                                                {{ !empty($fasilitas['kategori_id']) && $fasilitas['kategori_id'] == $item->id ? 'selected' : '' }}>
+                                                                {{ $item->nama_kategori }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
 
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label><b>Jam Tutup</b></label>
-                                            <input type="time" class="form-control" name="jam_tutup"
-                                                value="{{ old('jam_tutup', $fasilitas['jam_tutup'] ?? '') }}">
-                                        </div>
-                                    </div>
+                                                <div class="form-group">
+                                                    <label><b>Sub Kategori</b></label>
+                                                    <select class="form-select form-control-lg" id="sub_kategori"
+                                                        name="sub_kategori" required>
+                                                        <option value="">Pilih Sub Kategori</option>
+                                                    </select>
+                                                </div>
 
-                                </div>
-                                <div class="form-group">
-                                    <label for="deskripsi" class="mb-2 form-label">Deskripsi:</label>
-                                    <textarea class="my-editor" id="my-editor" name="deskripsi">{{ $fasilitas == [] ? '' : $fasilitas['deskripsi'] }}</textarea>
-                                </div>
+                                                <div class="form-group">
+                                                    <label for="nama" class="form-label"><b>Nama
+                                                            Fasilitas</b></label>
+                                                    <input type="text" class="form-control input-full" id="nama"
+                                                        name="nama"
+                                                        value="{{ empty($fasilitas) ? '' : $fasilitas['nama'] }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><b>Alamat</b></label>
 
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mt-2">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="form-group mt-4">
-                                    <label><b>Pilih Titik Lokasi</b></label>
+                                                    <textarea id="alamat" name="alamat" class="form-control" rows="4">{{ old('alamat', $fasilitas['alamat'] ?? '') }}</textarea>
 
-                                    <div id="map" style="height:420px; border-radius:10px; border:1px solid #ddd;">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label><b>Latitude</b></label>
-                                            <input type="text" id="lat" name="lat" class="form-control"
-                                                value="{{ old('lat', $fasilitas['lat'] ?? '') }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label><b>Longitude</b></label>
-                                            <input type="text" id="lng" name="lng" class="form-control"
-                                                value="{{ old('lng', $fasilitas['lng'] ?? '') }}">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div id="foto-preview" class="text-center">
-                                        <img src="{{ empty($fasilitas) ? asset('assets/images/noimage.png') : asset('storage/fasilitas/' . $fasilitas['foto']) }}"
-                                            width="30%">
-                                    </div>
-                                    <label for="gambar" class="form-label"><b>Gambar (Cover)</b></label>
-                                    <input type="hidden" class="form-control" name="gambarlama" id="gambarlama"
-                                        value="{{ empty($fasilitas) ? null : $fasilitas['foto'] }}" required />
-                                    <input class="form-control" type="file" id="gambar" name="gambar"
-                                        @if (empty($fasilitas)) required @endif />
-                                    <p class="logowarning" style="color:red;"><i>* tipe file berupa .jpg .png .jpeg .webp
-                                            dengan size max 2mb </i></p>
-                                </div>
-                                <div class="form-group">
-                                    <label><b>Galeri Foto (Flickr)</b></label>
-                                    <div id="foto-wrapper">
+                                                    <small class="text-muted">
+                                                        Alamat akan terisi otomatis setelah memilih lokasi di
+                                                        peta.
+                                                    </small>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="telp" class="form-label"><b>Telepon</b></label>
+                                                    <input type="text" class="form-control input-full" id="telp"
+                                                        name="telp"
+                                                        value="{{ empty($fasilitas) ? '' : $fasilitas['telp'] }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="link" class="form-label"><b>Link
+                                                            Website</b></label>
+                                                    <input type="text" class="form-control input-full" id="link"
+                                                        name="link"
+                                                        value="{{ empty($fasilitas) ? '' : $fasilitas['link'] }}">
+                                                </div>
+                                                <div class="row">
 
-                                        @if (!empty($fasilitas) && $fasilitas->galeriFoto->count())
-
-                                            @foreach ($fasilitas->galeriFoto as $item)
-                                                <div class="row foto-item mb-2">
-
-                                                    <div class="col-md-10">
-
-                                                        <input type="text" class="form-control" name="foto[]"
-                                                            value="{{ $item->url }}"
-                                                            placeholder="https://live.staticflickr.com/...">
-
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label><b>Jam Buka</b></label>
+                                                            <input type="time" class="form-control" name="jam_buka"
+                                                                value="{{ old('jam_buka', $fasilitas['jam_buka'] ?? '') }}">
+                                                        </div>
                                                     </div>
 
-                                                    <div class="col-md-2">
-
-                                                        <button type="button" class="btn btn-danger remove-foto">
-
-                                                            Hapus
-
-                                                        </button>
-
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label><b>Jam Tutup</b></label>
+                                                            <input type="time" class="form-control" name="jam_tutup"
+                                                                value="{{ old('jam_tutup', $fasilitas['jam_tutup'] ?? '') }}">
+                                                        </div>
                                                     </div>
 
                                                 </div>
-                                            @endforeach
-                                        @else
-                                            <div class="row foto-item mb-2">
-
-                                                <div class="col-md-10">
-
-                                                    <input type="text" class="form-control" name="foto[]"
-                                                        placeholder="https://live.staticflickr.com/...">
-
-                                                </div>
-
-                                                <div class="col-md-2">
-
-                                                    <button type="button" class="btn btn-danger remove-foto">
-
-                                                        Hapus
-
-                                                    </button>
-
+                                                <div class="form-group">
+                                                    <label for="deskripsi" class="mb-2 form-label">Deskripsi:</label>
+                                                    <textarea class="my-editor" id="my-editor" name="deskripsi">{{ $fasilitas == [] ? '' : $fasilitas['deskripsi'] }}</textarea>
                                                 </div>
 
                                             </div>
-
-                                        @endif
-
+                                        </div>
                                     </div>
-                                    <button type="button" id="add-foto" class="btn btn-primary btn-sm">
-                                        + Tambah Foto
-                                    </button>
-                                </div>
-                                <div class="form-group">
-                                    <div id="video-wrapper">
+                                    <div class="col-md-6 mt-2">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="form-group mt-4">
+                                                    <label><b>Pilih Titik Lokasi</b></label>
 
-                                        <label><b>Link Video</b></label>
+                                                    <div id="map"
+                                                        style="height:420px; border-radius:10px; border:1px solid #ddd;">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label><b>Latitude</b></label>
+                                                            <input type="text" id="lat" name="lat"
+                                                                class="form-control"
+                                                                value="{{ old('lat', $fasilitas['lat'] ?? '') }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label><b>Longitude</b></label>
+                                                            <input type="text" id="lng" name="lng"
+                                                                class="form-control"
+                                                                value="{{ old('lng', $fasilitas['lng'] ?? '') }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div id="foto-preview" class="text-center">
+                                                        <img src="{{ empty($fasilitas) ? asset('assets/images/noimage.png') : asset('storage/fasilitas/' . $fasilitas['foto']) }}"
+                                                            width="30%">
+                                                    </div>
+                                                    <label for="gambar" class="form-label"><b>Gambar
+                                                            (Cover)</b></label>
+                                                    <input type="hidden" class="form-control" name="gambarlama"
+                                                        id="gambarlama"
+                                                        value="{{ empty($fasilitas) ? null : $fasilitas['foto'] }}"
+                                                        required />
+                                                    <input class="form-control" type="file" id="gambar"
+                                                        name="gambar" @if (empty($fasilitas)) required @endif />
+                                                    <p class="logowarning" style="color:red;"><i>* tipe file
+                                                            berupa .jpg .png .jpeg .webp
+                                                            dengan size max 2mb </i></p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><b>Galeri Foto (Flickr)</b></label>
+                                                    <div id="foto-wrapper">
 
-                                        @if (!empty($fasilitas) && $fasilitas->galeriVideo->count())
+                                                        @if (!empty($fasilitas) && $fasilitas->galeriFoto->count())
 
-                                            @foreach ($fasilitas->galeriVideo as $item)
-                                                <div class="row video-item mb-2">
+                                                            @foreach ($fasilitas->galeriFoto as $item)
+                                                                <div class="row foto-item mb-2">
 
-                                                    <div class="col-md-10">
+                                                                    <div class="col-md-10">
 
-                                                        <input type="text" class="form-control" name="video[]"
-                                                            value="{{ $item->url }}"
-                                                            placeholder="https://youtube.com/...">
+                                                                        <input type="text" class="form-control"
+                                                                            name="foto[]" value="{{ $item->url }}"
+                                                                            placeholder="https://live.staticflickr.com/...">
+
+                                                                    </div>
+
+                                                                    <div class="col-md-2">
+
+                                                                        <button type="button"
+                                                                            class="btn btn-danger remove-foto">
+
+                                                                            Hapus
+
+                                                                        </button>
+
+                                                                    </div>
+
+                                                                </div>
+                                                            @endforeach
+                                                        @else
+                                                            <div class="row foto-item mb-2">
+
+                                                                <div class="col-md-10">
+
+                                                                    <input type="text" class="form-control"
+                                                                        name="foto[]"
+                                                                        placeholder="https://live.staticflickr.com/...">
+
+                                                                </div>
+
+                                                                <div class="col-md-2">
+
+                                                                    <button type="button"
+                                                                        class="btn btn-danger remove-foto">
+
+                                                                        Hapus
+
+                                                                    </button>
+
+                                                                </div>
+
+                                                            </div>
+
+                                                        @endif
+
+                                                    </div>
+                                                    <button type="button" id="add-foto" class="btn btn-primary btn-sm">
+                                                        + Tambah Foto
+                                                    </button>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div id="video-wrapper">
+
+                                                        <label><b>Link Video</b></label>
+
+                                                        @if (!empty($fasilitas) && $fasilitas->galeriVideo->count())
+
+                                                            @foreach ($fasilitas->galeriVideo as $item)
+                                                                <div class="row video-item mb-2">
+
+                                                                    <div class="col-md-10">
+
+                                                                        <input type="text" class="form-control"
+                                                                            name="video[]" value="{{ $item->url }}"
+                                                                            placeholder="https://youtube.com/...">
+
+                                                                    </div>
+
+                                                                    <div class="col-md-2">
+
+                                                                        <button type="button"
+                                                                            class="btn btn-danger remove-video">
+
+                                                                            Hapus
+
+                                                                        </button>
+
+                                                                    </div>
+
+                                                                </div>
+                                                            @endforeach
+                                                        @else
+                                                            <div class="row video-item mb-2">
+
+                                                                <div class="col-md-10">
+
+                                                                    <input type="text" class="form-control"
+                                                                        name="video[]"
+                                                                        placeholder="https://youtube.com/...">
+
+                                                                </div>
+
+                                                                <div class="col-md-2">
+
+                                                                    <button type="button"
+                                                                        class="btn btn-danger remove-video">
+
+                                                                        Hapus
+
+                                                                    </button>
+
+                                                                </div>
+
+                                                            </div>
+
+                                                        @endif
 
                                                     </div>
 
-                                                    <div class="col-md-2">
+                                                    <button type="button" id="add-video" class="btn btn-primary btn-sm">
 
-                                                        <button type="button" class="btn btn-danger remove-video">
-
-                                                            Hapus
-
-                                                        </button>
-
-                                                    </div>
-
-                                                </div>
-                                            @endforeach
-                                        @else
-                                            <div class="row video-item mb-2">
-
-                                                <div class="col-md-10">
-
-                                                    <input type="text" class="form-control" name="video[]"
-                                                        placeholder="https://youtube.com/...">
-
-                                                </div>
-
-                                                <div class="col-md-2">
-
-                                                    <button type="button" class="btn btn-danger remove-video">
-
-                                                        Hapus
+                                                        + Tambah Video
 
                                                     </button>
-
                                                 </div>
-
                                             </div>
-
-                                        @endif
-
+                                        </div>
                                     </div>
-
-                                    <button type="button" id="add-video" class="btn btn-primary btn-sm">
-
-                                        + Tambah Video
-
-                                    </button>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </form>
         </div>
     </div>
