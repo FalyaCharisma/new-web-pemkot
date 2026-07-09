@@ -43,11 +43,11 @@ class AppServiceProvider extends ServiceProvider
                         'url' => '/list-layanan-publik',
                         'routes' => ['list-layanan-publik', 'form-layanan-publik/*']
                     ],
-                    [
-                        'title' => 'Peta Interaktif',
-                        'url' => '/peta-interaktif',
-                        'routes' => ['peta-interaktif', 'form-peta-interaktif/*']
-                    ],
+                    // [
+                    //     'title' => 'Peta Interaktif',
+                    //     'url' => '/peta-interaktif',
+                    //     'routes' => ['peta-interaktif', 'form-peta-interaktif/*']
+                    // ],
                 ),
             ],
             [
@@ -101,11 +101,11 @@ class AppServiceProvider extends ServiceProvider
                         'url' => '/list-kelurahan',
                         'routes' => ['list-kelurahan']
                     ],
-                    [
-                        'title' => 'Penghargaan',
-                        'url' => '/list-penghargaan',
-                        'routes' => ['list-penghargaan']
-                    ],
+                    // [
+                    //     'title' => 'Penghargaan',
+                    //     'url' => '/list-penghargaan',
+                    //     'routes' => ['list-penghargaan']
+                    // ],
                 ),
             ],
             [

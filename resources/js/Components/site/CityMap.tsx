@@ -3,6 +3,17 @@ import { MapPin } from "lucide-react";
 import { SectionLabel } from "./SectionLabel";
 import { icon } from "leaflet";
 import { Peta } from "@/types/peta";
+import {
+    Building2,
+    Bus,
+    HeartPulse,
+    UtensilsCrossed,
+    ShoppingBag,
+    Trees,
+    GraduationCap,
+    Landmark,
+} from "lucide-react";
+import ReactDOMServer from "react-dom/server";
 
 interface Props {
     peta: Peta[];
@@ -11,30 +22,48 @@ interface Props {
 export function CityMap({ peta }: Props) {
     const [selected, setSelected] = useState<Peta>(peta[0]);
     const [MapComps, setMapComps] = useState<any>(null);
+    const iconMap: Record<string, any> = {
+        Building2,
+        Bus,
+        HeartPulse,
+        UtensilsCrossed,
+        ShoppingBag,
+        Trees,
+        GraduationCap,
+        Landmark,
+    };
 
     useEffect(() => {
         let mounted = true;
         Promise.all([import("react-leaflet"), import("leaflet")]).then(
             ([rl, L]) => {
                 // Fix default marker icons (Vite-friendly CDN paths)
-                const defaultIcon = L.default.icon({
-                    iconUrl:
-                        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-                    iconRetinaUrl:
-                        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-                    shadowUrl:
-                        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-                });
+                const createMarker = (iconName: string, active = false) => {
+                    const Icon = iconMap[iconName] ?? MapPin;
 
-                const activeIcon = L.default.icon({
-                    iconUrl:
-                        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
-                    iconRetinaUrl:
-                        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
-                    shadowUrl:
-                        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-                });
-                if (mounted) setMapComps({ ...rl, defaultIcon, activeIcon });
+                    return L.default.divIcon({
+                        className: "",
+                        html: ReactDOMServer.renderToString(
+                            <div
+                                className={`flex h-10 w-10 items-center justify-center rounded-full border-2 shadow-lg ${
+                                    active
+                                        ? "bg-red-600 border-red-700 text-white"
+                                        : "bg-emerald-600 border-white text-white"
+                                }`}
+                            >
+                                <Icon size={20} />
+                            </div>,
+                        ),
+                        iconSize: [40, 40],
+                        iconAnchor: [20, 40],
+                        popupAnchor: [0, -35],
+                    });
+                };
+                if (mounted)
+                    setMapComps({
+                        ...rl,
+                        createMarker,
+                    });
             },
         );
         return () => {
@@ -46,13 +75,22 @@ export function CityMap({ peta }: Props) {
         window.open(`https://www.google.com/maps?q=${lat},${lng}`, "_blank");
     };
 
+    const openVideo = (url?: string | null) => {
+        if (!url) return;
+
+        window.open(url, "_blank");
+    };
+    const openDetail = (slug: string) => {
+        window.location.href = route("fasilitas-kota.show", slug);
+    };
+
     return (
         <section id="budaya" className="relative overflow-hidden mb-28">
             <div className="container-page">
                 <div className="max-w-2xl">
                     <SectionLabel>Jelajahi Kota</SectionLabel>
                     <h2 className="mt-5 text-4xl font-bold tracking-tight md:text-5xl">
-                        Mau kemana {" "}
+                        Mau kemana{" "}
                         <span className="font-serif italic text-gold">
                             hari ini
                         </span>
@@ -83,40 +121,89 @@ export function CityMap({ peta }: Props) {
                                     <MapComps.Marker
                                         key={l.id}
                                         position={[l.lat, l.lng]}
-                                        icon={
-                                            l.id === selected.id
-                                                ? MapComps.activeIcon
-                                                : MapComps.defaultIcon
-                                        }
+                                        icon={MapComps.createMarker(
+                                            l.icon,
+                                            l.id === selected.id,
+                                        )}
                                         eventHandlers={{
                                             click: () => setSelected(l),
                                         }}
                                     >
-                                        <MapComps.Popup>
-                                            <div className="min-w-[180px]">
-                                                <strong>{l.name}</strong>
+                                        <MapComps.Popup
+                                            minWidth={270}
+                                            maxWidth={270}
+                                        >
+                                            <div className="w-full px-1 py-2">
+                                                <img
+                                                    src={
+                                                        l.foto
+                                                            ? `/storage/fasilitas/${l.foto}`
+                                                            : "/placeholder.jpg"
+                                                    }
+                                                    alt={l.name}
+                                                    className="h-28 w-full rounded-xl object-cover"
+                                                />
 
-                                                <p
-                                                    style={{
-                                                        fontSize: 12,
-                                                        marginTop: 4,
-                                                    }}
-                                                >
-                                                    {l.desc}
-                                                </p>
+                                                <div className="mt-3">
+                                                    <h3 className="text-xl font-bold leading-tight text-slate-800">
+                                                        {l.name}
+                                                    </h3>
 
-                                                <div className="mt-2 flex justify-center">
-                                                    <button
-                                                        onClick={() =>
-                                                            openGoogleMaps(
-                                                                l.lat,
-                                                                l.lng,
-                                                            )
-                                                        }
-                                                        className="rounded-lg bg-[#0F5D58] px-3 py-1.5 text-sm text-white hover:opacity-90 text-[11px]"
-                                                    >
-                                                        Buka di Google Maps
-                                                    </button>
+                                                    <div className="mt-2">
+                                                        <span className="inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-[11px] font-medium text-emerald-700">
+                                                            {l.category}
+                                                        </span>
+                                                    </div>
+
+                                                    <p className="mt-3 line-clamp-2 text-xs leading-5 text-slate-500">
+                                                        {l.desc}
+                                                    </p>
+
+                                                    {l.jam_buka &&
+                                                        l.jam_tutup && (
+                                                            <p className="mt-2 text-xs text-slate-600">
+                                                                🕘 {l.jam_buka}{" "}
+                                                                - {l.jam_tutup}
+                                                            </p>
+                                                        )}
+
+                                                    <div className="mt-4 space-y-1">
+                                                        <button
+                                                            onClick={() =>
+                                                                openDetail(
+                                                                    l.slug,
+                                                                )
+                                                            }
+                                                            className="flex h-9 w-full items-center justify-center rounded-lg bg-primary px-3 text-[13px] font-semibold text-white transition hover:opacity-90"
+                                                        >
+                                                            Lihat Detail
+                                                        </button>
+
+                                                        {l.has_video && (
+                                                            <button
+                                                                onClick={() =>
+                                                                    openVideo(
+                                                                        l.video_url,
+                                                                    )
+                                                                }
+                                                                className="flex h-9 w-full items-center justify-center rounded-lg bg-red-600 px-3 text-[13px] font-semibold text-white transition hover:bg-red-700"
+                                                            >
+                                                                Lihat Video
+                                                            </button>
+                                                        )}
+
+                                                        <button
+                                                            onClick={() =>
+                                                                openGoogleMaps(
+                                                                    l.lat,
+                                                                    l.lng,
+                                                                )
+                                                            }
+                                                            className="flex h-9 w-full items-center justify-center rounded-lg border border-slate-300 bg-white px-3 text-[13px] font-medium text-slate-700 transition hover:bg-slate-50"
+                                                        >
+                                                            Petunjuk Arah
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </MapComps.Popup>

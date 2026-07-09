@@ -1,4 +1,5 @@
 import { Head, Link } from "@inertiajs/react";
+import { useState } from "react";
 
 import { HeaderSolid } from "@/Components/site/HeaderSolid";
 import { Footer } from "@/Components/site/Footer";
@@ -21,6 +22,18 @@ export default function Show({
 
     lainnya,
 }: any) {
+    console.log(fasilitas);
+    const allPhotos = [
+        {
+            id: 0,
+            url: fasilitas.foto
+                ? `/storage/fasilitas/${fasilitas.foto}`
+                : "/placeholder.jpg",
+        },
+        ...(fasilitas.galeri_foto ?? []),
+    ];
+
+    const [selectedPhoto, setSelectedPhoto] = useState(allPhotos[0].url);
     return (
         <>
             <Head title={fasilitas.nama} />
@@ -64,13 +77,33 @@ export default function Show({
                                 </h1>
 
                                 <img
-                                    src={
-                                        fasilitas.foto
-                                            ? `/storage/fasilitas/${fasilitas.foto}`
-                                            : "https://placehold.co/800x500"
-                                    }
-                                    className="w-full h-[450px] mt-6 rounded-2xl object-cover"
+                                    src={selectedPhoto}
+                                    className="mt-6 h-[420px] w-full rounded-2xl object-cover"
                                 />
+
+                                {allPhotos.length > 1 && (
+                                    <div className="mt-4 flex gap-3 overflow-x-auto pb-2">
+                                        {allPhotos.map((foto: any) => (
+                                            <button
+                                                key={foto.id}
+                                                onClick={() =>
+                                                    setSelectedPhoto(foto.url)
+                                                }
+                                                className={`overflow-hidden rounded-xl border-2 transition
+                    ${
+                        selectedPhoto === foto.url
+                            ? "border-primary"
+                            : "border-transparent"
+                    }`}
+                                            >
+                                                <img
+                                                    src={foto.url}
+                                                    className="h-20 w-28 object-cover"
+                                                />
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
 
                                 {fasilitas.deskripsi ? (
                                     <div className="prose mt-8 max-w-none">
@@ -157,19 +190,78 @@ export default function Show({
 
                             <aside className="space-y-6">
                                 <div className="rounded-3xl border bg-white p-5">
+                                    <h3 className="font-bold">Video Profil</h3>
+                                    <div className="mt-5">
+                                        {fasilitas.galeri_video?.length > 0 ? (
+                                            fasilitas.galeri_video.map(
+                                                (video: any) => {
+                                                    const platform =
+                                                        video.url.includes(
+                                                            "youtu",
+                                                        )
+                                                            ? "YouTube"
+                                                            : video.url.includes(
+                                                                    "instagram",
+                                                                )
+                                                              ? "Instagram Reels"
+                                                              : video.url.includes(
+                                                                      "tiktok",
+                                                                  )
+                                                                ? "TikTok"
+                                                                : "Video";
+
+                                                    return (
+                                                        <a
+                                                            key={video.id}
+                                                            href={video.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="group block rounded-2xl border p-4 transition hover:border-primary hover:shadow-md"
+                                                        >
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-xl">
+                                                                    ▶
+                                                                </div>
+
+                                                                <div>
+                                                                    <p className="text-xs text-primary">
+                                                                        {
+                                                                            platform
+                                                                        }
+                                                                    </p>
+
+                                                                    <p className="mt-1 text-sm font-semibold group-hover:text-primary">
+                                                                        Tonton
+                                                                        Video
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    );
+                                                },
+                                            )
+                                        ) : (
+                                            <div className="rounded-xl bg-slate-50 p-4 text-center text-sm text-slate-500">
+                                                Belum ada video.
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="bg-white rounded-3xl border p-5">
                                     <h3 className="font-bold">
-                                        Sudut Lain yang Punya Cerita
+                                        Cerita dari Sekitar Tempat Ini
                                     </h3>
 
-                                    <div className="mt-5 space-y-4">
-                                        {lainnya.map((item: any) => (
+                                    <div className="mt-4 space-y-3">
+                                        {berita.map((item: any) => (
                                             <Link
                                                 key={item.id}
                                                 href={route(
-                                                    "fasilitas-kota.show",
+                                                    "berita.show",
                                                     item.slug,
                                                 )}
-                                                className="group flex gap-3"
+                                                className="group flex items-start gap-3 rounded-xl border bg-white p-3 transition hover:border-primary hover:shadow-md"
                                             >
                                                 <img
                                                     src={
@@ -178,98 +270,36 @@ export default function Show({
                                                                   "http",
                                                               )
                                                                 ? item.images
-                                                                : `/storage/fasilitas/${item.images}`
+                                                                : `/storage/berita/${item.images}`
                                                             : "/placeholder.jpg"
                                                     }
-                                                    className="h-20 w-24 rounded-xl object-cover"
+                                                    className="h-20 w-28 flex-shrink-0 rounded-lg object-cover"
                                                 />
 
-                                                <div className="flex-1">
-                                                    <p className="text-xs text-primary">
+                                                <div className="min-w-0 flex-1">
+                                                    <p className="text-[11px] font-medium text-primary">
                                                         {
                                                             item.kategori
-                                                                ?.nama_kategori
+                                                                ?.nm_kategori
                                                         }
                                                     </p>
 
-                                                    <h4 className="mt-1 line-clamp-2 font-semibold text-sm group-hover:text-primary">
-                                                        {item.nama}
-                                                    </h4>
+                                                    <h3 className="mt-1 line-clamp-2 text-sm font-semibold leading-5 text-slate-800 group-hover:text-primary">
+                                                        {item.judul}
+                                                    </h3>
+
+                                                    <p className="mt-2 text-[11px] text-slate-400">
+                                                        {
+                                                            item.created_at_formatted
+                                                        }
+                                                    </p>
                                                 </div>
                                             </Link>
                                         ))}
                                     </div>
                                 </div>
-
-                                <div className="bg-white rounded-3xl border p-5">
-                                    <h3 className="font-bold">
-                                        Agenda Terkait
-                                    </h3>
-
-                                    <div className="mt-4 space-y-4">
-                                        {agenda.map((item: any) => (
-                                            <div key={item.id}>
-                                                <p className="text-xs text-slate-400">
-                                                    {item.tanggal}
-                                                </p>
-
-                                                <h4 className="font-semibold">
-                                                    {item.judul}
-                                                </h4>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
                             </aside>
                         </div>
-
-                        <section className="mt-14">
-                            <div className="mb-6 flex items-center justify-between">
-                                <h2 className="text-3xl font-bold">
-                                    Cerita dari Sekitar Tempat Ini
-                                </h2>
-
-                                {/* <Link
-            href={route("berita")}
-            className="text-primary font-medium"
-        >
-            Lihat Semua
-        </Link> */}
-                            </div>
-
-                            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-                                {berita.map((item: any) => (
-                                    <Link
-                                        key={item.id}
-                                        href={route("berita.show", item.slug)}
-                                        className="group overflow-hidden rounded-2xl border bg-white transition hover:-translate-y-1 hover:shadow-lg"
-                                    >
-                                        <img
-                                            src={
-                                                item.images
-                                                    ? item.images.startsWith(
-                                                          "http",
-                                                      )
-                                                        ? item.images
-                                                        : `/storage/berita/${item.images}`
-                                                    : "/placeholder.jpg"
-                                            }
-                                            className="h-48 w-full object-cover transition duration-500 group-hover:scale-105"
-                                        />
-
-                                        <div className="p-5">
-                                            <p className="text-xs text-slate-500">
-                                                {item.created_at_formatted}
-                                            </p>
-
-                                            <h3 className="mt-2 line-clamp-2 font-semibold group-hover:text-primary">
-                                                {item.judul}
-                                            </h3>
-                                        </div>
-                                    </Link>
-                                ))}
-                            </div>
-                        </section>
                     </section>
                 </main>
 
