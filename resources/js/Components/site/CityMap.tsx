@@ -240,7 +240,24 @@ export function CityMap({ peta }: Props) {
                         <div className="flex-1 overflow-auto rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
                             {peta.map((l) => {
                                 const active = l.id === selected?.id;
-                                return (
+                                if (!selected) {
+                                        return (
+                                            <section id="budaya" className="mb-28">
+                                                <div className="container-page">
+                                                    <div className="rounded-3xl border bg-white p-12 text-center shadow-sm">
+                                                        <h3 className="text-xl font-semibold">
+                                                            Belum ada lokasi
+                                                        </h3>
+
+                                                        <p className="mt-2 text-slate-500">
+                                                            Data lokasi belum tersedia.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        );
+                                    }
+                                                                    return (
                                     <button
                                         key={l.id}
                                         onClick={() => setSelected(l)}
