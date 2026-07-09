@@ -11,10 +11,11 @@ import {
     FaInstagram,
     FaXTwitter,
 } from "react-icons/fa6";
-import { useEffect } from "react";
+import { useEffect, useState  } from "react";
 
 export default function FloatingReport() {
     const url = typeof window !== "undefined" ? window.location.href : "";
+    const [activePanel, setActivePanel] = useState<"report" | "share" | null>(null);
     useEffect(() => {
         if (document.getElementById("userway-widget")) return;
 
@@ -42,7 +43,14 @@ export default function FloatingReport() {
 
             {/* LAPOR MBAK WALI */}
             <div className="group relative">
-                <button className="h-16 w-16 rounded-full bg-white border-[3px] border-blue-500 shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110">
+                <button
+                    onClick={() =>
+                        setActivePanel(
+                            activePanel === "report" ? null : "report"
+                        )
+                    }
+                    className="h-16 w-16 rounded-full bg-white border-[3px] border-blue-500 shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110"
+                >
                     <img
                         src="/assets/images/112.jpg"
                         alt="Lapor Mbak Wali"
@@ -56,7 +64,11 @@ export default function FloatingReport() {
                 </div>
 
                 {/* Submenu */}
-                <div className="absolute right-20 top-0 w-60 rounded-2xl bg-white shadow-2xl border p-2 opacity-0 invisible transition-all duration-300 group-hover:opacity-100 group-hover:visible">
+                <div className={`absolute right-20 top-0 w-60 rounded-2xl bg-white shadow-2xl border p-2 transition-all duration-300 ${
+                    activePanel === "report"
+                        ? "opacity-100 visible translate-x-0"
+                        : "opacity-0 invisible translate-x-3"
+                }`}>
                     <a
                         href="tel:112"
                         className="flex items-center gap-3 rounded-xl p-3 hover:bg-slate-100"
@@ -92,7 +104,14 @@ export default function FloatingReport() {
             {/* SHARE */}
 
             <div className="group relative">
-                <button className="h-16 w-16 rounded-full bg-slate-700 shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110">
+                <button
+                    onClick={() =>
+                        setActivePanel(
+                            activePanel === "share" ? null : "share"
+                        )
+                    }
+                    className="h-16 w-16 rounded-full bg-slate-700 shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110"
+                >
                     <Share2 size={28} className="text-white" />
                 </button>
 
@@ -104,7 +123,11 @@ export default function FloatingReport() {
 
                 {/* submenu */}
 
-                <div className="absolute right-20 bottom-0 w-56 rounded-2xl bg-white shadow-2xl border p-2 opacity-0 invisible transition-all duration-300 group-hover:opacity-100 group-hover:visible">
+                <div className={`absolute right-20 bottom-0 w-56 rounded-2xl bg-white shadow-2xl border p-2 transition-all duration-300 ${
+                    activePanel === "share"
+                        ? "opacity-100 visible translate-x-0"
+                        : "opacity-0 invisible translate-x-3"
+                }`}>
                     <a
                         href={`https://www.facebook.com/sharer/sharer.php?u=${url}`}
                         target="_blank"

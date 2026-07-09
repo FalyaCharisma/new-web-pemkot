@@ -74,13 +74,13 @@ export function HeroPage({
                     </span>
                 </div>
 
-                <div className="grid gap-10 lg:grid-cols-[1fr_500px] lg:items-center">
+                <div className="grid gap-10 pt-8 lg:pt-0 lg:grid-cols-[1fr_500px] lg:items-center">
                     <div>
-                        <h1 className="text-5xl font-bold text-primary">
+                        <h1 className="text-3xl font-bold text-primary sm:text-4xl lg:text-5xl">
                             {title}
                         </h1>
 
-                        <p className="mt-4 max-w-xl text-primary">
+                        <p className="mt-4 max-w-xl text-sm text-primary sm:text-base">
                             {description}
                         </p>
 
