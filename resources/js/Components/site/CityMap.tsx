@@ -20,7 +20,9 @@ interface Props {
 }
 
 export function CityMap({ peta }: Props) {
-    const [selected, setSelected] = useState<Peta>(peta[0]);
+    const [selected, setSelected] = useState<Peta | null>(
+    peta.length ? peta[0] : null,
+);
     const [MapComps, setMapComps] = useState<any>(null);
     const iconMap: Record<string, any> = {
         Building2,
@@ -107,11 +109,11 @@ export function CityMap({ peta }: Props) {
                     <div className="relative h-[480px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 shadow-lg z-[1]">
                         {MapComps ? (
                             <MapComps.MapContainer
-                                center={[selected.lat, selected.lng]}
+                                center={[selected?.lat, selected?.lng]}
                                 zoom={11}
                                 scrollWheelZoom={false}
                                 style={{ height: "100%", width: "100%" }}
-                                key={selected.id}
+                                key={selected?.id}
                             >
                                 <MapComps.TileLayer
                                     attribution="&copy; OpenStreetMap contributors"
@@ -123,7 +125,7 @@ export function CityMap({ peta }: Props) {
                                         position={[l.lat, l.lng]}
                                         icon={MapComps.createMarker(
                                             l.icon,
-                                            l.id === selected.id,
+                                            l.id === selected?.id,
                                         )}
                                         eventHandlers={{
                                             click: () => setSelected(l),
@@ -220,24 +222,24 @@ export function CityMap({ peta }: Props) {
                     <div className="flex flex-col gap-3">
                         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                             <div className="text-xs font-medium uppercase tracking-wider text-amber-600">
-                                {selected.category}
+                                {selected?.category ?? "-"}
                             </div>
                             <div className="mt-1 font-serif text-2xl font-semibold text-slate-900">
-                                {selected.name}
+                                {selected?.name ?? "-"}
                             </div>
                             <p className="mt-2 text-sm text-slate-600">
-                                {selected.desc}
+                                {selected?.desc ?? "-"}
                             </p>
                             <div className="mt-3 flex items-center gap-1.5 text-xs text-slate-500">
                                 <MapPin className="h-3.5 w-3.5" />
-                                {selected.lat.toFixed(4)},{" "}
-                                {selected.lng.toFixed(4)}
+                                {selected?.lat.toFixed(4) ?? "-"},{" "}
+                                {selected?.lng.toFixed(4) ?? "-"}
                             </div>
                         </div>
 
                         <div className="flex-1 overflow-auto rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
                             {peta.map((l) => {
-                                const active = l.id === selected.id;
+                                const active = l.id === selected?.id;
                                 return (
                                     <button
                                         key={l.id}
