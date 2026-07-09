@@ -20,9 +20,10 @@ interface Props {
 }
 
 export function CityMap({ peta }: Props) {
+    const DEFAULT_CENTER: [number, number] = [-7.8166, 112.0119];
     const [selected, setSelected] = useState<Peta | null>(
-    peta.length ? peta[0] : null,
-);
+        peta.length ? peta[0] : null,
+    );
     const [MapComps, setMapComps] = useState<any>(null);
     const iconMap: Record<string, any> = {
         Building2,
@@ -109,11 +110,18 @@ export function CityMap({ peta }: Props) {
                     <div className="relative h-[480px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 shadow-lg z-[1]">
                         {MapComps ? (
                             <MapComps.MapContainer
-                                center={[selected?.lat, selected?.lng]}
+                                center={
+                                    selected
+                                        ? [
+                                              Number(selected.lat),
+                                              Number(selected.lng),
+                                          ]
+                                        : DEFAULT_CENTER
+                                }
                                 zoom={11}
                                 scrollWheelZoom={false}
                                 style={{ height: "100%", width: "100%" }}
-                                key={selected?.id}
+                                key={selected?.id ?? "default"}
                             >
                                 <MapComps.TileLayer
                                     attribution="&copy; OpenStreetMap contributors"
@@ -122,7 +130,10 @@ export function CityMap({ peta }: Props) {
                                 {peta.map((l) => (
                                     <MapComps.Marker
                                         key={l.id}
-                                        position={[l.lat, l.lng]}
+                                        position={[
+                                            Number(l.lat),
+                                            Number(l.lng),
+                                        ]}
                                         icon={MapComps.createMarker(
                                             l.icon,
                                             l.id === selected?.id,
@@ -238,48 +249,44 @@ export function CityMap({ peta }: Props) {
                         </div>
 
                         <div className="flex-1 overflow-auto rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
-                            {peta.map((l) => {
-                                const active = l.id === selected?.id;
-                                if (!selected) {
-                                        return (
-                                            <section id="budaya" className="mb-28">
-                                                <div className="container-page">
-                                                    <div className="rounded-3xl border bg-white p-12 text-center shadow-sm">
-                                                        <h3 className="text-xl font-semibold">
-                                                            Belum ada lokasi
-                                                        </h3>
+                            {peta.length === 0 ? (
+                                <div className="flex h-full items-center justify-center py-10 text-center text-sm text-slate-500">
+                                    Belum ada fasilitas yang memiliki titik
+                                    lokasi.
+                                </div>
+                            ) : (
+                                peta.map((l) => {
+                                    const active = l.id === selected?.id;
 
-                                                        <p className="mt-2 text-slate-500">
-                                                            Data lokasi belum tersedia.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </section>
-                                        );
-                                    }
-                                                                    return (
-                                    <button
-                                        key={l.id}
-                                        onClick={() => setSelected(l)}
-                                        className={`w-full rounded-xl px-3 py-2.5 text-left text-sm transition-colors ${
-                                            active
-                                                ? "bg-primary text-white"
-                                                : "text-slate-700 hover:bg-slate-100"
-                                        }`}
-                                    >
-                                        <div className="flex items-center justify-between gap-2">
-                                            <span className="font-medium">
-                                                {l.name}
-                                            </span>
-                                            <span
-                                                className={`text-xs ${active ? "text-amber-300" : "text-slate-400"}`}
-                                            >
-                                                {l.category}
-                                            </span>
-                                        </div>
-                                    </button>
-                                );
-                            })}
+                                    return (
+                                        <button
+                                            key={l.id}
+                                            onClick={() => setSelected(l)}
+                                            className={`w-full rounded-xl px-3 py-2.5 text-left text-sm transition-colors ${
+                                                active
+                                                    ? "bg-primary text-white"
+                                                    : "text-slate-700 hover:bg-slate-100"
+                                            }`}
+                                        >
+                                            <div className="flex items-center justify-between gap-2">
+                                                <span className="font-medium">
+                                                    {l.name}
+                                                </span>
+
+                                                <span
+                                                    className={`text-xs ${
+                                                        active
+                                                            ? "text-amber-300"
+                                                            : "text-slate-400"
+                                                    }`}
+                                                >
+                                                    {l.category ?? "-"}
+                                                </span>
+                                            </div>
+                                        </button>
+                                    );
+                                })
+                            )}
                         </div>
                     </div>
                 </div>
