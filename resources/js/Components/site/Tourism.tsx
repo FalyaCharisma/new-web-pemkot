@@ -45,12 +45,12 @@ export function Tourism({ wisata }: Props) {
 
                 {/* FILTER */}
 
-                <div className="flex flex-wrap gap-2 mt-8">
+                <div className="mt-6 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
                     {filters.map((f) => (
                         <button
                             key={f}
                             onClick={() => setFilter(f ?? "")}
-                            className={`rounded-full border px-4 py-2 text-xs font-medium uppercase tracking-[0.12em] transition-colors ${
+                            className={`shrink-0 rounded-full border px-3 py-2 text-[11px] sm:px-4 sm:text-xs font-medium uppercase tracking-[0.12em] transition-colors ${
                                 filter === f
                                     ? "border-gold bg-gold text-gold-foreground"
                                     : "border-border bg-surface text-muted-foreground hover:text-foreground"
@@ -63,7 +63,7 @@ export function Tourism({ wisata }: Props) {
 
                 {/* CARD */}
 
-                <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-8 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-5 lg:grid-cols-3">
                     {filtered.map((i) => (
                         i.slug ? (
                         <Link
@@ -71,7 +71,7 @@ export function Tourism({ wisata }: Props) {
                             href={route("fasilitas-kota.show", {
                                 fasilitas: i.slug,
                             })}
-                            className="group relative aspect-[16/10] overflow-hidden rounded-3xl border border-border block"
+                            className="group relative aspect-[4/5] sm:aspect-[16/10] overflow-hidden rounded-2xl sm:rounded-3xl border border-border block"
                         >
                             <img
                                 src={i.foto ?? "/placeholder.jpg"}
@@ -82,16 +82,16 @@ export function Tourism({ wisata }: Props) {
 
                             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
 
-                            <div className="absolute inset-x-0 bottom-0 p-4">
-                                <span className="text-[11px] uppercase tracking-[0.22em] text-gold">
+                            <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4">
+                                <span className="text-[9px] sm:text-[11px] uppercase tracking-[0.15em] text-gold">
                                     {i.kategori?.nama_kategori}
                                 </span>
 
-                                <h3 className="mt-2 font-serif text-xl text-white">
+                                <h3 className="mt-1 font-serif text-base sm:text-xl leading-tight text-white line-clamp-2">
                                     {i.nama}
                                 </h3>
 
-                                <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-white/70">
+                                <p className="mt-1 inline-flex items-center gap-1 text-xs sm:text-sm text-white/70 line-clamp-1">
                                     <MapPin className="size-3.5" />
 
                                     {i.alamat}
