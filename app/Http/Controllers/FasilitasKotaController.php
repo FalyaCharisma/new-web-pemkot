@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\FasilitasKota;
+use App\Models\FasilitasMedia;
 use App\Models\KategoriFasilitas;
 use App\Models\SubKategoriFasilitas;
 use App\Models\Berita;
@@ -143,8 +144,8 @@ class FasilitasKotaController extends Controller
         $agenda = Agenda::latest()->take(4)->get();
         $lainnya = FasilitasKota::where('id', '!=', $fasilitas->id)->inRandomOrder()->take(3)->get();
         return Inertia::render('fasilitaskota/detail', [
-            'fasilitas' => $fasilitas,
-            'berita' => $berita,
+            'fasilitas' => FasilitasKota::with(['kategori', 'galeriFoto', 'galeriVideo'])->findOrFail($fasilitas->id),
+             'berita' => $berita,
             'agenda' => $agenda,
             'lainnya' => $lainnya,
         ]);
@@ -230,9 +231,9 @@ class FasilitasKotaController extends Controller
             $fasilitas = [];
         } else {
             $titlepage = 'Edit Fasilitas Kota';
-            $fasilitas = FasilitasKota::where('id', $id)->first();
+            $fasilitas = FasilitasKota::with(['galeriFoto', 'galeriVideo'])->findOrFail($id);
         }
-        
+
         return view('admin.fasilitas.form-fasilitas', compact('titlepage', 'fasilitas', 'kategori', 'sub_kategori'));
     }
 
@@ -249,18 +250,32 @@ class FasilitasKotaController extends Controller
     {
         $request->validate(
             [
-                'gambar' => 'image|mimes:jpeg,png,jpg,webp,svg|max:2024',
+                'lat' => 'nullable|numeric',
+                'lng' => 'nullable|numeric',
+                'gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+                'foto.*' => 'nullable|url',
+                'video.*' => 'nullable|url',
             ],
             [
-                'gambar.image' => trans('File yang di upload harus gambar !'),
-                'gambar.mimes' => trans('Tipe file harus .jpeg .png .jpg .webp .svg !'),
-                'gambar.max' => trans('Ukuran file maksimal 2mb !'),
+                'gambar.image' => 'File harus berupa gambar.',
+                'gambar.mimes' => 'Tipe gambar harus jpeg, jpg, png atau webp.',
+                'gambar.max' => 'Ukuran gambar maksimal 2 MB.',
+                'foto.*.url' => 'Link Flickr tidak valid.',
+                'video.*.url' => 'Link video tidak valid.',
             ],
         );
 
-        if (isset($request->gambar)) {
-            $file = $request->gambar;
-            $fileName = 'fasilitas' . '-' . time() . '.' . $file->extension();
+        /*
+    |--------------------------------------------------------------------------
+    | Upload Cover
+    |--------------------------------------------------------------------------
+    */
+
+        if ($request->hasFile('gambar')) {
+            $file = $request->file('gambar');
+
+            $fileName = 'fasilitas-' . time() . '.' . $file->extension();
+
             $file->move(storage_path('app/public/fasilitas'), $fileName);
         } else {
             $fileName = $request->gambarlama;
@@ -269,40 +284,113 @@ class FasilitasKotaController extends Controller
         DB::beginTransaction();
 
         try {
-            if (isset($request->id)) {
-                FasilitasKota::where(['id' => $request->id])->update([
+            /*
+        |--------------------------------------------------------------------------
+        | UPDATE
+        |--------------------------------------------------------------------------
+        */
+
+            if ($request->filled('id')) {
+                FasilitasKota::where('id', $request->id)->update([
                     'kategori_id' => $request->kategori,
                     'sub_kategori_id' => $request->sub_kategori,
                     'nama' => $request->nama,
+                    'slug' => Str::slug($request->nama),
                     'foto' => $fileName,
                     'alamat' => $request->alamat,
                     'telp' => $request->telp,
                     'link' => $request->link,
                     'map' => $request->map,
+                    'deskripsi' => $request->deskripsi,
+                    'lat' => $request->lat,
+                    'lng' => $request->lng,
+                    'jam_buka' => $request->jam_buka,
+                    'jam_tutup' => $request->jam_tutup,
                     'updated_at' => Carbon::now('Asia/Jakarta'),
                 ]);
 
-                toastr()->success('Fasilitas Berhasil Diubah.');
-            } else {
-                FasilitasKota::insert([
+                $fasilitasId = $request->id;
+
+                // hapus seluruh media lama
+                FasilitasMedia::where('fasilitas_id', $fasilitasId)->delete();
+
+                $pesan = 'Fasilitas Berhasil Diubah.';
+            } /*
+        |--------------------------------------------------------------------------
+        | INSERT
+        |--------------------------------------------------------------------------
+        */ else {
+                $fasilitas = FasilitasKota::create([
                     'kategori_id' => $request->kategori,
                     'sub_kategori_id' => $request->sub_kategori,
                     'nama' => $request->nama,
+                    'slug' => Str::slug($request->nama),
                     'foto' => $fileName,
                     'alamat' => $request->alamat,
                     'telp' => $request->telp,
                     'link' => $request->link,
                     'map' => $request->map,
+                    'deskripsi' => $request->deskripsi,
+                    'lat' => $request->lat,
+                    'lng' => $request->lng,
+                    'jam_buka' => $request->jam_buka,
+                    'jam_tutup' => $request->jam_tutup,
                     'created_at' => Carbon::now('Asia/Jakarta'),
                 ]);
 
-                toastr()->success('Fasilitas Berhasil Ditambahkan.');
+                $fasilitasId = $fasilitas->id;
+
+                $pesan = 'Fasilitas Berhasil Ditambahkan.';
+            }
+
+            /*
+        |--------------------------------------------------------------------------
+        | SIMPAN FOTO
+        |--------------------------------------------------------------------------
+        */
+
+            if ($request->has('foto')) {
+                foreach ($request->foto as $url) {
+                    if (blank($url)) {
+                        continue;
+                    }
+
+                    FasilitasMedia::create([
+                        'fasilitas_id' => $fasilitasId,
+                        'tipe' => 'foto',
+                        'url' => trim($url),
+                    ]);
+                }
+            }
+
+            /*
+        |--------------------------------------------------------------------------
+        | SIMPAN VIDEO
+        |--------------------------------------------------------------------------
+        */
+
+            if ($request->has('video')) {
+                foreach ($request->video as $url) {
+                    if (blank($url)) {
+                        continue;
+                    }
+
+                    FasilitasMedia::create([
+                        'fasilitas_id' => $fasilitasId,
+                        'tipe' => 'video',
+                        'url' => trim($url),
+                    ]);
+                }
             }
 
             DB::commit();
+
+            toastr()->success($pesan);
         } catch (\Exception $exception) {
-            DB::rollback();
-            toastr()->error('Terdapat kesalahan dalam memproses data. Hubungi Programmer!!');
+            DB::rollBack();
+
+            // Hapus setelah debugging selesai
+            dd($exception->getMessage());
         }
 
         return redirect('/list-fasilitas');
