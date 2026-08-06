@@ -71,7 +71,7 @@ class BeritaController extends Controller
         $query = Berita::query()->with('kategori')->where('status_published', 1)->where('status_enabled', 1);
 
         $query->when($search, function ($q) use ($search) {
-            $q->where('judul', 'like', "%{$search}%");
+            $q->where('judul', 'like', "%{$search}%")->orWhere('deskripsi', 'like', "%{$keyword}%");
         });
 
         $query->when($kategori, function ($q) use ($kategori) {
