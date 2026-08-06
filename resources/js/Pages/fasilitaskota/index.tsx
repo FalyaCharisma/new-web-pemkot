@@ -36,6 +36,8 @@ export default function AkomodasiIndex({
 }: Props) {
     const scrollRef = useRef<HTMLDivElement>(null);
 
+    const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
     const scrollLeft = () => {
         scrollRef.current?.scrollBy({
             left: -300,
@@ -57,6 +59,26 @@ export default function AkomodasiIndex({
     useEffect(() => {
         setSelectedKategori(filters.kategori ?? kategori[0]?.id ?? null);
     }, [filters.kategori, kategori]);
+
+    useEffect(() => {
+        if (!kategori.length) return;
+
+        const timer = setTimeout(() => {
+            const index = kategori.findIndex(
+                (item) => item.id === selectedKategori
+            );
+
+            if (index !== -1) {
+                itemRefs.current[index]?.scrollIntoView({
+                    behavior: "smooth",
+                    inline: "center",
+                    block: "nearest",
+                });
+            }
+        }, 100);
+
+        return () => clearTimeout(timer);
+    }, [selectedKategori, kategori]);
 
     const [selectedSubKategori, setSelectedSubKategori] = useState<number[]>(
         [],
@@ -170,12 +192,12 @@ export default function AkomodasiIndex({
                                     <div
                                         ref={scrollRef}
                                         className="
-                                  flex gap-4 overflow-x-auto scroll-smooth
-                                  px-14 pb-2
-                                  [-ms-overflow-style:none]
-                                  [scrollbar-width:none]
-                                  [&::-webkit-scrollbar]:hidden
-                              "
+                                            flex gap-4 overflow-x-auto scroll-smooth
+                                            px-14 pb-2
+                                            [-ms-overflow-style:none]
+                                            [scrollbar-width:none]
+                                            [&::-webkit-scrollbar]:hidden
+                                        "
                                     >
                                         {kategori.map((item, index) => {
                                             const Icon = LucideIcons[
@@ -184,6 +206,9 @@ export default function AkomodasiIndex({
 
                                             return (
                                                 <button
+                                                    ref={(el) => {
+                                                        itemRefs.current[index] = el;
+                                                    }}
                                                     key={item.id}
                                                     onClick={() =>
                                                         handleKategoriClick(
