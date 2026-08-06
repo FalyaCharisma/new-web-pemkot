@@ -143,7 +143,7 @@ export default function KelurahanPage({
                                                             </div>
 
                                                             <div className="flex items-center gap-6">
-                                                                {item.jml_penduduk && (
+                                                                {/* {item.jml_penduduk && (
                                                                     <div className="text-center">
                                                                         <Users
                                                                             size={
@@ -162,7 +162,7 @@ export default function KelurahanPage({
                                                                             Penduduk
                                                                         </span>
                                                                     </div>
-                                                                )}
+                                                                )} */}
 
                                                                 {item.link && (
                                                                     <a
