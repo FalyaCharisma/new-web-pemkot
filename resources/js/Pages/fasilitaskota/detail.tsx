@@ -132,8 +132,23 @@ export default function Show({
                                                     </p>
 
                                                     <p className="mt-1 text-sm text-slate-700">
-                                                        {fasilitas.alamat ||
-                                                            "-"}
+                                                        {fasilitas.lat &&
+                                                        fasilitas.lng ? (
+                                                            <a
+                                                                href={`https://www.google.com/maps?q=${fasilitas.lat},${fasilitas.lng}`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="mt-1 inline-block text-sm text-primary hover:underline"
+                                                            >
+                                                                {fasilitas.alamat ||
+                                                                    "Lihat lokasi"}
+                                                            </a>
+                                                        ) : (
+                                                            <p className="mt-1 text-sm text-slate-700">
+                                                                {fasilitas.alamat ||
+                                                                    "-"}
+                                                            </p>
+                                                        )}
                                                     </p>
                                                 </div>
                                             </div>
