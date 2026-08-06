@@ -205,12 +205,14 @@ export default function AkomodasiIndex({
 
                                                     <span
                                                         className={`text-xs ${
-                                                            selectedKategori === item.id
+                                                            selectedKategori ===
+                                                            item.id
                                                                 ? "text-white/80"
                                                                 : "text-primary/80"
                                                         }`}
                                                     >
-                                                        {item.fasilitas_count} fasilitas
+                                                        {item.fasilitas_count}{" "}
+                                                        fasilitas
                                                     </span>
                                                 </button>
                                             );
@@ -334,16 +336,18 @@ export default function AkomodasiIndex({
                                                     </span>
                                                 </div>
 
-                                                {/* Tombol Maps */}
+                                                {/* Tombol Detail */}
                                                 <a
-                                                    href={item.map}
-                                                    target="_blank"
+                                                    href={route(
+                                                        "fasilitas-kota.show",
+                                                        item.slug,
+                                                    )}
                                                     className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-primary px-4 py-2 text-sm font-medium text-primary transition hover:bg-primary hover:text-white"
                                                 >
-                                                    <LucideIcons.MapPin
+                                                    <LucideIcons.Eye
                                                         size={16}
                                                     />
-                                                    Lihat Lokasi
+                                                    Lihat Detail
                                                 </a>
                                             </div>
                                         </article>
@@ -370,7 +374,7 @@ export default function AkomodasiIndex({
                         />
                     </section>
                 </main>
-<FloatingReport />
+                <FloatingReport />
                 <Footer />
             </div>
         </>

@@ -21,9 +21,29 @@ interface Props {
 
 export function CityMap({ peta }: Props) {
     const DEFAULT_CENTER: [number, number] = [-7.8166, 112.0119];
-    const [selected, setSelected] = useState<Peta | null>(
-        peta.length ? peta[0] : null,
+    const [selectedCategory, setSelectedCategory] = useState<number | null>(
+        null,
     );
+    const [selected, setSelected] = useState<Peta | null>(null);
+    const categories = Array.from(
+        new Map(
+            peta
+                .filter((item) => item.category_id)
+                .map((item) => [
+                    item.category_id,
+                    {
+                        id: item.category_id,
+                        name: item.category,
+                        icon: item.icon,
+                    },
+                ]),
+        ).values(),
+    );
+
+    const filteredPeta =
+        selectedCategory === null
+            ? peta
+            : peta.filter((item) => item.category_id === selectedCategory);
     const [MapComps, setMapComps] = useState<any>(null);
     const iconMap: Record<string, any> = {
         Building2,
@@ -127,7 +147,7 @@ export function CityMap({ peta }: Props) {
                                     attribution="&copy; OpenStreetMap contributors"
                                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                 />
-                                {peta.map((l) => (
+                                {filteredPeta.map((l) => (
                                     <MapComps.Marker
                                         key={l.id}
                                         position={[
@@ -233,60 +253,114 @@ export function CityMap({ peta }: Props) {
                     <div className="flex flex-col gap-3">
                         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                             <div className="text-xs font-medium uppercase tracking-wider text-amber-600">
-                                {selected?.category ?? "-"}
+                                Filter Peta
                             </div>
-                            <div className="mt-1 font-serif text-2xl font-semibold text-slate-900">
-                                {selected?.name ?? "-"}
-                            </div>
-                            <p className="mt-2 text-sm text-slate-600">
-                                {selected?.desc ?? "-"}
+
+                            <h3 className="mt-1 font-serif text-2xl font-semibold text-slate-900">
+                                Kategori Fasilitas
+                            </h3>
+
+                            <p className="mt-2 text-sm text-slate-500">
+                                Pilih kategori untuk menampilkan lokasi pada
+                                peta.
                             </p>
-                            <div className="mt-3 flex items-center gap-1.5 text-xs text-slate-500">
-                                <MapPin className="h-3.5 w-3.5" />
-                                {selected?.lat.toFixed(4) ?? "-"},{" "}
-                                {selected?.lng.toFixed(4) ?? "-"}
-                            </div>
                         </div>
 
                         <div className="flex-1 overflow-auto rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
-                            {peta.length === 0 ? (
-                                <div className="flex h-full items-center justify-center py-10 text-center text-sm text-slate-500">
-                                    Belum ada fasilitas yang memiliki titik
-                                    lokasi.
-                                </div>
-                            ) : (
-                                peta.map((l) => {
-                                    const active = l.id === selected?.id;
-
-                                    return (
-                                        <button
-                                            key={l.id}
-                                            onClick={() => setSelected(l)}
-                                            className={`w-full rounded-xl px-3 py-2.5 text-left text-sm transition-colors ${
-                                                active
-                                                    ? "bg-primary text-white"
-                                                    : "text-slate-700 hover:bg-slate-100"
+                            {/* Semua */}
+                            <button
+                                onClick={() => {
+                                    setSelectedCategory(null);
+                                    setSelected(null);
+                                }}
+                                className={`mb-1 w-full rounded-xl px-4 py-3 text-left transition ${
+                                    selectedCategory === null
+                                        ? "bg-primary text-white"
+                                        : "text-slate-700 hover:bg-slate-100"
+                                }`}
+                            >
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div
+                                            className={`flex h-9 w-9 items-center justify-center rounded-lg ${
+                                                selectedCategory === null
+                                                    ? "bg-white/15"
+                                                    : "bg-slate-100"
                                             }`}
                                         >
-                                            <div className="flex items-center justify-between gap-2">
-                                                <span className="font-medium">
-                                                    {l.name}
-                                                </span>
+                                            <MapPin className="h-5 w-5" />
+                                        </div>
 
-                                                <span
-                                                    className={`text-xs ${
+                                        <span className="font-medium">
+                                            Semua Lokasi
+                                        </span>
+                                    </div>
+
+                                    <span
+                                        className={`text-xs ${
+                                            selectedCategory === null
+                                                ? "text-white/70"
+                                                : "text-slate-400"
+                                        }`}
+                                    >
+                                        {peta.length}
+                                    </span>
+                                </div>
+                            </button>
+
+                            {/* Kategori */}
+                            {categories.map((category) => {
+                                const active = selectedCategory === category.id;
+
+                                const Icon = iconMap[category.icon] ?? MapPin;
+
+                                const total = peta.filter(
+                                    (item) => item.category_id === category.id,
+                                ).length;
+
+                                return (
+                                    <button
+                                        key={category.id}
+                                        onClick={() => {
+                                            setSelectedCategory(category.id);
+                                            setSelected(null);
+                                        }}
+                                        className={`mb-1 w-full rounded-xl px-4 py-3 text-left transition ${
+                                            active
+                                                ? "bg-primary text-white"
+                                                : "text-slate-700 hover:bg-slate-100"
+                                        }`}
+                                    >
+                                        <div className="flex items-center justify-between gap-3">
+                                            <div className="flex items-center gap-3">
+                                                <div
+                                                    className={`flex h-9 w-9 items-center justify-center rounded-lg ${
                                                         active
-                                                            ? "text-amber-300"
-                                                            : "text-slate-400"
+                                                            ? "bg-white/15"
+                                                            : "bg-slate-100 text-emerald-600"
                                                     }`}
                                                 >
-                                                    {l.category ?? "-"}
+                                                    <Icon className="h-5 w-5" />
+                                                </div>
+
+                                                <span className="font-medium">
+                                                    {category.name}
                                                 </span>
                                             </div>
-                                        </button>
-                                    );
-                                })
-                            )}
+
+                                            <span
+                                                className={`rounded-full px-2 py-0.5 text-xs ${
+                                                    active
+                                                        ? "bg-white/15 text-white"
+                                                        : "bg-slate-100 text-slate-500"
+                                                }`}
+                                            >
+                                                {total}
+                                            </span>
+                                        </div>
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>

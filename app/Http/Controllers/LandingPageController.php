@@ -53,21 +53,30 @@ class LandingPageController extends Controller
                 ];
             });
 
-        $peta = FasilitasKota::with('kategori', 'galeriVideo')->where('status_enabled', 1)->whereNotNull('lat')->whereNotNull('lng')->latest()->take(7)->get()->map(
+        $peta = FasilitasKota::with('kategori', 'galeriVideo')
+        ->where('status_enabled', 1)
+        ->whereNotNull('lat')
+        ->whereNotNull('lng')
+        ->latest()
+        ->get()
+        ->map(
             fn($item) => [
                 'id' => $item->id,
                 'name' => $item->nama,
                 'slug' => $item->slug,
                 'desc' => $item->alamat,
+
+                'category_id' => $item->kategori_id,
                 'category' => $item->kategori?->nama_kategori,
                 'icon' => $item->kategori?->icon,
+
                 'lat' => (float) $item->lat,
                 'lng' => (float) $item->lng,
                 'foto' => $item->foto,
                 'jam_buka' => $item->jam_buka,
                 'jam_tutup' => $item->jam_tutup,
                 'map' => $item->map,
-                // untuk popup
+
                 'has_video' => $item->galeriVideo->isNotEmpty(),
                 'video_url' => optional($item->galeriVideo->first())->url,
             ],
