@@ -14,7 +14,6 @@ use App\Models\KategoriBerita;
 use App\Models\Banner;
 use App\Models\ProgramUnggulan;
 use App\Models\LayananDigital;
-use App\Models\AsetKediri;
 use App\Models\KalenderAcara;
 use App\Models\Feedback;
 use App\Models\Dokumen;
