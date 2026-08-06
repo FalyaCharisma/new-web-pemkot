@@ -156,7 +156,7 @@ export function Hero({ hero }: Props) {
                             icon={<Bus size={28} />}
                             title="Transportasi"
                             href={route("fasilitas-kota.index", {
-                                kategori: 2,
+                                kategori: 7,
                             })}
                         />
 
@@ -164,7 +164,7 @@ export function Hero({ hero }: Props) {
                             icon={<HeartPulse size={28} />}
                             title="Kesehatan"
                             href={route("fasilitas-kota.index", {
-                                kategori: 3,
+                                kategori: 9,
                             })}
                         />
 
@@ -172,7 +172,7 @@ export function Hero({ hero }: Props) {
                             icon={<UtensilsCrossed size={28} />}
                             title="Kuliner"
                             href={route("fasilitas-kota.index", {
-                                kategori: 4,
+                                kategori: 5,
                             })}
                         />
 
@@ -180,7 +180,7 @@ export function Hero({ hero }: Props) {
                             icon={<ShoppingBag size={28} />}
                             title="Perbelanjaan"
                             href={route("fasilitas-kota.index", {
-                                kategori: 5,
+                                kategori: 8,
                             })}
                         />
 
@@ -188,7 +188,7 @@ export function Hero({ hero }: Props) {
                             icon={<Trees size={28} />}
                             title="Ruang Publik"
                             href={route("fasilitas-kota.index", {
-                                kategori: 6,
+                                kategori: 4,
                             })}
                         />
 
