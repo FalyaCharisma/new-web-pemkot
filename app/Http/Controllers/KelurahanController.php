@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use DataTables;
+use Illuminate\Support\Facades\DB;
 
 class KelurahanController extends Controller
 {
