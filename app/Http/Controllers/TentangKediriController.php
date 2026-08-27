@@ -36,18 +36,43 @@ class TentangKediriController extends Controller
         );
 
         $visi = TentangKota::where([['status_enabled', 1], ['title', 'visi']])->first();
+
         $misi = TentangKota::where([['status_enabled', 1], ['title', 'misi']])->get();
+
         $lambang = TentangKota::where([['status_enabled', 1], ['title', 'lambang']])->first();
+
         $sekilas = TentangKota::where([['status_enabled', 1], ['title', 'sekilas-kota']])->first();
 
         if ($sekilas) {
             $sekilas->gambar = asset($sekilas->gambar ? 'storage/sekilas/' . $sekilas->gambar : 'assets/images/noimage.png');
         }
 
-        $pimpinan = DaftarPimpinan::with('jabatan')
+        /*
+    |--------------------------------------------------------------------------
+    | Profil Pimpinan
+    |--------------------------------------------------------------------------
+    */
+        $pimpinan = DaftarPimpinan::with(['jabatan:id,nama_jabatan'])
             ->where('status_enabled', 1)
             ->whereIn('id_jabatan', [1, 2])
-            ->get();
+            ->orderBy('id_jabatan')
+            ->get()
+            ->map(
+                fn($item) => [
+                    'id' => $item->id,
+                    'nama_pimpinan' => $item->nama_pimpinan,
+                    'foto' => $item->foto,
+                    'tempat_lahir' => $item->tempat_lahir,
+                    'tanggal_lahir' => $item->tanggal_lahir ? \Carbon\Carbon::parse($item->tanggal_lahir)->format('Y-m-d') : null,
+                    'agama' => $item->agama,
+                    'jenis_kelamin' => $item->jenis_kelamin,
+                    'nip' => $item->nip,
+                    'pangkat' => $item->pangkat,
+                    'gol_ruang' => $item->gol_ruang,
+                    'deskripsi' => $item->deskripsi,
+                    'jabatan' => $item->jabatan,
+                ],
+            );
 
         $kecamatan = Kecamatan::withCount('kelurahan')->orderBy('nm_kecamatan')->get()->map(
             fn($item) => [
@@ -58,6 +83,7 @@ class TentangKediriController extends Controller
         );
 
         $tentang = TentangKota::whereIn('title', ['luas-wilayah', 'laki-laki', 'perempuan'])->pluck('deskripsi', 'title');
+
         $geografis = TentangKota::where([['title', 'geografis'], ['status_enabled', 1]])
             ->get()
             ->map(
@@ -310,110 +336,149 @@ class TentangKediriController extends Controller
     public function list_pimpinan(Request $request)
     {
         if ($request->ajax()) {
-            $pimpinan = DaftarPimpinan::where('status_enabled', 1)->get();
+            $pimpinan = DaftarPimpinan::with(['jabatan', 'opd'])
+                ->where('status_enabled', 1)
+                ->get();
+
             return Datatables::of($pimpinan)
                 ->addIndexColumn()
+
                 ->addColumn('nama_pimpinan', function ($row) {
-                    $nama_pimpinan = $row['nama_pimpinan'];
-                    return $nama_pimpinan;
+                    return $row->nama_pimpinan;
                 })
+
+                ->addColumn('nama_opd', function ($row) {
+                    return $row->opd?->nama ?? '-';
+                })
+
                 ->addColumn('jabatan', function ($row) {
-                    $jabatan = $row->jabatan->nama_jabatan;
-                    return $jabatan;
+                    return $row->jabatan?->nama_jabatan ?? '-';
                 })
+
                 ->addColumn('action', function ($row) {
-                    $action =
-                        '<button type="button" class="btn btn-warning" onclick="location.href=`/form-pimpinan/' .
+                    return '
+                    <button type="button" class="btn btn-warning"
+                        onclick="location.href=`/form-pimpinan/' .
                         $row->id .
-                        '`" title="Edit" style="margin-right:5px; margin-bottom:5px;"><i class="fa fa-pen"></i></button>
-                                <button type="button" class="btn btn-danger" onclick="deleteConfirmation(' .
+                        '`"
+                        title="Edit"
+                        style="margin-right:5px; margin-bottom:5px;">
+                        <i class="fa fa-pen"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-danger"
+                        onclick="deleteConfirmation(' .
                         $row->id .
-                        ')" title="Delete" style="margin-right:5px; margin-bottom:5px;"><i class="fa fa-trash"></i></button>';
-                    return $action;
+                        ')"
+                        title="Delete"
+                        style="margin-right:5px; margin-bottom:5px;">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                ';
                 })
-                ->rawColumns(['nama_pimpinan', 'jabatan', 'action'])
+
+                ->rawColumns(['action'])
                 ->make(true);
         }
+
         return view('admin.tentang-kediri.list-pimpinan');
     }
 
     // Form Pimpinan
-
     public function form_pimpinan($id)
     {
         $jabatan = Jabatan::where('status_enabled', 1)->get();
         $opd = OPD::where('status_enabled', 1)->get();
+
         if ($id == 'add') {
             $titlepage = 'Tambah Pimpinan';
-            $pimpinan = [];
+            $pimpinan = null;
         } else {
             $titlepage = 'Edit Pimpinan';
-            $pimpinan = DaftarPimpinan::where('id', $id)->first();
+            $pimpinan = DaftarPimpinan::findOrFail($id);
         }
 
         return view('admin.tentang-kediri.form-pimpinan', compact('titlepage', 'jabatan', 'opd', 'pimpinan'));
     }
 
-    // Update Pimpinan
     public function update_pimpinan(Request $request)
     {
         $request->validate(
             [
-                'foto' => 'image|mimes:jpeg,png,jpg,webp,svg|max:2024',
+                'nama_pimpinan' => 'required|string|max:255',
+                'tempat_lahir' => 'nullable|string|max:255',
+                'tanggal_lahir' => 'nullable|date',
+                'agama' => 'nullable|string|max:100',
+                'jenis_kelamin' => 'nullable|string|max:50',
+                'nip' => 'nullable|string|max:100',
+                'jabatan' => 'required|exists:jabatan,id',
+                'opd' => 'nullable|exists:opd,id',
+                'pangkat' => 'nullable|string|max:255',
+                'gol_ruang' => 'nullable|string|max:100',
+                'deskripsi' => 'nullable',
+                'foto' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             ],
             [
-                'foto.image' => trans('File yang di upload harus gambar !'),
-                'foto.mimes' => trans('Tipe file harus .jpeg .png .jpg .webp .svg !'),
-                'foto.max' => trans('Ukuran file maksimal 2mb !'),
+                'nama_pimpinan.required' => 'Nama pimpinan wajib diisi.',
+                'jabatan.required' => 'Jabatan wajib dipilih.',
+                'jabatan.exists' => 'Jabatan tidak ditemukan.',
+                'opd.exists' => 'OPD tidak ditemukan.',
+                'foto.image' => 'File yang diupload harus gambar.',
+                'foto.mimes' => 'Tipe file harus .jpeg, .png, .jpg, atau .webp.',
+                'foto.max' => 'Ukuran file maksimal 2MB.',
             ],
         );
 
-        if (isset($request->foto)) {
-            $file = $request->foto;
-            $fileName = 'foto_pimpinan' . '-' . time() . '.' . $file->extension();
-            $file->move(storage_path('app/public/pimpinan'), $fileName);
-        } else {
-            $fileName = $request->fotolama;
-        }
+        DB::beginTransaction();
 
         try {
-            if (isset($request->id)) {
-                DaftarPimpinan::where(['id' => $request->id])->update([
-                    'nama_pimpinan' => $request->nama_pimpinan,
-                    'nip' => $request->nip,
-                    'foto' => $fileName,
-                    'id_jabatan' => $request->jabatan,
-                    'id_opd' => $request->opd,
-                    'pangkat' => $request->pangkat,
-                    'gol_ruang' => $request->gol_ruang,
-                    'deskripsi' => $request->deskripsi,
-                    'updated_at' => Carbon::now('Asia/Jakarta'),
-                ]);
+            $fileName = $request->fotolama;
+
+            if ($request->hasFile('foto')) {
+                $file = $request->file('foto');
+
+                $fileName = 'foto_pimpinan-' . time() . '.' . $file->extension();
+
+                $file->move(storage_path('app/public/pimpinan'), $fileName);
+            }
+
+            $data = [
+                'nama_pimpinan' => $request->nama_pimpinan,
+                'tempat_lahir' => $request->tempat_lahir,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'agama' => $request->agama,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'nip' => $request->nip,
+                'foto' => $fileName,
+                'id_jabatan' => $request->jabatan,
+                'id_opd' => $request->opd,
+                'pangkat' => $request->pangkat,
+                'gol_ruang' => $request->gol_ruang,
+                'deskripsi' => $request->deskripsi,
+            ];
+
+            if ($request->filled('id')) {
+                DaftarPimpinan::where('id', $request->id)->update([...$data, 'updated_at' => Carbon::now('Asia/Jakarta')]);
 
                 toastr()->success('Daftar Pimpinan Berhasil Diubah.');
             } else {
-                DaftarPimpinan::insert([
-                    'nama_pimpinan' => $request->nama_pimpinan,
-                    'nip' => $request->nip,
-                    'foto' => $fileName,
-                    'id_jabatan' => $request->jabatan,
-                    'id_opd' => $request->opd,
-                    'pangkat' => $request->pangkat,
-                    'gol_ruang' => $request->gol_ruang,
-                    'deskripsi' => $request->deskripsi,
-                    'created_at' => Carbon::now('Asia/Jakarta'),
-                ]);
+                DaftarPimpinan::create([...$data, 'created_at' => Carbon::now('Asia/Jakarta'), 'updated_at' => Carbon::now('Asia/Jakarta')]);
 
                 toastr()->success('Daftar Pimpinan Berhasil Ditambahkan.');
             }
 
             DB::commit();
-        } catch (\Exception $exception) {
-            DB::rollback();
-            toastr()->error('Terdapat kesalahan dalam memproses data. Hubungi Programmer!!');
-        }
 
-        return redirect('/list-pimpinan');
+            return redirect('/list-pimpinan');
+        } catch (\Exception $exception) {
+            DB::rollBack();
+
+            report($exception);
+
+            toastr()->error('Terdapat kesalahan dalam memproses data. Hubungi Programmer!');
+
+            return back()->withInput();
+        }
     }
 
     // Adminpage - Delete Pimpinan
