@@ -46,7 +46,6 @@ class UserController extends Controller
 
     // Update User
     public function update_user(Request $request){
-        // dd($request->all());
 
         DB::beginTransaction();
 
@@ -61,17 +60,12 @@ class UserController extends Controller
 
                 toastr()->success('User Berhasil Diubah.');
             }else{
-                $request->validate([
-                    'name' => ['required', 'string', 'max:255'],
-                    'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-                    'password' => ['required', 'confirmed', Rules\Password::defaults()],
-                ]);
-
                 User::create([
                     'name' => $request->name,
                     'email' => $request->email,
                     'username' => $request->username,
                     'password' => Hash::make($request->password),
+                    'role' => 1
                 ]);
 
                 toastr()->success('User Berhasil Ditambahkan.');

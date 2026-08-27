@@ -150,6 +150,7 @@ class FasilitasKotaController extends Controller
             'lainnya' => $lainnya,
         ]);
     }
+    
     public function edit(string $id)
     {
         //

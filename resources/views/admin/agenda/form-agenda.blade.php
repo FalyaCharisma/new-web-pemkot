@@ -64,6 +64,22 @@
                                         value="{{ $agenda->judul_acara ?? '' }}">
                                 </div>
                                 <div class="form-group">
+                                    <label>Kategori</label>
+                                    <select
+                                        name="id_kategori"
+                                        class="form-control"
+                                        required>
+                                        <option value="">-- Pilih Kategori --</option>
+                                        @foreach($kategori as $item)
+                                            <option
+                                                value="{{ $item->id }}"
+                                                {{ ($pesona->id_kategori ?? '') == $item->id ? 'selected' : '' }}>
+                                                {{ $item->nama_kategori }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <label>
                                         Tanggal Mulai
                                     </label>

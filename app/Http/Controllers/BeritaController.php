@@ -251,7 +251,24 @@ class BeritaController extends Controller
         $titlepage = 'List Berita';
         try{
             if ($request->ajax()) {
-                $berita = Berita::where('status_enabled', 1)->orderBy('created_at', 'desc')->get();
+                $user = auth()->user();
+
+            $berita = Berita::where('status_enabled', 1)
+                ->when($user->role != 0, function ($query) use ($user) {
+                    $query->where(function ($q) use ($user) {
+                        $q->where('author', $user->id)
+                        ->orWhere(function ($qq) use ($user) {
+                            // Author NULL dianggap milik Kominfo (author 1)
+                            if ((int) $user->id === 1) {
+                                $qq->whereNull('author');
+                            }
+                        });
+                    });
+                })
+                ->orderBy('tanggal', 'desc')
+                ->get();
+
+                
                 return Datatables::of($berita)
                     ->addIndexColumn()
                     ->addColumn('judul', function($row){

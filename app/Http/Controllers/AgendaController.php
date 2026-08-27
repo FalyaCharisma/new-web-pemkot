@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Agenda;
+use App\Models\KategoriBerita;
 use Carbon\Carbon;
 use Exception;
 use DataTables;
@@ -19,42 +20,230 @@ class AgendaController extends Controller
 
     public function index(Request $request)
     {
-        $today = Carbon::today();
+        $now = Carbon::now();
         $search = $request->search;
+
+        /*
+        |--------------------------------------------------------------------------
+        | BASE QUERY
+        |--------------------------------------------------------------------------
+        */
 
         $baseQuery = Agenda::query()
             ->where('status_enabled', 1)
             ->when($search, function ($query) use ($search) {
-                $query->where('judul_acara', 'like', "%{$search}%")->orWhere('lokasi_acara', 'like', "%{$search}%");
+                $query->where(function ($q) use ($search) {
+                    $q->where(
+                        'judul_acara',
+                        'like',
+                        "%{$search}%"
+                    )
+                    ->orWhere(
+                        'lokasi_acara',
+                        'like',
+                        "%{$search}%"
+                    );
+                });
             });
+
+        /*
+        |--------------------------------------------------------------------------
+        | SEMUA AGENDA
+        |--------------------------------------------------------------------------
+        |
+        | Jangan diberi filter tanggal.
+        |
+        | Data ini digunakan untuk:
+        | - kalender
+        | - melihat agenda tahun sebelumnya
+        | - agenda yang sudah selesai
+        | - agenda sedang berlangsung
+        | - agenda mendatang
+        |
+        */
 
         $timelineAgenda = (clone $baseQuery)
-            ->orderBy('tanggal_mulai', 'desc')
+            ->orderBy('tanggal_mulai')
             ->get()
-            ->map(function ($item) use ($today) {
-                $item->is_ongoing = $today->betweenIncluded(Carbon::parse($item->tanggal_mulai)->startOfDay(), Carbon::parse($item->tanggal_selesai)->startOfDay());
+            ->map(function ($item) use ($now) {
+
+                $mulai = Carbon::parse(
+                    $item->tanggal_mulai
+                );
+
+                $selesai = $item->tanggal_selesai
+                    ? Carbon::parse(
+                        $item->tanggal_selesai
+                    )
+                    : $mulai->copy();
+
+                /*
+                |--------------------------------------------------------------------------
+                | STATUS SEDANG BERLANGSUNG
+                |--------------------------------------------------------------------------
+                */
+
+                $item->is_ongoing =
+                    $now->greaterThanOrEqualTo(
+                        $mulai->copy()->startOfDay()
+                    )
+                    &&
+                    $now->lessThanOrEqualTo(
+                        $selesai->copy()->endOfDay()
+                    );
+
+                /*
+                |--------------------------------------------------------------------------
+                | STATUS SELESAI
+                |--------------------------------------------------------------------------
+                */
+
+                $item->is_finished =
+                    $now->greaterThan(
+                        $selesai->copy()->endOfDay()
+                    );
+
+                /*
+                |--------------------------------------------------------------------------
+                | STATUS MENDATANG
+                |--------------------------------------------------------------------------
+                */
+
+                $item->is_upcoming =
+                    $now->lessThan(
+                        $mulai->copy()->startOfDay()
+                    );
 
                 return $item;
-            });
-
-        $upcomingAgenda = (clone $baseQuery)
-
-            ->where(function ($q) use ($today) {
-                $q->whereDate('tanggal_mulai', '>=', $today)
-                ->orWhere(function ($qq) use ($today) {
-                    $qq->whereDate('tanggal_mulai', '<=', $today)->whereDate('tanggal_selesai', '>=', $today);
-                });
             })
+            ->values();
 
-            ->orderBy('tanggal_mulai')
+        /*
+        |--------------------------------------------------------------------------
+        | AGENDA SEDANG BERLANGSUNG
+        |--------------------------------------------------------------------------
+        */
 
+        $ongoingAgenda = $timelineAgenda
+            ->filter(
+                fn ($item) =>
+                    $item->is_ongoing
+            )
+            ->sortBy('tanggal_mulai')
+            ->first();
+
+        /*
+        |--------------------------------------------------------------------------
+        | AGENDA TERDEKAT
+        |--------------------------------------------------------------------------
+        */
+
+        $nextAgenda = $timelineAgenda
+            ->filter(
+                fn ($item) =>
+                    $item->is_upcoming
+            )
+            ->sortBy('tanggal_mulai')
+            ->first();
+
+        /*
+        |--------------------------------------------------------------------------
+        | AGENDA TERAKHIR YANG SUDAH SELESAI
+        |--------------------------------------------------------------------------
+        */
+
+        $latestFinishedAgenda = $timelineAgenda
+            ->filter(
+                fn ($item) =>
+                    $item->is_finished
+            )
+            ->sortByDesc(function ($item) {
+
+                return $item->tanggal_selesai
+                    ?? $item->tanggal_mulai;
+            })
+            ->first();
+
+        /*
+        |--------------------------------------------------------------------------
+        | HIGHLIGHT
+        |--------------------------------------------------------------------------
+        |
+        | Prioritas:
+        |
+        | 1. Sedang berlangsung
+        | 2. Agenda terdekat
+        | 3. Agenda terakhir selesai
+        |
+        */
+
+        if ($ongoingAgenda) {
+
+            $highlightAgenda = $ongoingAgenda;
+            $highlightStatus = 'Sedang Berlangsung';
+
+        } elseif ($nextAgenda) {
+
+            $highlightAgenda = $nextAgenda;
+            $highlightStatus = 'Agenda Terdekat';
+
+        } elseif ($latestFinishedAgenda) {
+
+            $highlightAgenda = $latestFinishedAgenda;
+            $highlightStatus = 'Baru Selesai';
+
+        } else {
+
+            $highlightAgenda = null;
+            $highlightStatus = null;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | AGENDA MENDATANG
+        |--------------------------------------------------------------------------
+        |
+        | Hanya agenda yang belum selesai.
+        | Agenda yang sedang berlangsung juga tetap bisa masuk.
+        |
+        */
+
+        $upcomingAgenda = $timelineAgenda
+            ->filter(
+                fn ($item) =>
+                    !$item->is_finished
+            )
+            ->sortBy('tanggal_mulai')
             ->take(4)
+            ->values();
 
-            ->get();
-
+        /*
+        |--------------------------------------------------------------------------
+        | RESPONSE
+        |--------------------------------------------------------------------------
+        */
         return Inertia::render('agenda/index', [
+
+            /*
+            | SEMUA AGENDA
+            */
             'timelineAgenda' => $timelineAgenda,
+
+            /*
+            | HIGHLIGHT
+            */
+            'highlightAgenda' => $highlightAgenda,
+
+            'highlightStatus' => $highlightStatus,
+
+            /*
+            | AGENDA MENDATANG
+            */
             'upcomingAgenda' => $upcomingAgenda,
+
+            /*
+            | SEARCH
+            */
             'search' => $search,
         ]);
     }
@@ -192,13 +381,15 @@ class AgendaController extends Controller
             $agenda = Agenda::find($id);
         }
 
+        $kategori = KategoriBerita::where('status_enabled', 1)->get();
+
         return view(
             'admin.agenda.form-agenda',
 
             compact(
                 'titlepage',
-
                 'agenda',
+                'kategori'
             ),
         );
     }
@@ -207,23 +398,17 @@ class AgendaController extends Controller
     {
         $request->validate([
             'judul_acara' => 'required',
-
             'tanggal_mulai' => 'required',
-
             'tanggal_selesai' => 'required',
-
             'lokasi_acara' => 'required',
-
             'banner' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         if ($request->id) {
             $agenda = Agenda::findOrFail($request->id);
-
             $banner = $agenda->banner;
         } else {
             $agenda = new Agenda();
-
             $banner = null;
         }
 
@@ -233,40 +418,25 @@ class AgendaController extends Controller
             }
 
             $file = $request->file('banner');
-
             $banner = 'agenda-' . time() . '.' . $file->extension();
-
-            $file->storeAs(
-                'agenda',
-
-                $banner,
-
-                'public',
-            );
+            $file->storeAs('agenda',$banner,'public',);
         }
 
         $agenda->tanggal_mulai = $request->tanggal_mulai;
-
         $agenda->tanggal_selesai = $request->tanggal_selesai;
-
         $agenda->judul_acara = $request->judul_acara;
-
+        $agenda->id_kategori = $request->id_kategori;
         $agenda->lokasi_acara = $request->lokasi_acara;
-
         $agenda->maps_lokasi = $request->maps_lokasi;
-
         $agenda->banner = $banner;
-
         $agenda->deskripsi = $request->deskripsi;
-
         $agenda->status_enabled = 1;
-
         $agenda->save();
-
         toastr()->success('Agenda berhasil disimpan.');
 
         return redirect('/list-agenda');
     }
+
     public function hapus_agenda($id)
     {
         $aktif = Agenda::where(

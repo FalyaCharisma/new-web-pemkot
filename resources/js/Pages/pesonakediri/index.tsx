@@ -4,14 +4,14 @@ import { Footer } from "@/Components/site/Footer";
 import { HeroPage } from "@/Components/HeroPage";
 import { useState, useRef } from "react";
 import { ContentCTA } from "@/Components/ContentCTA";
-import type { PesonaUnggulan } from "@/types/unggulan";
+import type { PesonaCard } from "@/types/unggulan";
 import type { HighlightPesona } from "@/types/highlight-pesona";
 import { Peta } from "@/types/peta";
 import FloatingReport from "@/Components/site/Floating";
 import * as LucideIcons from "lucide-react";
 
 interface Props {
-    pesona: PesonaUnggulan[];
+    pesona: PesonaCard[];
     kategori?: number;
     peta: Peta[];
     highlight: HighlightPesona;
@@ -109,60 +109,132 @@ export default function PesonaKediriIndex({ pesona, kategori, peta, highlight }:
                             {/* tombol kiri */}
                             <button
                                 onClick={scrollPrev}
-                                className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-primary text-white p-3 shadow-lg hover:scale-105 transition"
+                                className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-primary p-3 text-white shadow-lg transition hover:scale-105"
                             >
-                                <LucideIcons.ChevronLeft className="w-5 h-5" />
+                                <LucideIcons.ChevronLeft className="h-5 w-5" />
                             </button>
 
                             {/* container scroll */}
                             <div
                                 ref={containerRef}
-                                className="flex gap-4 overflow-x-auto scroll-smooth no-scrollbar px-10"
+                                className="flex gap-4 overflow-x-auto scroll-smooth px-10 no-scrollbar"
                             >
-                                {pesona.map((item) => (
-                                    <div
-                                        key={item.id}
-                                        className="min-w-[250px] max-w-[250px] overflow-hidden rounded-2xl border bg-white shadow-sm hover:shadow-md transition"
-                                    >
-                                        <img
-                                            src={`/storage/pesona/${item.cover}`}
-                                            alt={item.judul}
-                                            className="h-40 w-full object-cover"
-                                        />
+                                {pesona.map((item) => {
+                                    const isPesona = item.type === "pesona";
+                                    const isBerita = item.type === "berita";
+                                    const isAgenda = item.type === "agenda";
+                                    const isFasilitas = item.type === "fasilitas";
 
-                                        <div className="p-4">
-                                            <span className="inline-block rounded-full bg-amber-100 px-2 py-1 text-[10px] font-semibold text-amber-700">
-                                                {item.kategori?.nama_kategori}
-                                            </span>
+                                    const imageUrl = item.cover
+                                        ? isPesona
+                                            ? `/storage/pesona/${item.cover}`
+                                            : isBerita
+                                            ? `/storage/berita/${item.cover}`
+                                            : `/storage/agenda/${item.cover}`
+                                        : null;
 
-                                            <h3 className="mt-3 font-bold">
-                                                {item.judul}
-                                            </h3>
-
-                                            <p className="mt-2 text-sm text-slate-500 line-clamp-3">
-                                                {item.deskripsi}
-                                            </p>
-
-                                            <Link
-                                                href={route(
-                                                    "pesona-unggulan.show",
-                                                    item.slug,
+                                    return (
+                                        <div
+                                            key={`${item.type}-${item.id}`}
+                                            className="flex min-w-[250px] max-w-[250px] flex-col overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-md"
+                                        >
+                                            {/* IMAGE */}
+                                            <div className="h-40 w-full overflow-hidden bg-slate-100">
+                                                {imageUrl ? (
+                                                    <img
+                                                        src={imageUrl}
+                                                        alt={item.judul ?? ""}
+                                                        className="h-full w-full object-cover transition duration-300 hover:scale-105"
+                                                    />
+                                                ) : (
+                                                    <div className="flex h-full w-full items-center justify-center">
+                                                        {isAgenda ? (
+                                                            <LucideIcons.CalendarDays className="h-12 w-12 text-slate-300" />
+                                                        ) : isBerita ? (
+                                                            <LucideIcons.Newspaper className="h-12 w-12 text-slate-300" />
+                                                        ) : (
+                                                            <LucideIcons.Image className="h-12 w-12 text-slate-300" />
+                                                        )}
+                                                    </div>
                                                 )}
-                                                className="mt-3 inline-flex text-sm font-semibold text-primary"
-                                            >
-                                                Baca Selengkapnya →
-                                            </Link>
+                                            </div>
+
+                                            {/* CONTENT */}
+                                            <div className="flex flex-1 flex-col p-4">
+                                                {/* TIPE + KATEGORI */}
+                                                <div className="flex flex-wrap gap-1">
+                                                    <span className="inline-block rounded-full bg-amber-100 px-2 py-1 text-[10px] font-semibold text-amber-700">
+                                                        {isPesona
+                                                            ? "Pesona"
+                                                            : isBerita
+                                                            ? "Berita"
+                                                            : isAgenda
+                                                                ? "Agenda"
+                                                                : "Fasilitas"}
+                                                    </span>
+
+                                                    {item.kategori?.nama_kategori && (
+                                                        <span className="inline-block rounded-full bg-slate-100 px-2 py-1 text-[10px] font-semibold text-slate-600">
+                                                            {item.kategori.nama_kategori}
+                                                        </span>
+                                                    )}
+                                                </div>
+
+                                                {/* JUDUL */}
+                                                <h3 className="mt-3 line-clamp-2 font-bold text-slate-900">
+                                                    {item.judul ||
+                                                        (isAgenda
+                                                            ? "Agenda Kediri"
+                                                            : isBerita
+                                                            ? "Berita Kediri"
+                                                            : "Pesona Kediri")}
+                                                </h3>
+
+                                                {/* DESKRIPSI */}
+                                                <p
+                                                    className="mt-2 line-clamp-3 text-sm text-slate-500"
+                                                    dangerouslySetInnerHTML={{
+                                                        __html:
+                                                            item.deskripsi ||
+                                                            "Informasi belum tersedia.",
+                                                    }}
+                                                />
+
+                                                {/* LINK */}
+                                                <div className="mt-auto pt-3">
+                                                    <Link
+                                                        href={
+                                                            isPesona && item.id_kategori === 19
+                                                                ? route("fasilitas-kota.show", item.slug)
+                                                                : isPesona
+                                                                ? route("pesona-unggulan.show", item.slug)
+                                                                : isBerita
+                                                                    ? route("berita.show", item.slug)
+                                                                    : isAgenda
+                                                                    ? route("agenda.show", item.id)
+                                                                    : route("fasilitas-kota.show", item.slug)
+                                                        }
+                                                        className="inline-flex text-sm font-semibold text-primary"
+                                                    >
+                                                        {isAgenda
+                                                            ? "Lihat Agenda →"
+                                                            : isFasilitas
+                                                            ? "Lihat Fasilitas →"
+                                                            : "Baca Selengkapnya →"}
+                                                    </Link>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
 
                             {/* tombol kanan */}
                             <button
                                 onClick={scrollNext}
-                                className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-primary text-white p-3 shadow-lg hover:scale-105 transition"
+                                className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-primary p-3 text-white shadow-lg transition hover:scale-105"
                             >
-                                <LucideIcons.ChevronRight className="w-5 h-5" />
+                                <LucideIcons.ChevronRight className="h-5 w-5" />
                             </button>
                         </div>
 

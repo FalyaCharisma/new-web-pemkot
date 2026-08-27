@@ -36,4 +36,9 @@ class Agenda extends Model
             ->locale('id')
             ->translatedFormat('j F Y');
     }
+
+    public function kategori()
+    {
+        return $this->belongsTo(KategoriBerita::class, 'id_kategori');
+    }
 }

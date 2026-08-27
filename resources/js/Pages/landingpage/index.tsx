@@ -22,7 +22,8 @@ import FloatingReport from '@/Components/site/Floating';
 import logo from "@/assets/logo.png";
 
 type Props = {
-    berita: Berita[];
+    beritaProkopim: Berita[];
+    beritaKominfo: Berita[];
     layanan: Layanan[];
     peta: Peta[];
     agenda: AgendaType[];
@@ -31,7 +32,7 @@ type Props = {
 };
 
 export default function LandingPage({
-    berita, layanan, peta, agenda, hero, wisata
+    beritaKominfo, beritaProkopim, layanan, peta, agenda, hero, wisata
 }: Props) {
     return (
         <>
@@ -57,7 +58,10 @@ export default function LandingPage({
                     <CityMap peta={peta} />
                     <Tourism wisata={wisata}/>
                     <Harmony />
-                    <News berita={berita} />
+                    <News
+                        beritaProkopim={beritaProkopim}
+                        beritaKominfo={beritaKominfo}
+                    />
                 </main>
                 <FloatingReport />
                 <Footer />
