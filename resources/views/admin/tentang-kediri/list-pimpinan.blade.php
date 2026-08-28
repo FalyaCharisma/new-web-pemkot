@@ -30,7 +30,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">
+                    {{-- <div class="card-header">
                         <h4 class="card-title">List Pimpinan</h4>
                         <div class="d-flex justify-content-end mt-3">
                             <a href="/form-pimpinan/new" class="btn btn-secondary"> 
@@ -39,7 +39,7 @@
                                 </span>Tambah Data
                             </a>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-bordered">
@@ -47,6 +47,7 @@
                                     <tr>
                                         <th>No.</th>
                                         <th>Nama Pimpinan</th>
+                                        <th>Perangkat Daerah</th>
                                         <th>Jabatan</th>
                                         <th>Action</th>
                                     </tr>
@@ -74,6 +75,7 @@
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex', className: 'text-center'},
                 {data: 'nama_pimpinan', name: 'nama_pimpinan', width: '20%'},
+                {data: 'nama_opd', name: 'nama_opd'},
                 {data: 'jabatan', name: 'jabatan'},
                 {data: 'action', name: 'action', className: 'text-center'},
             ],

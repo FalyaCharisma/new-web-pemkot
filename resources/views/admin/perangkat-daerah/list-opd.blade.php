@@ -48,7 +48,6 @@
                                         <th>No.</th>
                                         <th>Nama OPD</th>
                                         <th>Kategori</th>
-                                        <th>Logo</th>
                                         <th>Link</th>
                                         <th>Action</th>
                                     </tr>
@@ -77,7 +76,6 @@
                 {data: 'DT_RowIndex', name: 'DT_RowIndex', className: 'text-center'},
                 {data: 'nama', name: 'nama', width: '20%'},
                 {data: 'kategori', name: 'kategori'},
-                {data: 'logo', name: 'logo', className: 'text-center'},
                 {data: 'website', name: 'website', className: 'text-center'},
                 {data: 'action', name: 'action', className: 'text-center'},
             ],

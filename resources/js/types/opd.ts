@@ -6,7 +6,10 @@ export interface Jabatan {
 export interface Pimpinan {
     id: number;
     nama_pimpinan: string;
-    foto: string;
+    nip?: string;
+    pangkat?: string;
+    gol_ruang?: string;
+    foto?: string;
     deskripsi?: string;
     jabatan?: Jabatan;
 }

@@ -12,6 +12,10 @@ class DaftarPimpinan extends Model
     protected $table = "daftar_pimpinan";
     protected $guarded = [];
 
+    protected $casts = [
+        'tanggal_lahir' => 'date',
+    ];
+
     public function jabatan()
     {
         return $this->belongsTo(Jabatan::class, 'id_jabatan');

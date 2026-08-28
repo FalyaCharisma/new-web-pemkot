@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\OPD;
 use App\Models\KategoriOPD;
 use App\Models\Jabatan;
+use App\Models\DaftarPimpinan;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -16,46 +17,45 @@ class PerangkatDaerahController extends Controller
 {
     public function index(string $slug)
     {
-        $kategori = KategoriOPD::with([
-            'opd.pimpinan.jabatan'
-        ])
-        ->where('slug', $slug)
-        ->firstOrFail();
+        $kategori = KategoriOPD::with(['opd.pimpinan.jabatan'])
+            ->where('slug', $slug)
+            ->firstOrFail();
 
-        $kategoriList = KategoriOPD::select(
-            'id',
-            'nama',
-            'slug'
-        )->get();
+        $kategoriList = KategoriOPD::select('id', 'nama', 'slug')->get();
 
-        return Inertia::render(
-            'perangkat-daerah/index',
-            [
-                'kategori' => $kategori,
-                'kategoriList' => $kategoriList,
-            ]
-        );
+        return Inertia::render('perangkat-daerah/index', [
+            'kategori' => $kategori,
+            'kategoriList' => $kategoriList,
+        ]);
     }
 
     // ------------------------------ ADMINPAGE ---------------------------------
     // Adminpage - List Jabatan
-    public function list_jabatan(Request $request){
-        try{
-            if($request->ajax()){
+    public function list_jabatan(Request $request)
+    {
+        try {
+            if ($request->ajax()) {
                 $jabatan = Jabatan::where('status_enabled', 1)->orderBy('created_at', 'desc')->get();
                 return Datatables::of($jabatan)
-                ->addIndexColumn()
-                ->addColumn('jabatan', function($row){
-                    $jabatan = $row['nama_jabatan'];
-                    return $jabatan;
-                })->addColumn('action', function($row){
-                    $actionBtn = '<button  type="button" class="btn btn-primary" onclick="editjabatan(' . $row->id .')" title="Edit" style="margin-right:5px; margin-bottom:5px;"><i class="fas fa-edit"></i></button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteConfirmation('. $row->id . ')" title="Hapus" style="margin-right:5px; margin-bottom:5px;"><i class="fas fa-trash"></i></button>';
-                    return $actionBtn;
-                })->rawColumns(['action', 'jabatan'])
-                ->make(true);
+                    ->addIndexColumn()
+                    ->addColumn('jabatan', function ($row) {
+                        $jabatan = $row['nama_jabatan'];
+                        return $jabatan;
+                    })
+                    ->addColumn('action', function ($row) {
+                        $actionBtn =
+                            '<button  type="button" class="btn btn-primary" onclick="editjabatan(' .
+                            $row->id .
+                            ')" title="Edit" style="margin-right:5px; margin-bottom:5px;"><i class="fas fa-edit"></i></button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteConfirmation(' .
+                            $row->id .
+                            ')" title="Hapus" style="margin-right:5px; margin-bottom:5px;"><i class="fas fa-trash"></i></button>';
+                        return $actionBtn;
+                    })
+                    ->rawColumns(['action', 'jabatan'])
+                    ->make(true);
             }
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             $jabatan = [];
             toastr()->error('Data Gagal Dimuat. Hubungi Programmer!!');
         }
@@ -64,29 +64,29 @@ class PerangkatDaerahController extends Controller
     }
 
     // Adminpage - Update Jabatan
-    public function update_jabatan(Request $request){        
-        
+    public function update_jabatan(Request $request)
+    {
         DB::beginTransaction();
 
-        try{
-            if (isset($request->id)){
-                Jabatan::where(['id'=>$request->id])->update([
+        try {
+            if (isset($request->id)) {
+                Jabatan::where(['id' => $request->id])->update([
                     'nama_jabatan' => $request->nama_jabatan,
-                    'updated_at' => Carbon::now ('Asia/Jakarta')
+                    'updated_at' => Carbon::now('Asia/Jakarta'),
                 ]);
 
                 toastr()->success('Jabatan Berhasil Diperbarui.');
-            }else{
+            } else {
                 Jabatan::insert([
                     'nama_jabatan' => $request->nama_jabatan,
-                    'created_at' => Carbon::now ('Asia/Jakarta')
+                    'created_at' => Carbon::now('Asia/Jakarta'),
                 ]);
 
                 toastr()->success('Jabatan Berhasil Ditambahkan.');
             }
 
             DB::commit();
-        }catch(\Exception $exception){
+        } catch (\Exception $exception) {
             DB::rollback();
             toastr()->error('Terdapat kesalahan dalam memproses data. Hubungi Programmer!!');
         }
@@ -95,34 +95,34 @@ class PerangkatDaerahController extends Controller
     }
 
     // Adminpage - Value Jabatan
-    public function value_jabatan($id){
+    public function value_jabatan($id)
+    {
         $jabatan = Jabatan::where('id', $id)->first();
         return response()->json($jabatan);
     }
 
     // Adminpage - Delete Jabatan
-    public function hapus_jabatan($id){
-    
+    public function hapus_jabatan($id)
+    {
         $jabatan = DaftarPimpinan::where('id_jabatan', $id)->get();
 
-        if (count($jabatan) == 0){
-            $aktif = Jabatan::where(['id'=>$id])->update([
-                'status_enabled'=>0,
-                'updated_at'=> Carbon::now ('Asia/Jakarta')
+        if (count($jabatan) == 0) {
+            $aktif = Jabatan::where(['id' => $id])->update([
+                'status_enabled' => 0,
+                'updated_at' => Carbon::now('Asia/Jakarta'),
             ]);
-    
-            //Check data deleted or not
-            if ($aktif == 1){
-                $success = true;
-                $message = "Data Berhasil Dihapus";
-            }else {
-                $success = false;
-                $message = "Data Tidak Ditemukan!";
-            }
 
-        } else{
+            //Check data deleted or not
+            if ($aktif == 1) {
+                $success = true;
+                $message = 'Data Berhasil Dihapus';
+            } else {
+                $success = false;
+                $message = 'Data Tidak Ditemukan!';
+            }
+        } else {
             $success = false;
-            $message = "Data Tidak Bisa Dihapus Karena Terhubung Dengan Data Lain!";
+            $message = 'Data Tidak Bisa Dihapus Karena Terhubung Dengan Data Lain!';
         }
 
         //Return response
@@ -132,24 +132,32 @@ class PerangkatDaerahController extends Controller
         ]);
     }
 
-     // Adminpage - List Kategori OPD
-     public function list_kategori_opd(Request $request){
-        try{
-            if($request->ajax()){
+    // Adminpage - List Kategori OPD
+    public function list_kategori_opd(Request $request)
+    {
+        try {
+            if ($request->ajax()) {
                 $kategori_opd = KategoriOPD::where('status_enabled', 1)->orderBy('created_at', 'desc')->get();
                 return Datatables::of($kategori_opd)
-                ->addIndexColumn()
-                ->addColumn('kategori_opd', function($row){
-                    $kategori_opd = $row['nama'];
-                    return $kategori_opd;
-                })->addColumn('action', function($row){
-                    $actionBtn = '<button  type="button" class="btn btn-primary" onclick="edit(' . $row->id .')" title="Edit" style="margin-right:5px; margin-bottom:5px;"><i class="fas fa-edit"></i></button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteConfirmation('. $row->id . ')" title="Hapus" style="margin-right:5px; margin-bottom:5px;"><i class="fas fa-trash"></i></button>';
-                    return $actionBtn;
-                })->rawColumns(['action', 'kategori_opd'])
-                ->make(true);
+                    ->addIndexColumn()
+                    ->addColumn('kategori_opd', function ($row) {
+                        $kategori_opd = $row['nama'];
+                        return $kategori_opd;
+                    })
+                    ->addColumn('action', function ($row) {
+                        $actionBtn =
+                            '<button  type="button" class="btn btn-primary" onclick="edit(' .
+                            $row->id .
+                            ')" title="Edit" style="margin-right:5px; margin-bottom:5px;"><i class="fas fa-edit"></i></button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteConfirmation(' .
+                            $row->id .
+                            ')" title="Hapus" style="margin-right:5px; margin-bottom:5px;"><i class="fas fa-trash"></i></button>';
+                        return $actionBtn;
+                    })
+                    ->rawColumns(['action', 'kategori_opd'])
+                    ->make(true);
             }
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             $kategori_opd = [];
             toastr()->error('Data Gagal Dimuat. Hubungi Programmer!!');
         }
@@ -158,29 +166,29 @@ class PerangkatDaerahController extends Controller
     }
 
     // Adminpage - Update Kategori OPD
-    public function update_kategori_opd(Request $request){        
-        
+    public function update_kategori_opd(Request $request)
+    {
         DB::beginTransaction();
 
-        try{
-            if (isset($request->id)){
-                KategoriOPD::where(['id'=>$request->id])->update([
+        try {
+            if (isset($request->id)) {
+                KategoriOPD::where(['id' => $request->id])->update([
                     'nama' => $request->nama,
-                    'updated_at' => Carbon::now ('Asia/Jakarta')
+                    'updated_at' => Carbon::now('Asia/Jakarta'),
                 ]);
 
                 toastr()->success('Kategori OPD Berhasil Diperbarui.');
-            }else{
+            } else {
                 KategoriOPD::insert([
                     'nama' => $request->nama,
-                    'created_at' => Carbon::now ('Asia/Jakarta')
+                    'created_at' => Carbon::now('Asia/Jakarta'),
                 ]);
 
                 toastr()->success('Kategori OPD Berhasil Ditambahkan.');
             }
 
             DB::commit();
-        }catch(\Exception $exception){
+        } catch (\Exception $exception) {
             DB::rollback();
             toastr()->error('Terdapat kesalahan dalam memproses data. Hubungi Programmer!!');
         }
@@ -189,34 +197,34 @@ class PerangkatDaerahController extends Controller
     }
 
     // Adminpage - Value Kategori OPD
-    public function value_kategori_opd($id){
+    public function value_kategori_opd($id)
+    {
         $kategori_opd = KategoriOPD::where('id', $id)->first();
         return response()->json($kategori_opd);
     }
 
     // Adminpage - Delete Kategori OPD
-    public function hapus_kategori_opd($id){
-    
+    public function hapus_kategori_opd($id)
+    {
         $kategori_opd = OPD::where('kategori', $id)->get();
 
-        if (count($kategori_opd) == 0){
-            $aktif = KategoriOPD::where(['id'=>$id])->update([
-                'status_enabled'=>0,
-                'updated_at'=> Carbon::now ('Asia/Jakarta')
+        if (count($kategori_opd) == 0) {
+            $aktif = KategoriOPD::where(['id' => $id])->update([
+                'status_enabled' => 0,
+                'updated_at' => Carbon::now('Asia/Jakarta'),
             ]);
-    
-            //Check data deleted or not
-            if ($aktif == 1){
-                $success = true;
-                $message = "Data Berhasil Dihapus";
-            }else {
-                $success = false;
-                $message = "Data Tidak Ditemukan!";
-            }
 
-        } else{
+            //Check data deleted or not
+            if ($aktif == 1) {
+                $success = true;
+                $message = 'Data Berhasil Dihapus';
+            } else {
+                $success = false;
+                $message = 'Data Tidak Ditemukan!';
+            }
+        } else {
             $success = false;
-            $message = "Data Tidak Bisa Dihapus Karena Terhubung Dengan Data Lain!";
+            $message = 'Data Tidak Bisa Dihapus Karena Terhubung Dengan Data Lain!';
         }
 
         //Return response
@@ -227,119 +235,148 @@ class PerangkatDaerahController extends Controller
     }
 
     // Adminpage - List OPD
-    public function list_opd(Request $request){
+    public function list_opd(Request $request)
+    {
         if ($request->ajax()) {
             $opd = OPD::where('status_enabled', 1)->get();
             return Datatables::of($opd)
                 ->addIndexColumn()
-                ->addColumn('nama', function($row){
+                ->addColumn('nama', function ($row) {
                     $nama = substr($row['nama'], 0, 200) . '...';
                     return $nama;
-                })->addColumn('kategori', function($row){
+                })
+                ->addColumn('kategori', function ($row) {
                     $kategori = $row->kategori_opd->nama;
                     return $kategori;
-                })->addColumn('logo', function($row){
-                    $logo = '<img src="'. url('storage/opd/' . $row->logo) .'" width="100">';
-                    return $logo;
-                })->addColumn('website', function($row){
+                })
+                ->addColumn('website', function ($row) {
                     $website = $row['website'];
                     return $website;
-                })->addColumn('action', function($row){
-                    $action = '<button type="button" class="btn btn-warning" onclick="location.href=`/form-opd/'. $row->id .'`" title="Edit" style="margin-right:5px; margin-bottom:5px;"><i class="fa fa-pen"></i></button>
-                                <button type="button" class="btn btn-danger" onclick="deleteConfirmation('. $row->id . ')" title="Delete" style="margin-right:5px; margin-bottom:5px;"><i class="fa fa-trash"></i></button>';
+                })
+                ->addColumn('action', function ($row) {
+                    $action =
+                        '<button type="button" class="btn btn-warning" onclick="location.href=`/form-opd/' .
+                        $row->id .
+                        '`" title="Edit" style="margin-right:5px; margin-bottom:5px;"><i class="fa fa-pen"></i></button>
+                                <button type="button" class="btn btn-danger" onclick="deleteConfirmation(' .
+                        $row->id .
+                        ')" title="Delete" style="margin-right:5px; margin-bottom:5px;"><i class="fa fa-trash"></i></button>';
                     return $action;
-                })->rawColumns(['nama', 'kategori', 'logo', 'website', 'action'])
+                })
+                ->rawColumns(['nama', 'kategori', 'logo', 'website', 'action'])
                 ->make(true);
         }
         return view('admin.perangkat-daerah.list-opd');
     }
 
-    public function form_opd($id){
+    // Halaman Form Tambah/Edit OPD
+    public function form_opd($id)
+    {
         $kategori = KategoriOPD::where('status_enabled', 1)->get();
-        if ($id == 'add'){
+
+        if ($id == 'add') {
             $titlepage = 'Tambah OPD';
-            $opd = [];
-        }else{
+            $opd = null;
+            $pimpinan = null;
+        } else {
             $titlepage = 'Edit OPD';
-            $opd = OPD::where('id', $id)->first();
+
+            $opd = OPD::with('pimpinan')->where('id', $id)->firstOrFail();
+
+            $pimpinan = $opd->pimpinan;
         }
 
-        return view ('admin.perangkat-daerah.form-opd', compact('titlepage', 'opd', 'kategori'));
+        return view('admin.perangkat-daerah.form-opd', compact('titlepage', 'opd', 'kategori', 'pimpinan'));
     }
 
     // Update opd
-    public function update_opd(Request $request){
+    public function update_opd(Request $request)
+    {
         $request->validate([
-            'logo' => 'image|mimes:jpeg,png,jpg,webp,svg|max:2024'
-        ],
-        [
-            'logo.image'=>trans('File yang di upload harus gambar !'),
-            'logo.mimes'=>trans('Tipe file harus .jpeg .png .jpg .webp .svg !'),
-            'logo.max'=>trans('Ukuran file maksimal 2mb !')
+            'nama' => 'required|string|max:200',
+            'kategori' => 'required',
+            'alamat' => 'required',
+            'website' => 'nullable|string|max:200',
+            'detail_opd' => 'nullable',
+            'nama_pimpinan' => 'required|string|max:255',
+            'nip' => 'nullable|string|max:50',
+            'pangkat' => 'nullable|string|max:100',
+            'gol_ruang' => 'nullable|string|max:50',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
-
-        if (isset($request->logo)){
-            $file = $request->logo;
-            $fileName = 'logoopd'.'-'.time().'.'.$file->extension();
-            $file->move(storage_path('app/public/opd'), $fileName); 
-        }else{
-            $fileName = $request->logolama;
-        }
 
         DB::beginTransaction();
 
-        try{
-            if (isset($request->id)){
-                OPD::where(['id'=>$request->id])->update([
+        try {
+            if ($request->filled('id')) {
+                $opd = OPD::findOrFail($request->id);
+
+                $opd->update([
                     'nama' => $request->nama,
                     'kategori' => $request->kategori,
-                    'logo' => $fileName,
                     'website' => $request->website,
                     'alamat' => $request->alamat,
                     'detail_opd' => $request->detail_opd,
-                    'updated_at' => Carbon::now ('Asia/Jakarta')
                 ]);
-                
-                toastr()->success('Perangkat Daerah Berhasil Diubah.');
-            }else{
-                OPD::insert([
+            } else {
+                $opd = OPD::create([
                     'nama' => $request->nama,
                     'kategori' => $request->kategori,
-                    'logo' => $fileName,
-                    'website' => $request->website, 
+                    'website' => $request->website,
                     'alamat' => $request->alamat,
                     'detail_opd' => $request->detail_opd,
-                    'created_at' => Carbon::now ('Asia/Jakarta')
                 ]);
-    
-                toastr()->success('Perangkat daerah Berhasil Ditambahkan.');
             }
+
+            $fotoName = $request->fotolama;
+
+            if ($request->hasFile('foto')) {
+                $file = $request->file('foto');
+
+                $fotoName = time() . '_' . $file->getClientOriginalName();
+
+                $file->storeAs('pimpinan', $fotoName, 'public');
+            }
+
+            DaftarPimpinan::updateOrCreate(
+                [
+                    'id_opd' => $opd->id,
+                ],
+                [
+                    'nama_pimpinan' => $request->nama_pimpinan,
+                    'nip' => $request->nip,
+                    'pangkat' => $request->pangkat,
+                    'gol_ruang' => $request->gol_ruang,
+                    'foto' => $fotoName,
+                    'id_jabatan' => 5,
+                ],
+            );
 
             DB::commit();
 
-        }catch(\Exception $exception){
-            DB::rollback();
-            toastr()->error('Terdapat kesalahan dalam memproses data. Hubungi Programmer!!');
-        }
+            return redirect('/list-opd')->with('success', 'Data OPD berhasil disimpan.');
+        } catch (\Throwable $exception) {
+            DB::rollBack();
 
-        return redirect('/list-opd');
+            dd($exception->getMessage());
+        }
     }
 
     // Hapus OPD
-    public function hapus_opd($id){
-    
-        $aktif = OPD::where(['id'=>$id])->update([
+    public function hapus_opd($id)
+    {
+        $aktif = OPD::where(['id' => $id])->update([
             'status_enabled' => 0,
-            'updated_at' => Carbon::now ('Asia/Jakarta')
+            'updated_at' => Carbon::now('Asia/Jakarta'),
         ]);
 
         //Check data deleted or not
-        if ($aktif == 1){
+        if ($aktif == 1) {
             $success = true;
-            $message = "Data Berhasil Dihapus";
-        }else {
+            $message = 'Data Berhasil Dihapus';
+        } else {
             $success = false;
-            $message = "Data Tidak Ditemukan!";
+            $message = 'Data Tidak Ditemukan!';
         }
 
         // //Return response
@@ -347,6 +384,5 @@ class PerangkatDaerahController extends Controller
             'success' => $success,
             'message' => $message,
         ]);
-
-    } 
+    }
 }
