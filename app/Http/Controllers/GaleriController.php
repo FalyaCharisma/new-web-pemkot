@@ -25,6 +25,27 @@ class GaleriController extends Controller
 
         $value = trim($foto);
 
+        // Google Drive
+        if (str_contains($value, 'drive.google.com')) {
+            $fileId = null;
+
+            // Format:
+            // https://drive.google.com/file/d/FILE_ID/view
+            if (preg_match('/\/file\/d\/([^\/]+)/', $value, $matches)) {
+                $fileId = $matches[1];
+            }
+
+            // Format:
+            // https://drive.google.com/open?id=FILE_ID
+            if (!$fileId && preg_match('/[?&]id=([^&]+)/', $value, $matches)) {
+                $fileId = $matches[1];
+            }
+
+            if ($fileId) {
+                return 'https://drive.google.com/thumbnail?id=' . $fileId . '&sz=w1000';
+            }
+        }
+
         if (filter_var($value, FILTER_VALIDATE_URL)) {
             return $value;
         }
@@ -134,19 +155,21 @@ class GaleriController extends Controller
                     return e($row->judul);
                 })
                 ->addColumn('jumlah_foto', function ($row) {
-                    return FotoAlbum::where('id_album', $row->id)
-                        ->where('status_enabled', 1)
-                        ->count() . ' Foto';
+                    return FotoAlbum::where('id_album', $row->id)->where('status_enabled', 1)->count() . ' Foto';
                 })
                 ->addColumn('tanggal', function ($row) {
                     return $row->created_at ? date('d-m-Y H:i', strtotime($row->created_at)) : '-';
                 })
                 ->addColumn('action', function ($row) {
                     return '
-                        <button type="button" class="btn btn-primary btn-sm" onclick="location.href=\'/form-galeri/' . $row->id . '\'" title="Edit" style="margin-right:5px; margin-bottom:5px;">
+                        <button type="button" class="btn btn-primary btn-sm" onclick="location.href=\'/form-galeri/' .
+                        $row->id .
+                        '\'" title="Edit" style="margin-right:5px; margin-bottom:5px;">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="deletealbumConfirmation(' . $row->id . ')" title="Hapus" style="margin-right:5px; margin-bottom:5px;">
+                        <button type="button" class="btn btn-danger btn-sm" onclick="deletealbumConfirmation(' .
+                        $row->id .
+                        ')" title="Hapus" style="margin-right:5px; margin-bottom:5px;">
                             <i class="fas fa-trash"></i>
                         </button>
                     ';
@@ -182,10 +205,7 @@ class GaleriController extends Controller
     {
         $album = Album::where('status_enabled', 1)->where('id', $id)->firstOrFail();
 
-        $fotoAlbum = FotoAlbum::where('id_album', $album->id)
-            ->where('status_enabled', 1)
-            ->orderBy('id', 'desc')
-            ->get();
+        $fotoAlbum = FotoAlbum::where('id_album', $album->id)->where('status_enabled', 1)->orderBy('id', 'desc')->get();
 
         if ($request->ajax()) {
             return Datatables::of($fotoAlbum)
@@ -206,10 +226,18 @@ class GaleriController extends Controller
                     $foto = htmlspecialchars(json_encode($row->foto ?? ''), ENT_QUOTES, 'UTF-8');
 
                     return '
-                        <button type="button" class="btn btn-warning btn-sm" onclick="editFoto(' . $row->id . ', ' . $nama . ', ' . $foto . ')" title="Edit" style="margin-right:5px; margin-bottom:5px;">
+                        <button type="button" class="btn btn-warning btn-sm" onclick="editFoto(' .
+                        $row->id .
+                        ', ' .
+                        $nama .
+                        ', ' .
+                        $foto .
+                        ')" title="Edit" style="margin-right:5px; margin-bottom:5px;">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="deletefotoConfirmation(' . $row->id . ')" title="Hapus" style="margin-right:5px; margin-bottom:5px;">
+                        <button type="button" class="btn btn-danger btn-sm" onclick="deletefotoConfirmation(' .
+                        $row->id .
+                        ')" title="Hapus" style="margin-right:5px; margin-bottom:5px;">
                             <i class="fas fa-trash"></i>
                         </button>
                     ';
@@ -232,16 +260,19 @@ class GaleriController extends Controller
 
     public function store_foto(Request $request)
     {
-        $request->validate([
-            'id_album' => ['required', 'exists:album,id'],
-            'nama_foto' => ['required', 'string', 'max:200'],
-            'foto' => ['required', 'url', 'max:255'],
-        ], [
-            'id_album.required' => 'Album tidak ditemukan.',
-            'nama_foto.required' => 'Nama foto wajib diisi.',
-            'foto.required' => 'Link foto wajib diisi.',
-            'foto.url' => 'Link foto harus berupa URL yang valid.',
-        ]);
+        $request->validate(
+            [
+                'id_album' => ['required', 'exists:album,id'],
+                'nama_foto' => ['required', 'string', 'max:200'],
+                'foto' => ['required', 'url', 'max:255'],
+            ],
+            [
+                'id_album.required' => 'Album tidak ditemukan.',
+                'nama_foto.required' => 'Nama foto wajib diisi.',
+                'foto.required' => 'Link foto wajib diisi.',
+                'foto.url' => 'Link foto harus berupa URL yang valid.',
+            ],
+        );
 
         $now = Carbon::now('Asia/Jakarta');
 
@@ -261,14 +292,17 @@ class GaleriController extends Controller
     {
         $foto = FotoAlbum::where('status_enabled', 1)->where('id', $id)->firstOrFail();
 
-        $request->validate([
-            'nama_foto' => ['required', 'string', 'max:200'],
-            'foto' => ['required', 'url', 'max:255'],
-        ], [
-            'nama_foto.required' => 'Nama foto wajib diisi.',
-            'foto.required' => 'Link foto wajib diisi.',
-            'foto.url' => 'Link foto harus berupa URL yang valid.',
-        ]);
+        $request->validate(
+            [
+                'nama_foto' => ['required', 'string', 'max:200'],
+                'foto' => ['required', 'url', 'max:255'],
+            ],
+            [
+                'nama_foto.required' => 'Nama foto wajib diisi.',
+                'foto.required' => 'Link foto wajib diisi.',
+                'foto.url' => 'Link foto harus berupa URL yang valid.',
+            ],
+        );
 
         $foto->update([
             'nama_foto' => $request->nama_foto,
@@ -281,11 +315,14 @@ class GaleriController extends Controller
 
     public function update_album(Request $request)
     {
-        $request->validate([
-            'judul_album' => ['required', 'string', 'max:255'],
-        ], [
-            'judul_album.required' => 'Judul album wajib diisi.',
-        ]);
+        $request->validate(
+            [
+                'judul_album' => ['required', 'string', 'max:255'],
+            ],
+            [
+                'judul_album.required' => 'Judul album wajib diisi.',
+            ],
+        );
 
         $now = Carbon::now('Asia/Jakarta');
 
@@ -358,10 +395,14 @@ class GaleriController extends Controller
                 })
                 ->addColumn('action', function ($row) {
                     return '
-                        <button type="button" class="btn btn-primary" onclick="location.href=`/form-video/' . $row->id . '`">
+                        <button type="button" class="btn btn-primary" onclick="location.href=`/form-video/' .
+                        $row->id .
+                        '`">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button type="button" class="btn btn-danger" onclick="deleteVideoConfirmation(' . $row->id . ')">
+                        <button type="button" class="btn btn-danger" onclick="deleteVideoConfirmation(' .
+                        $row->id .
+                        ')">
                             <i class="fas fa-trash"></i>
                         </button>
                     ';
