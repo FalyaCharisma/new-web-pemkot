@@ -11,6 +11,7 @@ import {
     ArrowLeft,
     ChevronRight,
     Home,
+    Clock
 } from "lucide-react";
 
 export default function Show({
@@ -57,151 +58,233 @@ export default function Show({
 
                     <section className="container mx-auto px-4 py-8">
                         <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
-                            <article className="rounded-3xl bg-white border p-6">
-                                <div className="flex justify-between items-center">
-                                    <span className="bg-amber-100 px-3 py-1 rounded-full text-xs font-semibold text-amber-700">
-                                        {fasilitas.kategori?.nama_kategori}
-                                    </span>
+                            <article className="rounded-3xl border bg-white p-5 shadow-sm md:p-6">
+    {/* HEADER */}
+    <div className="flex items-center justify-between gap-4">
+        <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
+            {fasilitas.kategori?.nama_kategori ?? "Fasilitas"}
+        </span>
 
-                                    <button
-                                        onClick={() => window.history.back()}
-                                        className="text-sm flex items-center gap-2"
-                                    >
-                                        <ArrowLeft size={14} />
-                                        Kembali
-                                    </button>
-                                </div>
+        <button
+            onClick={() => window.history.back()}
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 transition hover:border-primary hover:text-primary"
+        >
+            <ArrowLeft size={15} />
+            Kembali
+        </button>
+    </div>
 
-                                <h1 className="mt-5 text-4xl font-bold">
-                                    {fasilitas.nama}
-                                </h1>
+    {/* TITLE */}
+    <h1 className="mt-5 text-3xl font-bold leading-tight text-slate-900 md:text-4xl">
+        {fasilitas.nama}
+    </h1>
 
-                                <img
-                                    src={selectedPhoto}
-                                    className="mt-6 h-[420px] w-full rounded-2xl object-cover"
-                                />
+    {/* FOTO UTAMA */}
+    <div className="mt-6 flex justify-center">
+        <div className="aspect-square w-full max-w-md overflow-hidden rounded-2xl bg-slate-100">
+            <img
+                src={selectedPhoto}
+                alt={fasilitas.nama}
+                className="h-full w-full object-cover"
+            />
+        </div>
+    </div>
 
-                                {allPhotos.length > 1 && (
-                                    <div className="mt-4 flex gap-3 overflow-x-auto pb-2">
-                                        {allPhotos.map((foto: any) => (
-                                            <button
-                                                key={foto.id}
-                                                onClick={() =>
-                                                    setSelectedPhoto(foto.url)
-                                                }
-                                                className={`overflow-hidden rounded-xl border-2 transition
-                    ${
+    {/* THUMBNAILS */}
+    {allPhotos.length > 1 && (
+        <div className="mt-4 flex justify-center gap-3 overflow-x-auto pb-2">
+            {allPhotos.map((foto: any) => (
+                <button
+                    key={foto.id}
+                    onClick={() => setSelectedPhoto(foto.url)}
+                    className={`flex-shrink-0 overflow-hidden rounded-xl border-2 transition ${
                         selectedPhoto === foto.url
                             ? "border-primary"
                             : "border-transparent"
                     }`}
-                                            >
-                                                <img
-                                                    src={foto.url}
-                                                    className="h-20 w-28 object-cover"
-                                                />
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
+                >
+                    <img
+                        src={foto.url}
+                        alt=""
+                        className="h-16 w-16 object-cover"
+                    />
+                </button>
+            ))}
+        </div>
+    )}
 
-                                {fasilitas.deskripsi ? (
-                                    <div className="prose mt-8 max-w-none">
-                                        <div
-                                            dangerouslySetInnerHTML={{
-                                                __html: fasilitas.deskripsi,
-                                            }}
-                                        />
-                                    </div>
-                                ) : (
-                                    <div className="mt-8 rounded-2xl border bg-slate-50 p-6">
-                                        <h3 className="mb-4 text-xl font-bold">
-                                            Informasi Singkat
-                                        </h3>
+    {/* DESKRIPSI */}
+    {fasilitas.deskripsi && (
+        <div className="mt-8">
+            <h2 className="text-xl font-bold text-slate-900">
+                Tentang {fasilitas.nama}
+            </h2>
 
-                                        <div className="grid gap-4 md:grid-cols-2">
-                                            <div className="flex gap-3">
-                                                <MapPin
-                                                    className="mt-1 text-primary"
-                                                    size={20}
-                                                />
+            <div
+                className="prose prose-slate mt-4 max-w-none leading-7 text-slate-600"
+                dangerouslySetInnerHTML={{
+                    __html: fasilitas.deskripsi,
+                }}
+            />
+        </div>
+    )}
 
-                                                <div>
-                                                    <p className="text-xs uppercase tracking-wide text-slate-500">
-                                                        Alamat
-                                                    </p>
+    {/* INFORMASI */}
+    <div className="mt-8">
+        <h2 className="text-xl font-bold text-slate-900">
+            Informasi Fasilitas
+        </h2>
 
-                                                    <p className="mt-1 text-sm text-slate-700">
-                                                        {fasilitas.lat &&
-                                                        fasilitas.lng ? (
-                                                            <a
-                                                                href={`https://www.google.com/maps?q=${fasilitas.lat},${fasilitas.lng}`}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                className="mt-1 inline-block text-sm text-primary hover:underline"
-                                                            >
-                                                                {fasilitas.alamat ||
-                                                                    "Lihat lokasi"}
-                                                            </a>
-                                                        ) : (
-                                                            <p className="mt-1 text-sm text-slate-700">
-                                                                {fasilitas.alamat ||
-                                                                    "-"}
-                                                            </p>
-                                                        )}
-                                                    </p>
-                                                </div>
-                                            </div>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            {/* ALAMAT */}
+            <div className="rounded-2xl bg-slate-50 p-4">
+                <div className="flex gap-3">
+                    <MapPin
+                        size={20}
+                        className="mt-1 flex-shrink-0 text-primary"
+                    />
 
-                                            <div className="flex gap-3">
-                                                <Phone
-                                                    className="mt-1 text-primary"
-                                                    size={20}
-                                                />
+                    <div>
+                        <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                            Alamat
+                        </p>
 
-                                                <div>
-                                                    <p className="text-xs uppercase tracking-wide text-slate-500">
-                                                        Telepon
-                                                    </p>
+                        <p className="mt-1 text-sm leading-6 text-slate-700">
+                            {fasilitas.alamat || "Belum tersedia"}
+                        </p>
+                    </div>
+                </div>
+            </div>
 
-                                                    <p className="mt-1 text-sm text-slate-700">
-                                                        {fasilitas.telp || "-"}
-                                                    </p>
-                                                </div>
-                                            </div>
+            {/* TELEPON */}
+            <div className="rounded-2xl bg-slate-50 p-4">
+                <div className="flex gap-3">
+                    <Phone
+                        size={20}
+                        className="mt-1 flex-shrink-0 text-primary"
+                    />
 
-                                            <div className="flex gap-3 md:col-span-2">
-                                                <Globe
-                                                    className="mt-1 text-primary"
-                                                    size={20}
-                                                />
+                    <div>
+                        <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                            Telepon
+                        </p>
 
-                                                <div>
-                                                    <p className="text-xs uppercase tracking-wide text-slate-500">
-                                                        Website
-                                                    </p>
+                        <p className="mt-1 text-sm text-slate-700">
+                            {fasilitas.telp || "Belum tersedia"}
+                        </p>
+                    </div>
+                </div>
+            </div>
 
-                                                    {fasilitas.link ? (
-                                                        <a
-                                                            href={
-                                                                fasilitas.link
-                                                            }
-                                                            target="_blank"
-                                                            className="mt-1 inline-block text-sm text-primary hover:underline"
-                                                        >
-                                                            {fasilitas.link}
-                                                        </a>
-                                                    ) : (
-                                                        <p className="mt-1 text-sm text-slate-700">
-                                                            Belum tersedia
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </article>
+            {/* JAM OPERASIONAL */}
+            <div className="rounded-2xl bg-slate-50 p-4">
+                <div className="flex gap-3">
+                    <Clock
+                        size={20}
+                        className="mt-1 flex-shrink-0 text-primary"
+                    />
+
+                    <div>
+                        <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                            Jam Operasional
+                        </p>
+
+                        <p className="mt-1 text-sm text-slate-700">
+                            {fasilitas.jam_buka && fasilitas.jam_tutup
+                                ? `${fasilitas.jam_buka} - ${fasilitas.jam_tutup}`
+                                : "Belum tersedia"}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {/* TAUTAN */}
+            <div className="rounded-2xl bg-slate-50 p-4">
+                <div className="flex gap-3">
+                    <Globe
+                        size={20}
+                        className="mt-1 flex-shrink-0 text-primary"
+                    />
+
+                    <div className="min-w-0">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                            Tautan
+                        </p>
+
+                        {fasilitas.link ? (
+                            <a
+                                href={fasilitas.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="mt-1 inline-flex text-sm font-medium text-primary hover:underline"
+                            >
+                                Buka Google Maps →
+                            </a>
+                        ) : (
+                            <p className="mt-1 text-sm text-slate-500">
+                                Belum tersedia
+                            </p>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {/* LOKASI */}
+    {(fasilitas.lat && fasilitas.lng) || fasilitas.map ? (
+        <div className="mt-8">
+            <div className="flex items-center justify-between gap-4">
+                <h2 className="text-xl font-bold text-slate-900">
+                    Lokasi
+                </h2>
+
+                {fasilitas.map && (
+                    <a
+                        href={fasilitas.map}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm font-semibold text-primary hover:underline"
+                    >
+                        Buka Peta →
+                    </a>
+                )}
+            </div>
+
+            <div className="mt-4 overflow-hidden rounded-2xl border bg-slate-100">
+                {fasilitas.lat && fasilitas.lng ? (
+                    <iframe
+                        src={`https://www.google.com/maps?q=${fasilitas.lat},${fasilitas.lng}&output=embed`}
+                        className="h-[180px] w-full border-0"
+                        loading="lazy"
+                    />
+                ) : (
+                    <div className="flex h-[160px] flex-col items-center justify-center gap-2">
+                        <MapPin
+                            size={28}
+                            className="text-primary"
+                        />
+
+                        <p className="text-sm text-slate-500">
+                            Lokasi tersedia di Google Maps
+                        </p>
+
+                        {fasilitas.map && (
+                            <a
+                                href={fasilitas.map}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm font-semibold text-primary hover:underline"
+                            >
+                                Lihat Lokasi →
+                            </a>
+                        )}
+                    </div>
+                )}
+            </div>
+        </div>
+    ) : null}
+</article>
 
                             <aside className="space-y-6">
                                 <div className="rounded-3xl border bg-white p-5">

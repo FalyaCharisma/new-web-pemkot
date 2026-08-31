@@ -20,11 +20,12 @@ class LandingPageController extends Controller
         $hero = Banner::where('status_enabled', 1)->first();
         $hero = $hero ? asset('storage/banner/' . $hero->gambar) : null;
 
-        $berita = Berita::query()
+        $beritaProkopim = Berita::query()
             ->where('status_published', 1)
             ->where('status_enabled', 1)
+            ->where('author', 2)
             ->latest('tanggal')
-            ->take(3)
+            ->take(10)
             ->get()
             ->map(function ($item) {
                 return [
@@ -33,8 +34,30 @@ class LandingPageController extends Controller
                     'slug' => $item->slug,
                     'tanggal' => $item->tanggal,
                     'author' => $item->author,
-                    'images' => filter_var($item->images, FILTER_VALIDATE_URL) ? $item->images : asset('storage/berita/' . $item->images),
+                    'images' => filter_var($item->images, FILTER_VALIDATE_URL)
+                        ? $item->images
+                        : asset('storage/berita/' . $item->images),
+                    'deskripsi' => Str::limit(strip_tags($item->deskripsi), 80),
+                ];
+            });
 
+        $beritaKominfo = Berita::query()
+            ->where('status_published', 1)
+            ->where('status_enabled', 1)
+            ->whereNull('author')
+            ->latest('tanggal')
+            ->take(4)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'judul' => Str::limit(strip_tags($item->judul), 90),
+                    'slug' => $item->slug,
+                    'tanggal' => $item->tanggal,
+                    'author' => $item->author,
+                    'images' => filter_var($item->images, FILTER_VALIDATE_URL)
+                        ? $item->images
+                        : asset('storage/berita/' . $item->images),
                     'deskripsi' => Str::limit(strip_tags($item->deskripsi), 80),
                 ];
             });
@@ -131,7 +154,8 @@ class LandingPageController extends Controller
             });
 
         return Inertia::render('landingpage/index', [
-            'berita' => $berita,
+            'beritaProkopim' => $beritaProkopim,
+            'beritaKominfo' => $beritaKominfo,
             'layanan' => $layanan,
             'peta' => $peta,
             'agenda' => $agenda,

@@ -9,6 +9,8 @@ use App\Models\KategoriBerita;
 use App\Models\KategoriFasilitas;
 use App\Models\PetaInteraktif;
 use App\Models\HighlightPesona;
+use App\Models\Agenda;
+use App\Models\FasilitasKota;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use DataTables;
@@ -19,6 +21,7 @@ class PesonaUnggulanController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index(Request $request)
     {
         $kategori = $request->kategori;
@@ -27,13 +30,100 @@ class PesonaUnggulanController extends Controller
             ->when($kategori, function ($q) use ($kategori) {
                 $q->where('id_kategori', $kategori);
             })
+            ->where('status_enabled', 1)
             ->latest()
-            ->get();
-        
-        $highlight = HighlightPesona::with('kategori')->first();
-        // dd($highlight);
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'type' => 'pesona',
+                    'cover' => $item->cover,
+                    'judul' => $item->judul,
+                    'slug' => $item->slug,
+                    'id_kategori' => $item->id_kategori,
+                    'kategori' => $item->kategori,
+                    'deskripsi' => $item->deskripsi,
+                    'created_at' => $item->created_at,
+                ];
+            });
 
-        $peta = PetaInteraktif::with('kategoriFasilitas')->where('menu', 'pesona')
+        // Jika ada kategori, tambahkan Berita dan Agenda
+        if ($kategori) {
+
+            $berita = Berita::with('kategori')
+                ->where('id_kategori', $kategori)
+                ->where('status_enabled', 1)
+                ->latest()
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'type' => 'berita',
+                        'cover' => $item->images,
+                        'judul' => $item->judul,
+                        'slug' => $item->slug,
+                        'id_kategori' => $item->id_kategori,
+                        'kategori' => $item->kategori,
+                        'deskripsi' => $item->deskripsi,
+                        'created_at' => $item->created_at,
+                    ];
+                });
+
+            $agenda = Agenda::with('kategori')
+                ->where('id_kategori', $kategori)
+                ->where('status_enabled', 1)
+                ->latest()
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'type' => 'agenda',
+                        'cover' => $item->banner,
+                        'judul' => $item->judul,
+                        'slug' => $item->slug,
+                        'id_kategori' => $item->id_kategori,
+                        'kategori' => $item->kategori,
+                        'deskripsi' => $item->deskripsi,
+                        'created_at' => $item->created_at,
+                    ];
+                });
+
+            // Fasilitas Kuliner
+            $fasilitas = collect();
+
+            if ((int) $kategori === 19) {
+                $fasilitas = FasilitasKota::with('kategori')
+                    ->where('kategori_id', 5)
+                    ->where('status_enabled', 1)
+                    ->latest()
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'id' => $item->id,
+                            'type' => 'fasilitas',
+                            'cover' => $item->foto,
+                            'judul' => $item->nama,
+                            'slug' => $item->slug,
+                            'id_kategori' => $item->kategori_id,
+                            'kategori' => $item->kategori,
+                            'deskripsi' => $item->deskripsi,
+                            'created_at' => $item->created_at,
+                        ];
+                    });
+            }
+
+            $pesona = $pesona
+                ->concat($berita)
+                ->concat($agenda)
+                ->concat($fasilitas)
+                ->sortByDesc('created_at')
+                ->values();
+        }
+
+        $highlight = HighlightPesona::with('kategori')->first();
+
+        $peta = PetaInteraktif::with('kategoriFasilitas')
+            ->where('menu', 'pesona')
             ->get()
             ->map(function ($item) {
                 return [
@@ -48,6 +138,8 @@ class PesonaUnggulanController extends Controller
                     'jam_tutup' => $item->jam_tutup,
                 ];
             });
+        
+            // dd($pesona);
 
         return Inertia::render('pesonakediri/index', [
             'pesona' => $pesona,
