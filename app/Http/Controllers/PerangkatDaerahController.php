@@ -274,7 +274,7 @@ class PerangkatDaerahController extends Controller
     {
         $kategori = KategoriOPD::where('status_enabled', 1)->get();
 
-        if ($id == 'add') {
+        if ($id == 'new') {
             $titlepage = 'Tambah OPD';
             $opd = null;
             $pimpinan = null;
