@@ -218,7 +218,7 @@ export default function Show({
                                 rel="noopener noreferrer"
                                 className="mt-1 inline-flex text-sm font-medium text-primary hover:underline"
                             >
-                                Buka Google Maps →
+                                {fasilitas.link}
                             </a>
                         ) : (
                             <p className="mt-1 text-sm text-slate-500">
