@@ -38,7 +38,7 @@ export default function Index({ kategori, kategoriList }: any) {
                         enableSearch={false}
                         description="Jelajahi informasi Perangkat Daerah Kota Kediri untuk mengenal struktur organisasi, tugas pokok dan fungsi, serta peran masing-masing perangkat daerah dalam penyelenggaraan pemerintahan daerah."
                     />
-                    <section className="container mx-auto px-4 py-10">
+                    <section className="container-page py-10">
                         <div className="mb-20">
                             <div className="container mx-auto -mt-8">
                                 <div className="mt-10">

@@ -60,7 +60,7 @@ export default function Index({
                         description="Mengenal lebih dekat Kota Kediri, mulai dari sejarah, identitas daerah, visi dan misi pembangunan, hingga profil pimpinan daerah."
                     />
 
-                    <section className="container mx-auto px-4 py-10">
+                    <section className="container-page py-10">
                         <div className="grid gap-10 lg:grid-cols-4">
                             <div>
                                 <SidebarItem

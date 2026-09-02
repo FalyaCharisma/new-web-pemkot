@@ -69,7 +69,7 @@ export default function KelurahanPage({
                             );
                         }}
                     />
-                    <section className="container mx-auto px-4 py-10">
+                    <section className="container-page py-10">
                         <div className="mb-20">
                             <div className="container mx-auto -mt-8">
                                 <div className="mt-10">

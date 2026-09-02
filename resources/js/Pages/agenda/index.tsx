@@ -373,8 +373,7 @@ export default function Agenda({
                     {/* MAIN */}
                     {/* ================================================= */}
 
-                    <section className="container mx-auto px-4 py-12">
-
+                   <section className="container-page py-12">
                         {/* ================================================= */}
                         {/* CALENDAR SECTION */}
                         {/* ================================================= */}

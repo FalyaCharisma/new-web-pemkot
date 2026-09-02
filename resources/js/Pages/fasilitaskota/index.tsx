@@ -161,7 +161,7 @@ export default function AkomodasiIndex({
                     />
 
                     {/* CONTENT */}
-                    <section className="container mx-auto px-4 py-10">
+                    <section className="container-page py-10">
                         <div className="mb-8 rounded-3xl border bg-white p-6 shadow-sm">
                             <div className="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
                                 <div className="flex items-center justify-center">

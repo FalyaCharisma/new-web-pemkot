@@ -57,7 +57,7 @@ export function HeroPage({
                 <div className="absolute -bottom-24 left-0 h-60 w-60 rounded-full bg-primary/10 blur-3xl" />
             </div>
 
-            <div className="container relative z-10 mx-auto px-4 py-6">
+           <div className="container-page relative z-10 py-6">
                 <div className="mt-4 mb-2 flex items-center gap-2 text-sm">
                     <Link
                         href="/"

@@ -126,7 +126,7 @@ export default function PenghargaanPage({
                     />
 
                     {/* CONTENT */}
-                    <section className="container mx-auto px-4 py-10">
+                    <section className="container-page py-10">
                         <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
                             {/* FILTER */}
                             <aside className="h-fit rounded-3xl border bg-white p-5">

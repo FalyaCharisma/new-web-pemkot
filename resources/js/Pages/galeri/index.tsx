@@ -165,7 +165,7 @@ export default function GaleriIndex( { videos, albums, totalAlbum, totalFoto, to
                         }}
                     />
 
-                    <section className="container mx-auto px-4 py-10">
+                    <section className="container-page py-10">
 
                         {/* STATISTIK */}
                         <div className="grid gap-5 md:grid-cols-3">

@@ -84,7 +84,7 @@ export default function DetailPenghargaan({
                 <HeaderSolid />
 
                 <main className="pt-15">
-                    <div className="container relative z-10 mx-auto px-4 py-3">
+                    <div className="container-page relative z-10 py-3">
                         <div className="mt-13 flex items-center gap-2 text-sm text-slate-500">
                             <Home size={14} />
                             <Link href="/" className="hover:text-primary">
@@ -108,7 +108,7 @@ export default function DetailPenghargaan({
                     </div>
 
                     {/* CONTENT */}
-                    <section className="container mx-auto px-4 py-10">
+                    <section className="container-page py-10">
                         <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
                             <article className="rounded-3xl border bg-white p-6">
                                 <div className="flex items-center justify-between gap-4">

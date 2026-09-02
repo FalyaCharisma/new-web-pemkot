@@ -43,7 +43,7 @@ export default function Show({
                 <HeaderSolid />
 
                 <main className="pt-16 mt-8">
-                    <div className="container mx-auto px-4 py-4">
+                   <div className="container-page py-4">
                         <div className="flex items-center gap-2 text-sm text-slate-500">
                             <Home size={14} />
                             Beranda
@@ -56,7 +56,7 @@ export default function Show({
                         </div>
                     </div>
 
-                    <section className="container mx-auto px-4 py-8">
+                    <section className="container-page py-8">
                         <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
                             <article className="rounded-3xl border bg-white p-5 shadow-sm md:p-6">
     {/* HEADER */}

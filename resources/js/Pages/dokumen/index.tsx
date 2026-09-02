@@ -146,7 +146,7 @@ export default function DokumenIndex({
                         onSearch={handleSearch}
                     />
 
-                    <section className="container mx-auto px-4 py-10">
+                    <section className="container-page py-10">
                         {/* Filter */}
 
                         <div className="mb-6 grid gap-4 lg:grid-cols-12">
