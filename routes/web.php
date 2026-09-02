@@ -20,6 +20,7 @@ use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PetaController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\BudayaWarisanController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -225,6 +226,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/hapus-pesona-unggulan/{id}', 'hapus_pesona_unggulan')->name('hapus_pesona_unggulan');
         Route::get('/form-highlight-pesona', 'form_highlight_pesona')->name('form_highlight_pesona');
         Route::post('/update-highlight-pesona', 'update_highlight_pesona')->name('update_highlight_pesona');
+    });
+
+    Route::controller(BudayaWarisanController::class)->group(function () {
+        Route::get('/list-budaya-warisan', 'list_budaya_warisan')->name('list_budaya_warisan');
+        Route::get('/value-budaya-warisan/{id}','value_budaya_warisan')->name('value_budaya_warisan');
+        Route::post('/update-budaya-warisan','update_budaya_warisan')->name('update_budaya_warisan');
+        Route::post('/hapus-budaya-warisan/{id}','hapus_budaya_warisan')->name('hapus_budaya_warisan');
     });
 });
 

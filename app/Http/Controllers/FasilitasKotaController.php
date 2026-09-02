@@ -23,8 +23,9 @@ class FasilitasKotaController extends Controller
      */
     public function index(Request $request)
     {
-        $selectedKategori = $request->integer('kategori', 1);
+        $selectedKategori = $request->integer('kategori');
         $selectedSubKategori = $request->integer('sub_kategori');
+        $search = $request->input('search');
 
         $kategori = KategoriFasilitas::query()
             ->where('status_enabled', 1)
@@ -47,15 +48,25 @@ class FasilitasKotaController extends Controller
         $fasilitas = FasilitasKota::query()
             ->where('status_enabled', 1)
             ->with(['kategori', 'sub_kategori'])
+
+            // Filter kategori
             ->when($selectedKategori, function ($q) use ($selectedKategori) {
                 $q->where('kategori_id', $selectedKategori);
             })
-            ->when($request->sub_kategori, function ($q) use ($request) {
-                $q->whereIn('sub_kategori_id', (array) $request->sub_kategori);
+
+            // Filter sub kategori
+            ->when($request->filled('sub_kategori'), function ($q) use ($request) {
+                $q->whereIn(
+                    'sub_kategori_id',
+                    (array) $request->sub_kategori
+                );
             })
-            ->when($request->search, function ($query) use ($request) {
-                $query->where('nama', 'like', '%' . $request->search . '%');
+
+            // Filter keyword
+            ->when($search, function ($query) use ($search) {
+                $query->where('nama', 'like', '%' . $search . '%');
             })
+
             ->latest()
             ->paginate(8)
             ->withQueryString();
@@ -67,6 +78,7 @@ class FasilitasKotaController extends Controller
             'filters' => [
                 'kategori' => $selectedKategori,
                 'sub_kategori' => $selectedSubKategori,
+                'search' => $search,
             ],
         ]);
     }

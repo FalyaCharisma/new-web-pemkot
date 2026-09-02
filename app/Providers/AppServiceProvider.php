@@ -53,7 +53,8 @@ class AppServiceProvider extends ServiceProvider
                     'list-layanan-publik',
                     'form-layanan-publik/*',
                     'peta-interaktif',
-                    'form-peta-interaktif/*'
+                    'form-peta-interaktif/*',
+                    'list-budaya-warisan'
                 ],
                 'icon' => 'fa-home',
 
@@ -71,6 +72,15 @@ class AppServiceProvider extends ServiceProvider
                         'routes' => [
                             'list-layanan-publik',
                             'form-layanan-publik/*'
+                        ]
+                    ],
+
+                    [
+                        'title' => 'Budaya & Warisan',
+                        'url' => '/list-budaya-warisan',
+                        'routes' => [
+                            'list-budaya-warisan',
+                            'form-budaya-warisan/*'
                         ]
                     ],
 
