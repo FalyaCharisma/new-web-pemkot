@@ -20,7 +20,7 @@ export function News({
     return (
         <section
             id="berita"
-            className="relative py-10 md:py-28"
+            className="relative py-10 md:py-14"
         >
             <div className="container-page">
 
