@@ -18,7 +18,7 @@ export function Services({ layanan }: Props) {
     const [selected, setSelected] = useState<Service | null>(null);
     return (
         <>
-            <section id="layanan" className="relative py-28">
+            <section id="layanan" className="relative py-10 md:py-28">
                 <div className="container-page">
                     <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
                         {/* Sidebar */}

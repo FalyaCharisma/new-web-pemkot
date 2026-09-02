@@ -36,7 +36,7 @@ function MapController({
         if (!selected) return;
 
         map.flyTo([Number(selected.lat), Number(selected.lng)], 15, {
-            duration: 1.2,
+            duration: 1,
         });
     }, [selected, map]);
 
@@ -171,7 +171,10 @@ export function CityMap({ peta }: Props) {
     };
 
     return (
-        <section id="budaya" className="relative overflow-hidden mb-28">
+        <section
+    id="budaya"
+    className="relative overflow-hidden mb-10 md:mb-28"
+>
             <div className="container-page">
                 <div className="max-w-2xl">
                     <SectionLabel>Jelajahi Kota</SectionLabel>
@@ -241,7 +244,7 @@ export function CityMap({ peta }: Props) {
                                                         markerRefs.current[
                                                             l.id
                                                         ]?.openPopup();
-                                                    }, 0);
+                                                    }, 1200);
                                                 },
                                             }}
                                         >
@@ -249,8 +252,7 @@ export function CityMap({ peta }: Props) {
                                                 minWidth={270}
                                                 maxWidth={270}
                                                 autoPan={true}
-                                                autoPanPadding={[50, 80]}
-                                                keepInView={true}
+                                                autoPanPadding={[20, 20]}
                                             >
                                                 <div className="w-full px-1 py-2">
                                                     {/* FOTO */}

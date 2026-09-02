@@ -61,7 +61,10 @@ export function Harmony() {
     }, [isPaused]);
 
     return (
-        <section id="harmoni" className="relative overflow-hidden py-14 my-14">
+        <section
+    id="harmoni"
+    className="relative overflow-hidden py-10 my-6 md:py-14 md:my-14"
+>
             {/* Background */}
             <div className="absolute inset-0">
                 <img

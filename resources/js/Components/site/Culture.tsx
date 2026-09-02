@@ -37,7 +37,7 @@ const cards = [
 
 export function Culture() {
     return (
-        <section id="budaya" className="relative overflow-hidden py-28">
+       <section id="budaya" className="relative overflow-hidden py-10 md:py-28">
             <div className="container-page">
                 <div className="max-w-2xl">
                     <SectionLabel>Budaya &amp; Warisan</SectionLabel>
@@ -54,7 +54,7 @@ export function Culture() {
                 </div>
             </div>
 
-            <div className="container-page mt-8">
+            <div className="container-page my-8">
                 <div className="grid grid-cols-2 gap-3 md:grid-cols-2 xl:grid-cols-4">
                     {cards.map((c) => (
                         <Link
