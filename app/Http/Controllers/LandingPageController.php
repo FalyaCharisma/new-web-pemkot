@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use App\Models\BudayaWarisan;
 
 class LandingPageController extends Controller
 {
@@ -153,6 +154,10 @@ class LandingPageController extends Controller
                 ];
             });
 
+        $budayaWarisan = BudayaWarisan::where('status', 1)
+            ->orderBy('urutan', 'asc')
+            ->get();
+
         return Inertia::render('landingpage/index', [
             'beritaProkopim' => $beritaProkopim,
             'beritaKominfo' => $beritaKominfo,
@@ -161,6 +166,7 @@ class LandingPageController extends Controller
             'agenda' => $agenda,
             'hero' => $hero,
             'wisata' => $wisata,
+            'budayaWarisan' => $budayaWarisan,
         ]);
     }
 }
