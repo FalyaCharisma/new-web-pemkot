@@ -107,10 +107,11 @@ class LandingPageController extends Controller
         );
 
         $now = Carbon::now();
+        $today = Carbon::today();
 
         $agendaData = Agenda::where('status_enabled', 1)
             ->get()
-            ->map(function ($item) use ($now) {
+            ->map(function ($item) use ($today) {
 
                 $mulai = Carbon::parse($item->tanggal_mulai);
 
@@ -118,14 +119,39 @@ class LandingPageController extends Controller
                     ? Carbon::parse($item->tanggal_selesai)
                     : $mulai->copy();
 
-                $isOngoing = $now->between($mulai, $selesai);
-                $isUpcoming = $now->lt($mulai);
-                $isFinished = $now->gt($selesai);
+                /*
+                |--------------------------------------------------------------------------
+                | STATUS AGENDA BERDASARKAN TANGGAL
+                |--------------------------------------------------------------------------
+                |
+                | Contoh:
+                | Mulai   : 03 September 2026
+                | Selesai : 05 September 2026
+                | Hari ini: 03 September 2026
+                |
+                | Maka status = Sedang Berlangsung
+                |
+                */
+
+                $isOngoing = $today->between(
+                    $mulai->copy()->startOfDay(),
+                    $selesai->copy()->endOfDay()
+                );
+
+                $isUpcoming = $today->lt(
+                    $mulai->copy()->startOfDay()
+                );
+
+                $isFinished = $today->gt(
+                    $selesai->copy()->endOfDay()
+                );
 
                 return [
                     'id' => $item->id,
+
                     'tanggal_mulai' => $item->tanggal_mulai,
                     'tanggal_selesai' => $item->tanggal_selesai,
+
                     'judul_acara' => $item->judul_acara,
                     'lokasi_acara' => $item->lokasi_acara,
                     'maps_lokasi' => $item->maps_lokasi,
@@ -135,7 +161,9 @@ class LandingPageController extends Controller
                         : null,
 
                     'deskripsi' => strip_tags($item->deskripsi),
+
                     'status_enabled' => $item->status_enabled,
+
                     'created_at' => $item->created_at,
                     'updated_at' => $item->updated_at,
 
@@ -151,6 +179,7 @@ class LandingPageController extends Controller
                             ? 'Agenda Mendatang'
                             : 'Sudah Selesai'),
 
+                    // FORMAT TANGGAL
                     'tanggal_mulai_formatted' => $mulai
                         ->translatedFormat('d F Y'),
 
@@ -166,19 +195,23 @@ class LandingPageController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        // Agenda yang sedang berlangsung
+        // 1. SEDANG BERLANGSUNG
         $ongoing = $agendaData
             ->filter(fn ($item) => $item['is_ongoing'])
             ->sortBy('tanggal_mulai')
             ->values();
 
-        // Agenda mendatang → paling dekat terlebih dahulu
+
+        // 2. AGENDA MENDATANG
+        // Yang paling dekat ditampilkan terlebih dahulu
         $upcoming = $agendaData
             ->filter(fn ($item) => $item['is_upcoming'])
             ->sortBy('tanggal_mulai')
             ->values();
 
-        // Agenda selesai → yang paling baru selesai terlebih dahulu
+
+        // 3. SUDAH SELESAI
+        // Yang paling baru selesai ditampilkan terlebih dahulu
         $finished = $agendaData
             ->filter(fn ($item) => $item['is_finished'])
             ->sortByDesc(
@@ -194,6 +227,7 @@ class LandingPageController extends Controller
         |--------------------------------------------------------------------------
         |
         | Prioritas:
+        |
         | 1. Sedang Berlangsung
         | 2. Agenda Mendatang terdekat
         | 3. Agenda yang baru selesai
@@ -211,6 +245,7 @@ class LandingPageController extends Controller
         |--------------------------------------------------------------------------
         |
         | Urutan:
+        |
         | 1. Agenda Mendatang
         | 2. Agenda Sudah Selesai
         |
@@ -229,13 +264,23 @@ class LandingPageController extends Controller
 
         if ($featured) {
 
-            // Jangan tampilkan featured lagi di agenda lainnya
+            // Jangan tampilkan featured dua kali
             $otherAgenda = $otherAgenda
                 ->reject(
                     fn ($item) =>
                         $item['id'] === $featured['id']
                 )
                 ->values();
+
+            /*
+            |--------------------------------------------------------------------------
+            | AGENDA FINAL
+            |--------------------------------------------------------------------------
+            |
+            | Index 0 = Featured
+            | Index berikutnya = Agenda lainnya
+            |
+            */
 
             $agenda = collect([$featured])
                 ->concat($otherAgenda)
