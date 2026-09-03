@@ -25,6 +25,7 @@ import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import FloatingReport from "@/Components/site/Floating";
 
 interface Props {
     videos: FeaturedVideos[];
@@ -443,7 +444,7 @@ export default function GaleriIndex( { videos, albums, totalAlbum, totalFoto, to
                         )}
                     </section>
                 </main>
-
+<FloatingReport />
                 <Footer />
             </div>
         </>

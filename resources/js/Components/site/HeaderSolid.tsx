@@ -96,7 +96,7 @@ const navigation = [
                 title: "Satu Data",
                 description: "Portal satu data Pemerintah Kota Kediri.",
                 icon: BarChart3,
-                href: "#",
+                href: "https://satudata.kedirikota.go.id/",
             },
             {
                 title: "Dokumen",

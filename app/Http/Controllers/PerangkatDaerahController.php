@@ -17,7 +17,12 @@ class PerangkatDaerahController extends Controller
 {
     public function index(string $slug)
     {
-        $kategori = KategoriOPD::with(['opd.pimpinan.jabatan'])
+        $kategori = KategoriOPD::with([
+            'opd' => function ($query) {
+                $query->where('status_enabled', 1);
+            },
+            'opd.pimpinan.jabatan',
+        ])
             ->where('slug', $slug)
             ->firstOrFail();
 
