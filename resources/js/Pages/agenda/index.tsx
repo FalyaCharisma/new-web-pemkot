@@ -17,6 +17,7 @@ import {
     MapPin,
     PartyPopper,
     ChevronRight,
+    ChevronLeft,
     ArrowRight,
     CalendarCheck2,
 } from "lucide-react";
@@ -25,7 +26,7 @@ import { FaInstagram } from "react-icons/fa6";
 
 interface Props {
     timelineAgenda: AgendaType[];
-    upcomingAgenda: AgendaType[];
+    otherAgenda: AgendaType[];
     highlightAgenda?: AgendaType | null;
     highlightStatus?: string | null;
     search?: string;
@@ -33,10 +34,42 @@ interface Props {
 
 export default function Agenda({
     timelineAgenda,
-    upcomingAgenda,
+    otherAgenda,
     search: initialSearch = "",
 }: Props) {
     const [search, setSearch] = useState(initialSearch);
+
+    const [agendaPage, setAgendaPage] = useState(0);
+
+    const agendaPerPage = 4;
+
+    const agendaPages = useMemo(() => {
+        const pages: AgendaType[][] = [];
+
+        for (
+            let i = 0;
+            i < otherAgenda.length;
+            i += agendaPerPage
+        ) {
+            pages.push(otherAgenda.slice(i, i + agendaPerPage));
+        }
+
+        return pages;
+    }, [otherAgenda]);
+
+    const totalAgendaPages = agendaPages.length;
+
+    const nextAgendaPage = () => {
+        setAgendaPage((current) =>
+            current < totalAgendaPages - 1 ? current + 1 : 0,
+        );
+    };
+
+    const prevAgendaPage = () => {
+        setAgendaPage((current) =>
+            current > 0 ? current - 1 : totalAgendaPages - 1,
+        );
+    };
 
     /*
     |--------------------------------------------------------------------------
@@ -604,185 +637,185 @@ export default function Agenda({
                                     {selectedHighlight ? (
                                         <div className="grid md:grid-cols-[0.9fr_1.1fr]">
 
-    {/* FOTO */}
-    <div className="relative min-h-[360px] overflow-hidden bg-slate-100 md:min-h-0">
+                                    {/* FOTO */}
+                                    <div className="relative min-h-[360px] overflow-hidden bg-slate-100 md:min-h-0">
 
-        {selectedHighlight.banner ? (
-            <img
-                src={`/storage/agenda/${selectedHighlight.banner}`}
-                alt={selectedHighlight.judul_acara}
-                className="absolute inset-0 h-full w-full object-cover"
-            />
-        ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-                <CalendarDays
-                    size={64}
-                    className="text-slate-300"
-                />
-            </div>
-        )}
+                                        {selectedHighlight.banner ? (
+                                            <img
+                                                src={`/storage/agenda/${selectedHighlight.banner}`}
+                                                alt={selectedHighlight.judul_acara}
+                                                className="absolute inset-0 h-full w-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                <CalendarDays
+                                                    size={64}
+                                                    className="text-slate-300"
+                                                />
+                                            </div>
+                                        )}
 
-        {/* OVERLAY */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                                        {/* OVERLAY */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
 
-        {/* STATUS */}
-        <div className="absolute left-5 top-5 z-10">
-            <span
-                className={`
-                    inline-flex items-center gap-2
-                    rounded-full px-4 py-2
-                    text-xs font-semibold
-                    shadow-md backdrop-blur
+                                        {/* STATUS */}
+                                        <div className="absolute left-5 top-5 z-10">
+                                            <span
+                                                className={`
+                                                    inline-flex items-center gap-2
+                                                    rounded-full px-4 py-2
+                                                    text-xs font-semibold
+                                                    shadow-md backdrop-blur
 
-                    ${
-                        isOngoing
-                            ? "bg-green-500 text-white"
-                            : isUpcoming
-                              ? "bg-white/95 text-primary"
-                              : "bg-slate-800/90 text-white"
-                    }
-                `}
-            >
-                {isOngoing ? (
-                    <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
-                ) : (
-                    <CalendarCheck2 size={14} />
-                )}
+                                                    ${
+                                                        isOngoing
+                                                            ? "bg-green-500 text-white"
+                                                            : isUpcoming
+                                                            ? "bg-white/95 text-primary"
+                                                            : "bg-slate-800/90 text-white"
+                                                    }
+                                                `}
+                                            >
+                                                {isOngoing ? (
+                                                    <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
+                                                ) : (
+                                                    <CalendarCheck2 size={14} />
+                                                )}
 
-                {selectedHighlightStatus}
-            </span>
-        </div>
+                                                {selectedHighlightStatus}
+                                            </span>
+                                        </div>
 
-    </div>
-
-
-    {/* DETAIL */}
-    <div className="flex flex-col p-6 md:p-8 lg:p-10">
-
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-            <PartyPopper size={15} />
-
-            Agenda {selectedDateLabel}
-        </div>
+                                    </div>
 
 
-        <h3 className="mt-3 text-2xl font-bold leading-tight text-slate-900 md:text-3xl">
-            {selectedHighlight.judul_acara}
-        </h3>
+                                    {/* DETAIL */}
+                                    <div className="flex flex-col p-6 md:p-8 lg:p-10">
+
+                                        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+                                            <PartyPopper size={15} />
+
+                                            Agenda {selectedDateLabel}
+                                        </div>
 
 
-        {/* INFO */}
-        <div className="mt-6 space-y-4">
-
-            {/* TANGGAL */}
-            <div className="flex items-start gap-3">
-
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                    <CalendarDays size={18} />
-                </div>
-
-                <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-                        Tanggal
-                    </p>
-
-                    <p className="mt-1 text-sm font-medium text-slate-700">
-                        {formatDate(
-                            selectedHighlight.tanggal_mulai,
-                        )}
-
-                        {selectedHighlight.tanggal_selesai &&
-                            ` - ${formatDate(
-                                selectedHighlight.tanggal_selesai,
-                            )}`}
-                    </p>
-                </div>
-
-            </div>
+                                        <h3 className="mt-3 text-2xl font-bold leading-tight text-slate-900 md:text-3xl">
+                                            {selectedHighlight.judul_acara}
+                                        </h3>
 
 
-            {/* WAKTU */}
-            <div className="flex items-start gap-3">
+                                        {/* INFO */}
+                                        <div className="mt-6 space-y-4">
 
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                    <Clock3 size={18} />
-                </div>
+                                            {/* TANGGAL */}
+                                            <div className="flex items-start gap-3">
 
-                <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-                        Waktu
-                    </p>
+                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                                                    <CalendarDays size={18} />
+                                                </div>
 
-                    <p className="mt-1 text-sm font-medium text-slate-700">
-                        {formatTime(
-                            selectedHighlight.tanggal_mulai,
-                        )}
+                                                <div>
+                                                    <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                                                        Tanggal
+                                                    </p>
 
-                        {selectedHighlight.tanggal_selesai &&
-                            ` - ${formatTime(
-                                selectedHighlight.tanggal_selesai,
-                            )}`}
-                    </p>
-                </div>
+                                                    <p className="mt-1 text-sm font-medium text-slate-700">
+                                                        {formatDate(
+                                                            selectedHighlight.tanggal_mulai,
+                                                        )}
 
-            </div>
+                                                        {selectedHighlight.tanggal_selesai &&
+                                                            ` - ${formatDate(
+                                                                selectedHighlight.tanggal_selesai,
+                                                            )}`}
+                                                    </p>
+                                                </div>
 
-
-            {/* LOKASI */}
-            <div className="flex items-start gap-3">
-
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                    <MapPin size={18} />
-                </div>
-
-                <div className="min-w-0">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-                        Lokasi
-                    </p>
-
-                    <p className="mt-1 text-sm font-medium text-slate-700">
-                        {selectedHighlight.lokasi_acara ||
-                            "Lokasi belum tersedia"}
-                    </p>
-                </div>
-
-            </div>
-
-        </div>
+                                            </div>
 
 
-        {/* DESKRIPSI */}
-        {selectedHighlight.deskripsi && (
-            <div
-                className="mt-6 line-clamp-4 text-sm leading-6 text-slate-500"
-                dangerouslySetInnerHTML={{
-                    __html:
-                        selectedHighlight.deskripsi,
-                }}
-            />
-        )}
+                                            {/* WAKTU */}
+                                            <div className="flex items-start gap-3">
+
+                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                                                    <Clock3 size={18} />
+                                                </div>
+
+                                                <div>
+                                                    <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                                                        Waktu
+                                                    </p>
+
+                                                    <p className="mt-1 text-sm font-medium text-slate-700">
+                                                        {formatTime(
+                                                            selectedHighlight.tanggal_mulai,
+                                                        )}
+
+                                                        {selectedHighlight.tanggal_selesai &&
+                                                            ` - ${formatTime(
+                                                                selectedHighlight.tanggal_selesai,
+                                                            )}`}
+                                                    </p>
+                                                </div>
+
+                                            </div>
 
 
-        {/* BUTTON */}
-        <div className="mt-auto pt-7">
+                                            {/* LOKASI */}
+                                            <div className="flex items-start gap-3">
 
-            <Link
-                href={route(
-                    "agenda.show",
-                    selectedHighlight.id,
-                )}
-                className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
-            >
-                Lihat Detail Agenda
+                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                                                    <MapPin size={18} />
+                                                </div>
 
-                <ArrowRight size={16} />
-            </Link>
+                                                <div className="min-w-0">
+                                                    <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                                                        Lokasi
+                                                    </p>
 
-        </div>
+                                                    <p className="mt-1 text-sm font-medium text-slate-700">
+                                                        {selectedHighlight.lokasi_acara ||
+                                                            "Lokasi belum tersedia"}
+                                                    </p>
+                                                </div>
 
-    </div>
+                                            </div>
 
-</div>
+                                        </div>
+
+
+                                        {/* DESKRIPSI */}
+                                        {selectedHighlight.deskripsi && (
+                                            <div
+                                                className="mt-6 line-clamp-4 text-sm leading-6 text-slate-500"
+                                                dangerouslySetInnerHTML={{
+                                                    __html:
+                                                        selectedHighlight.deskripsi,
+                                                }}
+                                            />
+                                        )}
+
+
+                                        {/* BUTTON */}
+                                        <div className="mt-auto pt-7">
+
+                                            <Link
+                                                href={route(
+                                                    "agenda.show",
+                                                    selectedHighlight.id,
+                                                )}
+                                                className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
+                                            >
+                                                Lihat Detail Agenda
+
+                                                <ArrowRight size={16} />
+                                            </Link>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
 
                                     ) : (
 
@@ -834,33 +867,95 @@ export default function Agenda({
 
                         </section>
 
-
                         {/* ================================================= */}
-                        {/* AGENDA MENDATANG / SEBELUMNYA */}
+                        {/* AGENDA LAINNYA */}
                         {/* ================================================= */}
 
-                        {upcomingAgenda.length > 0 && (
-
+                        {otherAgenda.length > 0 && (
                             <section className="mt-16">
 
-                                <div className="mb-6">
+                                {/* HEADER */}
+                                <div className="mb-6 flex items-end justify-between gap-4">
 
-                                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-                                        Kegiatan Lainnya
-                                    </p>
+                                    <div>
+                                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+                                            Kegiatan Lainnya
+                                        </p>
 
-                                    <h2 className="mt-1 text-2xl font-bold text-slate-900">
-                                        Agenda Mendatang
-                                    </h2>
+                                        <h2 className="mt-1 text-2xl font-bold text-slate-900">
+                                            Agenda Kota Kediri
+                                        </h2>
+
+                                        <p className="mt-2 text-sm text-slate-500">
+                                            Agenda yang sedang berlangsung, mendatang, maupun
+                                            yang sudah selesai.
+                                        </p>
+                                    </div>
+
+                                    {/* TOMBOL SLIDE */}
+                                    {totalAgendaPages > 1 && (
+                                        <div className="hidden items-center gap-2 sm:flex">
+
+                                            <button
+                                                type="button"
+                                                onClick={prevAgendaPage}
+                                                className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:border-primary hover:bg-primary hover:text-white"
+                                                aria-label="Agenda sebelumnya"
+                                            >
+                                                <ChevronLeft size={18} />
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                onClick={nextAgendaPage}
+                                                className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:border-primary hover:bg-primary hover:text-white"
+                                                aria-label="Agenda berikutnya"
+                                            >
+                                                <ChevronRight size={18} />
+                                            </button>
+
+                                        </div>
+                                    )}
 
                                 </div>
 
 
+                                {/* ================================================= */}
+                                {/* CARDS */}
+                                {/* ================================================= */}
+
                                 <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
 
-                                    {upcomingAgenda.map(
-                                        (item) => (
+                                    {agendaPages[agendaPage]?.map((item) => {
 
+                                        /*
+                                        |--------------------------------------------------------------------------
+                                        | STATUS
+                                        |--------------------------------------------------------------------------
+                                        */
+
+                                        let statusLabel = "Sudah Selesai";
+
+                                        let statusClass =
+                                            "bg-slate-100 text-slate-600";
+
+                                        if (item.is_ongoing) {
+
+                                            statusLabel = "Sedang Berlangsung";
+
+                                            statusClass =
+                                                "bg-green-100 text-green-700";
+
+                                        } else if (item.is_upcoming) {
+
+                                            statusLabel = "Mendatang";
+
+                                            statusClass =
+                                                "bg-primary/10 text-primary";
+
+                                        }
+
+                                        return (
                                             <Link
                                                 key={item.id}
                                                 href={route(
@@ -878,9 +973,7 @@ export default function Agenda({
 
                                                         <img
                                                             src={`/storage/agenda/${item.banner}`}
-                                                            alt={
-                                                                item.judul_acara
-                                                            }
+                                                            alt={item.judul_acara}
                                                             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                                                         />
 
@@ -889,9 +982,7 @@ export default function Agenda({
                                                         <div className="flex h-full items-center justify-center">
 
                                                             <CalendarDays
-                                                                size={
-                                                                    35
-                                                                }
+                                                                size={35}
                                                                 className="text-slate-300"
                                                             />
 
@@ -899,11 +990,14 @@ export default function Agenda({
 
                                                     )}
 
+                                                    {/* STATUS */}
 
                                                     <div className="absolute left-4 top-4">
 
-                                                        <span className="rounded-full bg-white/95 px-3 py-1.5 text-[11px] font-semibold text-primary shadow-sm">
-                                                            Agenda
+                                                        <span
+                                                            className={`rounded-full px-3 py-1.5 text-[11px] font-semibold shadow-sm ${statusClass}`}
+                                                        >
+                                                            {statusLabel}
                                                         </span>
 
                                                     </div>
@@ -916,45 +1010,42 @@ export default function Agenda({
                                                 <div className="p-5">
 
                                                     <h3 className="line-clamp-2 font-bold leading-6 text-slate-800 transition group-hover:text-primary">
-                                                        {
-                                                            item.judul_acara
-                                                        }
+                                                        {item.judul_acara}
                                                     </h3>
 
-
                                                     <div className="mt-4 space-y-2">
+
+                                                        {/* TANGGAL */}
 
                                                         <div className="flex items-center gap-2 text-xs text-slate-500">
 
                                                             <CalendarDays
-                                                                size={
-                                                                    14
-                                                                }
+                                                                size={14}
                                                                 className="shrink-0 text-primary"
                                                             />
 
                                                             <span className="line-clamp-1">
-                                                                {
-                                                                    item.tanggal_mulai_formatted
-                                                                }
+                                                                {item.tanggal_mulai_formatted ??
+                                                                    formatDate(
+                                                                        item.tanggal_mulai,
+                                                                    )}
                                                             </span>
 
                                                         </div>
 
 
+                                                        {/* LOKASI */}
+
                                                         <div className="flex items-center gap-2 text-xs text-slate-500">
 
                                                             <MapPin
-                                                                size={
-                                                                    14
-                                                                }
+                                                                size={14}
                                                                 className="shrink-0 text-primary"
                                                             />
 
                                                             <span className="line-clamp-1">
-                                                                {
-                                                                    item.lokasi_acara
-                                                                }
+                                                                {item.lokasi_acara ||
+                                                                    "Lokasi belum tersedia"}
                                                             </span>
 
                                                         </div>
@@ -962,14 +1053,14 @@ export default function Agenda({
                                                     </div>
 
 
+                                                    {/* DETAIL */}
+
                                                     <div className="mt-5 inline-flex items-center text-xs font-semibold text-primary">
 
                                                         Lihat Agenda
 
                                                         <ChevronRight
-                                                            size={
-                                                                15
-                                                            }
+                                                            size={15}
                                                             className="ml-1 transition-transform group-hover:translate-x-1"
                                                         />
 
@@ -978,16 +1069,72 @@ export default function Agenda({
                                                 </div>
 
                                             </Link>
-
-                                        ),
-                                    )}
+                                        );
+                                    })}
 
                                 </div>
 
+
+                                {/* ================================================= */}
+                                {/* PAGINATION / SLIDE INDICATOR */}
+                                {/* ================================================= */}
+
+                                {totalAgendaPages > 1 && (
+                                    <div className="mt-7 flex items-center justify-center gap-2">
+
+                                        {/* MOBILE PREVIOUS */}
+
+                                        <button
+                                            type="button"
+                                            onClick={prevAgendaPage}
+                                            className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:border-primary hover:bg-primary hover:text-white sm:hidden"
+                                            aria-label="Agenda sebelumnya"
+                                        >
+                                            <ChevronLeft size={17} />
+                                        </button>
+
+
+                                        {/* INDICATOR */}
+
+                                        <div className="flex items-center gap-2">
+
+                                            {agendaPages.map((_, index) => (
+                                                <button
+                                                    key={index}
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setAgendaPage(index)
+                                                    }
+                                                    className={`h-2 rounded-full transition-all ${
+                                                        agendaPage === index
+                                                            ? "w-6 bg-primary"
+                                                            : "w-2 bg-slate-300"
+                                                    }`}
+                                                    aria-label={`Halaman agenda ${
+                                                        index + 1
+                                                    }`}
+                                                />
+                                            ))}
+
+                                        </div>
+
+
+                                        {/* MOBILE NEXT */}
+
+                                        <button
+                                            type="button"
+                                            onClick={nextAgendaPage}
+                                            className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:border-primary hover:bg-primary hover:text-white sm:hidden"
+                                            aria-label="Agenda berikutnya"
+                                        >
+                                            <ChevronRight size={17} />
+                                        </button>
+
+                                    </div>
+                                )}
+
                             </section>
-
                         )}
-
 
                         {/* ================================================= */}
                         {/* CTA */}

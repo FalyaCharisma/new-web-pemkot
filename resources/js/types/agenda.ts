@@ -11,8 +11,11 @@ export interface Agenda {
     created_at: string;
     updated_at: string;
 
-    // Field tambahan dari controller (opsional)
+    // Field tambahan dari controller
     is_ongoing?: boolean;
+    is_upcoming?: boolean;
+    is_finished?: boolean;
+    status_label?: string;
 
     tanggal_mulai_formatted?: string;
     tanggal_selesai_formatted?: string;

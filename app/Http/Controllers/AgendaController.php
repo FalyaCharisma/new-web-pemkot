@@ -51,12 +51,9 @@ class AgendaController extends Controller
         | SEMUA AGENDA
         |--------------------------------------------------------------------------
         |
-        | Jangan diberi filter tanggal.
-        |
-        | Data ini digunakan untuk:
+        | Tidak diberi filter tanggal karena data digunakan untuk:
         | - kalender
-        | - melihat agenda tahun sebelumnya
-        | - agenda yang sudah selesai
+        | - agenda sebelumnya
         | - agenda sedang berlangsung
         | - agenda mendatang
         |
@@ -114,6 +111,20 @@ class AgendaController extends Controller
                         $mulai->copy()->startOfDay()
                     );
 
+                /*
+                |--------------------------------------------------------------------------
+                | LABEL STATUS
+                |--------------------------------------------------------------------------
+                */
+
+                if ($item->is_ongoing) {
+                    $item->status_label = 'Sedang Berlangsung';
+                } elseif ($item->is_upcoming) {
+                    $item->status_label = 'Mendatang';
+                } else {
+                    $item->status_label = 'Sudah Selesai';
+                }
+
                 return $item;
             })
             ->values();
@@ -170,7 +181,6 @@ class AgendaController extends Controller
         |--------------------------------------------------------------------------
         |
         | Prioritas:
-        |
         | 1. Sedang berlangsung
         | 2. Agenda terdekat
         | 3. Agenda terakhir selesai
@@ -200,21 +210,58 @@ class AgendaController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | AGENDA MENDATANG
+        | AGENDA LAINNYA
         |--------------------------------------------------------------------------
         |
-        | Hanya agenda yang belum selesai.
-        | Agenda yang sedang berlangsung juga tetap bisa masuk.
+        | Menampilkan:
+        | - Sedang berlangsung
+        | - Mendatang
+        | - Sudah selesai
+        |
+        | Urutan:
+        | 1. Sedang berlangsung
+        | 2. Mendatang
+        | 3. Sudah selesai terbaru
         |
         */
 
-        $upcomingAgenda = $timelineAgenda
+        $ongoingList = $timelineAgenda
             ->filter(
                 fn ($item) =>
-                    !$item->is_finished
+                    $item->is_ongoing
             )
             ->sortBy('tanggal_mulai')
-            ->take(4)
+            ->values();
+
+        $upcomingList = $timelineAgenda
+            ->filter(
+                fn ($item) =>
+                    $item->is_upcoming
+            )
+            ->sortBy('tanggal_mulai')
+            ->values();
+
+        $finishedList = $timelineAgenda
+            ->filter(
+                fn ($item) =>
+                    $item->is_finished
+            )
+            ->sortByDesc(function ($item) {
+
+                return $item->tanggal_selesai
+                    ?? $item->tanggal_mulai;
+            })
+            ->values();
+
+        /*
+        |--------------------------------------------------------------------------
+        | GABUNGKAN SEMUA AGENDA
+        |--------------------------------------------------------------------------
+        */
+
+        $otherAgenda = $ongoingList
+            ->concat($upcomingList)
+            ->concat($finishedList)
             ->values();
 
         /*
@@ -222,6 +269,7 @@ class AgendaController extends Controller
         | RESPONSE
         |--------------------------------------------------------------------------
         */
+
         return Inertia::render('agenda/index', [
 
             /*
@@ -237,9 +285,9 @@ class AgendaController extends Controller
             'highlightStatus' => $highlightStatus,
 
             /*
-            | AGENDA MENDATANG
+            | AGENDA LAINNYA
             */
-            'upcomingAgenda' => $upcomingAgenda,
+            'otherAgenda' => $otherAgenda,
 
             /*
             | SEARCH
