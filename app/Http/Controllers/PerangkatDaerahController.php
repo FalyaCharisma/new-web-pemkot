@@ -175,12 +175,17 @@ class PerangkatDaerahController extends Controller
     // Adminpage - Update Kategori OPD
     public function update_kategori_opd(Request $request)
     {
+        $request->validate([
+            'nama' => 'required|string|max:255',
+        ]);
+
         DB::beginTransaction();
 
         try {
-            if (isset($request->id)) {
-                KategoriOPD::where(['id' => $request->id])->update([
+            if ($request->filled('id')) {
+                KategoriOPD::where('id', $request->id)->update([
                     'nama' => $request->nama,
+                    'slug' => Str::slug($request->nama),
                     'updated_at' => Carbon::now('Asia/Jakarta'),
                 ]);
 
@@ -188,6 +193,8 @@ class PerangkatDaerahController extends Controller
             } else {
                 KategoriOPD::insert([
                     'nama' => $request->nama,
+                    'slug' => Str::slug($request->nama),
+                    'status_enabled' => 1,
                     'created_at' => Carbon::now('Asia/Jakarta'),
                 ]);
 
@@ -202,7 +209,6 @@ class PerangkatDaerahController extends Controller
 
         return redirect('/list-kategori-opd');
     }
-
     // Adminpage - Value Kategori OPD
     public function value_kategori_opd($id)
     {
