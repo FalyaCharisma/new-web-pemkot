@@ -26,7 +26,9 @@ class PerangkatDaerahController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
 
-        $kategoriList = KategoriOPD::select('id', 'nama', 'slug')->get();
+        $kategoriList = KategoriOPD::select('id', 'nama', 'slug')->where('status_enabled', 1)->get();
+
+        dd($kategoriList);
 
         return Inertia::render('perangkat-daerah/index', [
             'kategori' => $kategori,
