@@ -41,7 +41,7 @@ export function Agenda({ agenda }: Props) {
     return (
         <section
             id="agenda"
-           className="relative overflow-hidden py-10 md:py-28"
+           className="relative overflow-hidden py-10 md:py-2"
         >
             <div className="container-page">
 
