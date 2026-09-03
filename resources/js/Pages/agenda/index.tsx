@@ -948,10 +948,10 @@ export default function Agenda({
 
                                         } else if (item.is_upcoming) {
 
-                                            statusLabel = "Mendatang";
+                                            statusLabel = "Agenda Mendatang";
 
                                             statusClass =
-                                                "bg-primary/10 text-primary";
+                                                "bg-red-100 text-red-700";
 
                                         }
 
