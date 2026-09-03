@@ -81,10 +81,9 @@ function AgendaImage({
 
     return (
         <img
-            src={image}
+            src={`/storage/agenda/${item.banner}`}
             alt={item.judul_acara}
-            className={`h-full w-full object-cover ${className}`}
-            loading="lazy"
+            className="block max-h-[500px] w-full object-contain"
         />
     );
 }
@@ -253,7 +252,7 @@ export default function DetailAgenda({
                                     </div>
                                 </div>
 
-                                <div className="mt-6 h-[420px] w-full overflow-hidden rounded-2xl bg-slate-100">
+                                <div className="mt-6 w-full overflow-hidden rounded-2xl bg-slate-100">
                                     <AgendaImage item={agenda} />
                                 </div>
 

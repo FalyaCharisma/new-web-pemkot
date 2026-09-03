@@ -18,6 +18,12 @@ export function Agenda({ agenda }: Props) {
 
     if (!featured) return null;
 
+    /*
+    |--------------------------------------------------------------------------
+    | FORMAT JAM
+    |--------------------------------------------------------------------------
+    */
+
     const formatTime = (date: string) => {
         return new Date(date).toLocaleTimeString("id-ID", {
             hour: "2-digit",
@@ -25,11 +31,23 @@ export function Agenda({ agenda }: Props) {
         });
     };
 
+    /*
+    |--------------------------------------------------------------------------
+    | BULAN
+    |--------------------------------------------------------------------------
+    */
+
     const getMonth = (date: string) => {
         return new Date(date).toLocaleString("id-ID", {
             month: "short",
         });
     };
+
+    /*
+    |--------------------------------------------------------------------------
+    | TANGGAL
+    |--------------------------------------------------------------------------
+    */
 
     const getDay = (date: string) => {
         return new Date(date)
@@ -38,10 +56,34 @@ export function Agenda({ agenda }: Props) {
             .padStart(2, "0");
     };
 
+    /*
+    |--------------------------------------------------------------------------
+    | STATUS BADGE
+    |--------------------------------------------------------------------------
+    */
+
+    const getStatusBadge = (item: AgendaType) => {
+        let statusLabel = "Sudah Selesai";
+        let statusClass = "bg-slate-100 text-slate-600";
+
+        if (item.is_ongoing) {
+            statusLabel = "Sedang Berlangsung";
+            statusClass = "bg-green-100 text-green-700";
+        } else if (item.is_upcoming) {
+            statusLabel = "Agenda Mendatang";
+            statusClass = "bg-red-100 text-red-700";
+        }
+
+        return {
+            statusLabel,
+            statusClass,
+        };
+    };
+
     return (
         <section
             id="agenda"
-           className="relative overflow-hidden py-10 md:py-2"
+            className="relative overflow-hidden py-10 md:py-2"
         >
             <div className="container-page">
 
@@ -72,10 +114,11 @@ export function Agenda({ agenda }: Props) {
 
                     </div>
 
+                    {/* DESKTOP - LIHAT SEMUA */}
 
                     <Link
                         href="/agenda"
-                        className="group inline-flex w-fit items-center gap-2 rounded-full border border-border bg-white px-5 py-2.5 text-sm font-semibold transition-all duration-300 hover:border-primary hover:text-primary hover:shadow-sm"
+                        className="group hidden w-fit items-center gap-2 rounded-full border border-border bg-white px-5 py-2.5 text-sm font-semibold transition-all duration-300 hover:border-primary hover:text-primary hover:shadow-sm sm:inline-flex"
                     >
                         Lihat semua agenda
 
@@ -93,16 +136,12 @@ export function Agenda({ agenda }: Props) {
 
                 <div className="mt-12 grid gap-6 lg:grid-cols-[1.35fr_1fr]">
 
-
                     {/* =================================================
                         FEATURED AGENDA
                     ================================================== */}
 
                     <Link
-                        href={route(
-                            "agenda.show",
-                            featured.id
-                        )}
+                        href={route("agenda.show", featured.id)}
                         className="group block"
                     >
 
@@ -120,28 +159,40 @@ export function Agenda({ agenda }: Props) {
                                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                             />
 
-
                             {/* OVERLAY */}
 
                             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-black/5" />
 
 
-                            {/* TOP BADGE */}
+                            {/* =================================================
+                                STATUS BADGE
+                            ================================================== */}
 
                             <div className="absolute left-5 top-5 sm:left-7 sm:top-7">
 
-                                <span className="inline-flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-xs font-bold text-slate-900 shadow-lg backdrop-blur">
+                                {(() => {
+                                    const {
+                                        statusLabel,
+                                        statusClass,
+                                    } = getStatusBadge(featured);
 
-                                    <span className="size-2 rounded-full bg-primary" />
+                                    return (
+                                        <span
+                                            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold shadow-lg backdrop-blur ${statusClass}`}
+                                        >
+                                            <span className="size-2 rounded-full bg-current" />
 
-                                    Agenda Pilihan
-
-                                </span>
+                                            {statusLabel}
+                                        </span>
+                                    );
+                                })()}
 
                             </div>
 
 
-                            {/* DATE BOX */}
+                            {/* =================================================
+                                DATE BOX
+                            ================================================== */}
 
                             <div className="absolute right-5 top-5 flex size-[76px] flex-col items-center justify-center rounded-2xl bg-white/95 shadow-xl backdrop-blur sm:right-7 sm:top-7">
 
@@ -160,14 +211,19 @@ export function Agenda({ agenda }: Props) {
                             </div>
 
 
-                            {/* CONTENT */}
+                            {/* =================================================
+                                CONTENT
+                            ================================================== */}
 
                             <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
+
+                                {/* DATE & TIME */}
 
                                 <div className="flex flex-wrap items-center gap-2 text-xs text-white/80">
 
                                     <span className="inline-flex items-center gap-1.5">
                                         <Calendar className="size-3.5 text-gold" />
+
                                         {formatDate(
                                             featured.tanggal_mulai
                                         )}
@@ -179,6 +235,7 @@ export function Agenda({ agenda }: Props) {
 
                                     <span className="inline-flex items-center gap-1.5">
                                         <Clock className="size-3.5 text-gold" />
+
                                         {formatTime(
                                             featured.tanggal_mulai
                                         )}
@@ -187,10 +244,14 @@ export function Agenda({ agenda }: Props) {
                                 </div>
 
 
+                                {/* TITLE */}
+
                                 <h3 className="mt-3 max-w-2xl text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
                                     {featured.judul_acara}
                                 </h3>
 
+
+                                {/* LOCATION */}
 
                                 <div className="mt-3 flex items-center gap-2 text-sm text-white/80">
 
@@ -232,139 +293,177 @@ export function Agenda({ agenda }: Props) {
 
                         {/* HEADER */}
 
-                        <div className="mb-4 flex items-center justify-between">
+                        <div className="mb-4">
 
-                            <div>
+                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
+                                Agenda lainnya
+                            </p>
 
-                                <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
-                                    Agenda lainnya
-                                </p>
-
-                                <h3 className="mt-1 text-xl font-bold">
-                                    Jangan sampai terlewat
-                                </h3>
-
-                            </div>
+                            <h3 className="mt-1 text-xl font-bold">
+                                Jangan sampai terlewat
+                            </h3>
 
                         </div>
 
 
-                        {/* LIST */}
+                        {/* =================================================
+                            LIST AGENDA
+                        ================================================== */}
 
                         <div className="space-y-4">
 
-                            {rest.slice(0, 4).map((item) => (
+                            {rest.slice(0, 3).map((item) => {
 
-                                <Link
-                                    key={item.id}
-                                    href={route(
-                                        "agenda.show",
-                                        item.id
-                                    )}
-                                    className="group block"
-                                >
+                                const {
+                                    statusLabel,
+                                    statusClass,
+                                } = getStatusBadge(item);
 
-                                    <article className="flex min-h-[120px] gap-4 rounded-2xl border border-border bg-white p-3 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg">
+                                return (
+                                    <Link
+                                        key={item.id}
+                                        href={route(
+                                            "agenda.show",
+                                            item.id
+                                        )}
+                                        className="group block"
+                                    >
 
-                                        {/* FOTO */}
+                                        <article className="flex min-h-[120px] gap-4 rounded-2xl border border-border bg-white p-3 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg">
 
-                                        <div className="relative h-[104px] w-[120px] shrink-0 overflow-hidden rounded-xl bg-slate-100">
+                                            {/* =================================================
+                                                FOTO
+                                            ================================================== */}
 
-                                            <img
-                                                src={
-                                                    item.banner ??
-                                                    "/noimage.png"
-                                                }
-                                                alt={
-                                                    item.judul_acara
-                                                }
-                                                loading="lazy"
-                                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                            />
+                                            <div className="relative h-[104px] w-[120px] shrink-0 overflow-hidden rounded-xl bg-slate-100">
 
-                                        </div>
+                                                <img
+                                                    src={
+                                                        item.banner ??
+                                                        "/noimage.png"
+                                                    }
+                                                    alt={
+                                                        item.judul_acara
+                                                    }
+                                                    loading="lazy"
+                                                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                />
 
+                                                {/* STATUS BADGE */}
 
-                                        {/* DATE */}
+                                                <div className="absolute left-2 top-2">
 
-                                        <div className="flex w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-primary/5">
+                                                    <span
+                                                        className={`inline-flex rounded-full px-2.5 py-1 text-[9px] font-bold shadow-sm ${statusClass}`}
+                                                    >
+                                                        {statusLabel}
+                                                    </span>
 
-                                            <span className="font-serif text-xl font-bold leading-none text-primary">
-                                                {getDay(
-                                                    item.tanggal_mulai
-                                                )}
-                                            </span>
-
-                                            <span className="mt-1 text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
-                                                {getMonth(
-                                                    item.tanggal_mulai
-                                                )}
-                                            </span>
-
-                                        </div>
-
-
-                                        {/* CONTENT */}
-
-                                        <div className="flex min-w-0 flex-1 flex-col py-1">
-
-                                            <div className="flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground">
-
-                                                <Clock className="size-3" />
-
-                                                {formatTime(
-                                                    item.tanggal_mulai
-                                                )}
+                                                </div>
 
                                             </div>
 
 
-                                            <h4 className="mt-1.5 line-clamp-2 text-sm font-bold leading-snug transition-colors group-hover:text-primary sm:text-base">
-                                                {item.judul_acara}
-                                            </h4>
+                                            {/* =================================================
+                                                DATE
+                                            ================================================== */}
 
+                                            <div className="flex w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-primary/5">
 
-                                            <div className="mt-auto flex items-center gap-1.5 pt-2 text-[11px] text-muted-foreground">
+                                                <span className="font-serif text-xl font-bold leading-none text-primary">
+                                                    {getDay(
+                                                        item.tanggal_mulai
+                                                    )}
+                                                </span>
 
-                                                <MapPin className="size-3 shrink-0" />
-
-                                                <span className="line-clamp-1">
-                                                    {item.lokasi_acara}
+                                                <span className="mt-1 text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
+                                                    {getMonth(
+                                                        item.tanggal_mulai
+                                                    )}
                                                 </span>
 
                                             </div>
 
-                                        </div>
+
+                                            {/* =================================================
+                                                CONTENT
+                                            ================================================== */}
+
+                                            <div className="flex min-w-0 flex-1 flex-col py-1">
+
+                                                {/* TIME */}
+
+                                                <div className="flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground">
+
+                                                    <Clock className="size-3 shrink-0" />
+
+                                                    {formatTime(item.tanggal_mulai)}
+
+                                                </div>
 
 
-                                        {/* ARROW */}
+                                                {/* TITLE */}
 
-                                        <div className="hidden items-center pr-1 sm:flex">
+                                                <h4 className="mt-1.5 line-clamp-2 text-sm font-bold leading-snug transition-colors group-hover:text-primary sm:text-base">
+                                                    {item.judul_acara}
+                                                </h4>
 
-                                            <div className="flex size-8 items-center justify-center rounded-full bg-slate-50 text-slate-400 transition-all duration-300 group-hover:bg-primary group-hover:text-white">
 
-                                                <ArrowUpRight className="size-4" />
+                                                {/* DESCRIPTION */}
+
+                                                <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-muted-foreground">
+                                                    {item.deskripsi}
+                                                </p>
+
+
+                                                {/* LOCATION */}
+
+                                                <div className="mt-auto flex items-center gap-1.5 pt-2 text-[11px] text-muted-foreground">
+
+                                                    <MapPin className="size-3 shrink-0" />
+
+                                                    <span className="line-clamp-1">
+                                                        {item.lokasi_acara}
+                                                    </span>
+
+                                                </div>
 
                                             </div>
 
-                                        </div>
 
-                                    </article>
+                                            {/* =================================================
+                                                ARROW
+                                            ================================================== */}
 
-                                </Link>
+                                            <div className="hidden items-center pr-1 sm:flex">
 
-                            ))}
+                                                <div className="flex size-8 items-center justify-center rounded-full bg-slate-50 text-slate-400 transition-all duration-300 group-hover:bg-primary group-hover:text-white">
+
+                                                    <ArrowUpRight className="size-4" />
+
+                                                </div>
+
+                                            </div>
+
+                                        </article>
+
+                                    </Link>
+                                );
+                            })}
 
                         </div>
 
 
-                        {/* MOBILE ALL */}
+                        {/* =================================================
+                            MOBILE - LIHAT SEMUA
+                        ================================================== */}
 
                         <Link
                             href="/agenda"
                             className="mt-5 inline-flex items-center justify-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-semibold transition-colors hover:border-primary hover:text-primary sm:hidden"
                         >
                             Lihat semua agenda
+
                             <ArrowUpRight className="size-4" />
                         </Link>
 
