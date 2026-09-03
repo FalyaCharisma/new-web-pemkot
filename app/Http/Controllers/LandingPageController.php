@@ -106,10 +106,22 @@ class LandingPageController extends Controller
             ],
         );
 
-        $agenda = Agenda::where('status_enabled', 1)
-            ->orderBy('tanggal_mulai', 'desc')
+        $now = Carbon::now();
+
+        $agendaData = Agenda::where('status_enabled', 1)
             ->get()
-            ->map(function ($item) {
+            ->map(function ($item) use ($now) {
+
+                $mulai = Carbon::parse($item->tanggal_mulai);
+
+                $selesai = $item->tanggal_selesai
+                    ? Carbon::parse($item->tanggal_selesai)
+                    : $mulai->copy();
+
+                $isOngoing = $now->between($mulai, $selesai);
+                $isUpcoming = $now->lt($mulai);
+                $isFinished = $now->gt($selesai);
+
                 return [
                     'id' => $item->id,
                     'tanggal_mulai' => $item->tanggal_mulai,
@@ -117,18 +129,122 @@ class LandingPageController extends Controller
                     'judul_acara' => $item->judul_acara,
                     'lokasi_acara' => $item->lokasi_acara,
                     'maps_lokasi' => $item->maps_lokasi,
-                    'banner' => $item->banner ? asset('storage/agenda/' . $item->banner) : null,
+
+                    'banner' => $item->banner
+                        ? asset('storage/agenda/' . $item->banner)
+                        : null,
+
                     'deskripsi' => strip_tags($item->deskripsi),
                     'status_enabled' => $item->status_enabled,
                     'created_at' => $item->created_at,
                     'updated_at' => $item->updated_at,
 
-                    // tambahan sesuai types
-                    'is_ongoing' => Carbon::now()->between(Carbon::parse($item->tanggal_mulai), Carbon::parse($item->tanggal_selesai)),
-                    'tanggal_mulai_formatted' => Carbon::parse($item->tanggal_mulai)->translatedFormat('d F Y'),
-                    'tanggal_selesai_formatted' => Carbon::parse($item->tanggal_selesai)->translatedFormat('d F Y'),
+                    // STATUS
+                    'is_ongoing' => $isOngoing,
+                    'is_upcoming' => $isUpcoming,
+                    'is_finished' => $isFinished,
+
+                    // LABEL BADGE
+                    'status_label' => $isOngoing
+                        ? 'Sedang Berlangsung'
+                        : ($isUpcoming
+                            ? 'Agenda Mendatang'
+                            : 'Sudah Selesai'),
+
+                    'tanggal_mulai_formatted' => $mulai
+                        ->translatedFormat('d F Y'),
+
+                    'tanggal_selesai_formatted' => $selesai
+                        ->translatedFormat('d F Y'),
                 ];
             });
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | KELOMPOK AGENDA
+        |--------------------------------------------------------------------------
+        */
+
+        // Agenda yang sedang berlangsung
+        $ongoing = $agendaData
+            ->filter(fn ($item) => $item['is_ongoing'])
+            ->sortBy('tanggal_mulai')
+            ->values();
+
+        // Agenda mendatang → paling dekat terlebih dahulu
+        $upcoming = $agendaData
+            ->filter(fn ($item) => $item['is_upcoming'])
+            ->sortBy('tanggal_mulai')
+            ->values();
+
+        // Agenda selesai → yang paling baru selesai terlebih dahulu
+        $finished = $agendaData
+            ->filter(fn ($item) => $item['is_finished'])
+            ->sortByDesc(
+                fn ($item) =>
+                    $item['tanggal_selesai'] ?? $item['tanggal_mulai']
+            )
+            ->values();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FEATURED AGENDA
+        |--------------------------------------------------------------------------
+        |
+        | Prioritas:
+        | 1. Sedang Berlangsung
+        | 2. Agenda Mendatang terdekat
+        | 3. Agenda yang baru selesai
+        |
+        */
+
+        $featured = $ongoing->first()
+            ?? $upcoming->first()
+            ?? $finished->first();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | AGENDA LAINNYA
+        |--------------------------------------------------------------------------
+        |
+        | Urutan:
+        | 1. Agenda Mendatang
+        | 2. Agenda Sudah Selesai
+        |
+        */
+
+        $otherAgenda = $upcoming
+            ->concat($finished)
+            ->values();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | GABUNGKAN FEATURED + AGENDA LAINNYA
+        |--------------------------------------------------------------------------
+        */
+
+        if ($featured) {
+
+            // Jangan tampilkan featured lagi di agenda lainnya
+            $otherAgenda = $otherAgenda
+                ->reject(
+                    fn ($item) =>
+                        $item['id'] === $featured['id']
+                )
+                ->values();
+
+            $agenda = collect([$featured])
+                ->concat($otherAgenda)
+                ->values();
+
+        } else {
+
+            $agenda = collect();
+        }
 
         $wisata = FasilitasKota::with(['kategori'])
             ->where('status_enabled', 1)
