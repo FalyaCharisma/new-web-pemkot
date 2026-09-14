@@ -1,6 +1,7 @@
 export interface KategoriBerita {
     id: number;
     nama_kategori: string;
+    icon: string;
 }
 
 export interface Berita {

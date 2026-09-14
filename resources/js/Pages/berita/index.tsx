@@ -9,13 +9,16 @@ import type { Berita, KategoriBerita } from "@/types/berita";
 import { FaInstagram } from "react-icons/fa6";
 
 import {
+    icons,
     Grid2x2,
     FileText,
-    RotateCcw,
     ChevronLeft,
     ChevronRight,
+    RotateCcw,
     Newspaper,
+    type LucideIcon,
 } from "lucide-react";
+
 import { formatDate } from "@/Components/ui/date";
 import Pagination from "@/Components/Pagination";
 import FloatingReport from "@/Components/site/Floating";
@@ -78,6 +81,12 @@ export default function Berita({
     beritaEkslusif,
     filters,
 }: Props) {
+    const getIcon = (iconName?: string): LucideIcon => {
+        if (!iconName) return FileText;
+
+        return icons[iconName as keyof typeof icons] || FileText;
+    };
+
     const categories = [
         {
             id: "",
@@ -88,7 +97,7 @@ export default function Berita({
         ...kategoriBerita.map((item) => ({
             id: item.id,
             nama: item.nama_kategori,
-            icon: FileText,
+            icon: getIcon(item.icon),
         })),
     ];
 

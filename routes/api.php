@@ -1,10 +1,12 @@
 <?php
 
+use App\Services\SplpService;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BeritaController;
 use App\Http\Controllers\Api\AgendaController;
 use App\Http\Controllers\Api\TentangKediriController;
 use App\Http\Controllers\Api\BannerController;
+use App\Http\Controllers\Api\GempaController;
 
 Route::get('/berita', [BeritaController::class, 'index']);
 Route::get('/agenda', [AgendaController::class, 'index']);
@@ -17,3 +19,4 @@ Route::prefix('tentang-kediri')->group(function () {
 });
 Route::get('/banner/{kategori}', [BannerController::class, 'index']);
 
+Route::get('/gempa', [GempaController::class, 'index']);

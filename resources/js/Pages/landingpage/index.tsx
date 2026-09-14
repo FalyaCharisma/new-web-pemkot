@@ -19,6 +19,7 @@ import { Agenda as AgendaType } from "@/types/agenda";
 import { FasilitasKota } from "@/types/fasilitas";
 import FloatingReport from "@/Components/site/Floating";
 import logo from "@/assets/logo.png";
+import GempaSection from "@/Components/site/GempaSection";
 
 type BudayaWarisan = {
     id: number;
@@ -71,6 +72,8 @@ export default function LandingPage({
                 <main>
                     <Hero hero={hero} />
 
+                    <GempaSection />
+                    
                     <Services layanan={layanan} />
 
                     <Agenda agenda={agenda} />

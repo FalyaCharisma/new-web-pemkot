@@ -38,5 +38,17 @@ return [
         'property_id'    => env('GA_PROPERTY_ID'),
         'credentials'    => env('GA_CREDENTIALS'),
     ],
-    
+    'splp' => [
+        'token_url' => env(
+            'SPLP_TOKEN_URL',
+            'https://splp.layanan.go.id/oauth2/token'
+        ),
+
+        'basic_auth' => env('SPLP_BASIC_AUTH'),
+
+        'api_url' => env(
+            'SPLP_API_URL',
+            'https://api-splp.layanan.go.id'
+        ),
+    ],
 ];
