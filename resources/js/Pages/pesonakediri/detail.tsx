@@ -15,6 +15,7 @@ import {
   FaInstagram,
   FaYoutube,
 } from "react-icons/fa6";
+import FloatingReport from "@/Components/site/Floating";
 
 interface Props {
     pesona: PesonaUnggulan;
@@ -250,6 +251,7 @@ export default function DetailPesona({ pesona, related, kategori_berita }: Props
                 />
             </section>
         </main>
+        <FloatingReport />
         <Footer />
     </div>
     </>

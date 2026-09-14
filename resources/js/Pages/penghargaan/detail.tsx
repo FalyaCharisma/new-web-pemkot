@@ -20,6 +20,7 @@ import {
     Home,
     ChevronRight,
 } from "lucide-react";
+import FloatingReport from "@/Components/site/Floating";
 
 type PenghargaanDetail = Penghargaan & {
     count_view?: number | null;
@@ -269,6 +270,7 @@ export default function DetailPenghargaan({
                         />
                     </section>
                 </main>
+                <FloatingReport />
                 <Footer />
             </div>
         </>

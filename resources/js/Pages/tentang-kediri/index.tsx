@@ -21,12 +21,19 @@ export default function Index({
     sejarah,
     pimpinan,
     statistik,
-    geografis
+    geografis,
 }: any) {
     const renderContent = () => {
         switch (kategori.slug) {
             case "sekilas":
-                return <Sekilas sekilas={sekilas} statistik={statistik} kecamatan={kecamatan} geografis={geografis}/>;
+                return (
+                    <Sekilas
+                        sekilas={sekilas}
+                        statistik={statistik}
+                        kecamatan={kecamatan}
+                        geografis={geografis}
+                    />
+                );
 
             case "visi-misi":
                 return <VisiMisi visi={visi} misi={misi} />;
@@ -35,7 +42,7 @@ export default function Index({
                 return <LambangDaerah />;
 
             case "sejarah-kediri":
-                return <SejarahKediri sejarah={sejarah}/>;
+                return <SejarahKediri sejarah={sejarah} />;
 
             case "profil-pimpinan":
                 return <ProfilPimpinan pimpinan={pimpinan} />;
@@ -77,7 +84,7 @@ export default function Index({
                         </div>
                     </section>
                 </main>
-<FloatingReport />
+                <FloatingReport />
                 <Footer />
             </div>
         </>

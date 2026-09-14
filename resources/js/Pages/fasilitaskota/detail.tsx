@@ -13,6 +13,7 @@ import {
     Home,
     Clock
 } from "lucide-react";
+import FloatingReport from "@/Components/site/Floating";
 
 export default function Show({
     fasilitas,
@@ -400,7 +401,7 @@ export default function Show({
                         </div>
                     </section>
                 </main>
-
+<FloatingReport />
                 <Footer />
             </div>
         </>

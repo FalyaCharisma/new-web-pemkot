@@ -22,6 +22,7 @@ import {
     MapPin,
     PartyPopper,
 } from "lucide-react";
+import FloatingReport from "@/Components/site/Floating";
 
 interface Props {
     agenda: AgendaType;
@@ -363,7 +364,7 @@ export default function DetailAgenda({
                         />
                     </section>
                 </main>
-
+                <FloatingReport />
                 <Footer />
             </div>
         </>

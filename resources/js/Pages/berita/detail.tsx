@@ -22,6 +22,7 @@ import {
 import type { Berita } from "@/types/berita";
 import type { Kategori } from "@/types/kategori";
 import { formatDate } from "@/Components/ui/date";
+import FloatingReport from "@/Components/site/Floating";
 
 interface Props {
     berita: Berita;
@@ -317,7 +318,7 @@ export default function DetailBerita({
                         />
                     </section>
                 </main>
-
+                <FloatingReport />
                 <Footer />
             </div>
         </>
