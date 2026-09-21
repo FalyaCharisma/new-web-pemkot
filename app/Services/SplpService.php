@@ -116,4 +116,12 @@ class SplpService
             '/gempabumi-tsunami/1.0/tsunami'
         );
     }
+
+    public function getCuacaSaatIni(string $adm4): array
+    {
+        return $this->getFromSplp(
+            '/cuaca-saat-ini/1.0/present-weather?adm4='
+            . urlencode($adm4)
+        );
+    }
 }

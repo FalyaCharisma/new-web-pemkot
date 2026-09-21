@@ -156,7 +156,7 @@ export function Header() {
                     : "bg-transparent"
             }`}
         >
-            <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-6">
+            <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
                 {/* Logo */}
                 <a href="/" className="flex items-center gap-2">
                     <div className="rounded-md bg-white px-2 py-1">
@@ -182,7 +182,7 @@ export function Header() {
                         item.children ? (
                             <div key={item.title} className="group">
                                 <button
-                                    className={`flex items-center gap-1 text-sm font-medium transition-colors ${
+                                    className={`flex items-center gap-1 text-base font-medium transition-colors ${
                                         scrolled
                                             ? "text-slate-700 hover:text-primary"
                                             : "text-white hover:text-white"
@@ -270,7 +270,7 @@ export function Header() {
                             <a
                                 key={item.title}
                                 href={item.href}
-                                className={`text-sm font-medium transition-colors ${
+                                className={`text-base font-medium transition-colors ${
                                     scrolled
                                         ? "text-slate-700 hover:text-primary"
                                         : "text-white hover:text-white"

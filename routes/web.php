@@ -22,8 +22,31 @@ use App\Http\Controllers\PetaController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\BudayaWarisanController;
 use Illuminate\Foundation\Application;
+use App\Services\SplpService;
+use App\Http\Controllers\CuacaController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+Route::get('/test-cuaca', function (SplpService $splp) {
+    return response()->json(
+        $splp->getCuacaSaatIni('35.71.01.1001')
+    );
+});
+
+Route::get('/api/cuaca/kecamatan', [
+    CuacaController::class,
+    'kecamatan'
+])->name('api.cuaca.kecamatan');
+
+Route::get('/api/cuaca/kelurahan/{kdKecamatan}', [
+    CuacaController::class,
+    'kelurahan'
+])->name('api.cuaca.kelurahan');
+
+Route::get('/api/cuaca', [
+    CuacaController::class,
+    'cuaca'
+])->name('api.cuaca');
 
 Route::get('/', [LandingPageController::class, 'index']);
 Route::get('/perangkat-daerah/{slug}', [PerangkatDaerahController::class, 'index']);

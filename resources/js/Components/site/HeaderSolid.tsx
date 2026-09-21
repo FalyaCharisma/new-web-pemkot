@@ -138,7 +138,7 @@ export function HeaderSolid() {
         shadow-sm
       "
         >
-            <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-6">
+            <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
                 {/* Logo */}
                 <a href="/" className="flex items-center gap-2">
                     <div className="rounded-md bg-white px-2 py-1">
@@ -162,14 +162,7 @@ export function HeaderSolid() {
                         item.children ? (
                             <div key={item.title} className="group">
                                 <button
-                                    className="
-                    flex items-center gap-1
-                    text-sm font-medium
-                    text-slate-700
-                    transition-colors
-                    hover:text-primary
-                  "
-                                >
+                                    className="flex items-center gap-1 text-base font-medium text-slate-700 transition-colors hover:text-primary">
                                     {item.title}
 
                                     <ChevronDown
@@ -202,7 +195,7 @@ export function HeaderSolid() {
                     group-hover:opacity-100
                   "
                                 >
-                                    <div className="container-page py-5">
+                                    <div className="container-page py-3">
                                         <div className="grid grid-cols-3 gap-x-8 gap-y-3">
                                             {item.children.map((child) => {
                                                 const Icon = child.icon;
@@ -248,12 +241,7 @@ export function HeaderSolid() {
                             <a
                                 key={item.title}
                                 href={item.href}
-                                className="
-                  text-sm font-medium
-                  text-slate-700
-                  transition-colors
-                  hover:text-primary
-                "
+                                className="text-base font-medium text-slate-700 transition-colors hover:text-primary"
                             >
                                 {item.title}
                             </a>

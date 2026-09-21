@@ -63,6 +63,30 @@ export function Hero({ hero }: Props) {
     const [cuaca, setCuaca] = useState<CuacaData | null>(null);
     const [loadingCuaca, setLoadingCuaca] = useState(false);
 
+    // TEST CUACA
+const TEST_WEATHER = true;
+
+const dummyCuaca: CuacaData = {
+    lokasi: {
+        provinsi: "Jawa Timur",
+        kotkab: "Kota Kediri",
+        kecamatan: "Kota",
+        desa: "Pocanan",
+    },
+    cuaca: {
+        weather: 61,
+        weather_desc: "Hujan Ringan",
+        weather_desc_en: "Light Rain",
+        image: "https://cdn-icons-png.flaticon.com/512/1163/1163624.png",
+        local_datetime: new Date().toISOString(),
+        t: 24,
+        hu: 88,
+        ws: 10,
+        wd: "Barat",
+        vs_text: "8 km",
+    },
+};
+
     // Search
     const handleSearch = () => {
         if (!query.trim()) return;
@@ -130,33 +154,48 @@ export function Hero({ hero }: Props) {
     }, [selectedKecamatan]);
 
     // Ambil data cuaca
-    useEffect(() => {
-        if (!selectedKelurahan) return;
+   // Ambil data cuaca
+useEffect(() => {
+    // ==========================================
+    // MODE TEST
+    // ==========================================
+    if (TEST_WEATHER) {
+        setCuaca(dummyCuaca);
+        return;
+    }
 
-        const getCuaca = async () => {
-            try {
-                setLoadingCuaca(true);
+    // ==========================================
+    // MODE NORMAL - API BMKG
+    // ==========================================
+    if (!selectedKelurahan) return;
 
-                const response = await fetch(
-                    `/api/cuaca?kd_kelurahan=${selectedKelurahan}`,
-                );
+    const getCuaca = async () => {
+        try {
+            setLoadingCuaca(true);
 
-                if (!response.ok) {
-                    throw new Error("Gagal mengambil data cuaca");
-                }
+            const response = await fetch(
+                `/api/cuaca?kd_kelurahan=${selectedKelurahan}`
+            );
 
-                const result = await response.json();
-
-                setCuaca(result.data);
-            } catch (error) {
-                console.error("Gagal mengambil data cuaca:", error);
-            } finally {
-                setLoadingCuaca(false);
+            if (!response.ok) {
+                throw new Error("Gagal mengambil data cuaca");
             }
-        };
 
-        getCuaca();
-    }, [selectedKelurahan]);
+            const result = await response.json();
+
+            setCuaca(result.data);
+        } catch (error) {
+            console.error(
+                "Gagal mengambil data cuaca:",
+                error
+            );
+        } finally {
+            setLoadingCuaca(false);
+        }
+    };
+
+    getCuaca();
+}, [selectedKelurahan]);
 
     // Tentukan overlay berdasarkan kondisi cuaca
     const getWeatherOverlay = () => {
@@ -182,55 +221,45 @@ export function Hero({ hero }: Props) {
     };
 
     const getWeatherType = () => {
-    if (!cuaca) return "normal";
+        if (!cuaca) return "normal";
 
-    const weather = cuaca.cuaca.weather_desc.toLowerCase();
+        const weather = cuaca.cuaca.weather_desc.toLowerCase();
 
-    if (
-        weather.includes("petir") ||
-        weather.includes("thunder") ||
-        weather.includes("badai")
-    ) {
-        return "petir";
-    }
+        if (
+            weather.includes("petir") ||
+            weather.includes("thunder") ||
+            weather.includes("badai")
+        ) {
+            return "petir";
+        }
 
-    if (
-        weather.includes("hujan lebat") ||
-        weather.includes("heavy rain")
-    ) {
-        return "hujan-lebat";
-    }
+        if (weather.includes("hujan lebat") || weather.includes("heavy rain")) {
+            return "hujan-lebat";
+        }
 
-    if (
-        weather.includes("hujan") ||
-        weather.includes("rain")
-    ) {
-        return "hujan";
-    }
+        if (weather.includes("hujan") || weather.includes("rain")) {
+            return "hujan";
+        }
 
-    if (
-        weather.includes("berawan") ||
-        weather.includes("cloud")
-    ) {
-        return "berawan";
-    }
+        if (weather.includes("berawan") || weather.includes("cloud")) {
+            return "berawan";
+        }
 
-    return "normal";
-};
+        return "normal";
+    };
     return (
         <header className="relative h-screen overflow-visible">
             <div className="absolute inset-x-0 top-0 h-[85vh] overflow-hidden">
+                {/* FOTO HERO */}
+                <img
+                    src={hero ?? ""}
+                    alt="Kota Kediri"
+                    className="h-full w-full object-cover"
+                />
 
-    {/* FOTO HERO */}
-    <img
-        src={hero ?? ""}
-        alt="Kota Kediri"
-        className="h-full w-full object-cover"
-    />
-
-    {/* OVERLAY CUACA */}
-    <div
-        className={`
+                {/* OVERLAY CUACA */}
+                <div
+                    className={`
             absolute
             inset-0
             bg-gradient-to-b
@@ -238,19 +267,19 @@ export function Hero({ hero }: Props) {
             duration-1000
             ${getWeatherOverlay()}
         `}
-    />
+                />
 
-    {/* =====================================================
+                {/* =====================================================
         EFEK HUJAN
     ===================================================== */}
 
-    {(getWeatherType() === "hujan" ||
-        getWeatherType() === "hujan-lebat" ||
-        getWeatherType() === "petir") && (
-        <>
-            {/* HUJAN LAYER 1 */}
-            <div
-                className={`
+                {(getWeatherType() === "hujan" ||
+                    getWeatherType() === "hujan-lebat" ||
+                    getWeatherType() === "petir") && (
+                    <>
+                        {/* HUJAN LAYER 1 */}
+                        <div
+                            className={`
                     weather-rain
                     absolute
                     inset-[-100px]
@@ -262,21 +291,20 @@ export function Hero({ hero }: Props) {
                             : ""
                     }
                 `}
-            />
+                        />
 
-            {/* HUJAN LAYER 2 */}
-            <div
-                className="
+                        {/* HUJAN LAYER 2 */}
+                        <div
+                            className="
                     weather-rain weather-rain-second
                     absolute
                     inset-[-100px]
                     pointer-events-none
                 "
-            />
-        </>
-    )}
-
-</div>
+                        />
+                    </>
+                )}
+            </div>
 
             <div className="relative z-10 flex h-[85vh] items-center">
                 <div className="mx-auto w-full max-w-4xl px-6 lg:px-8">

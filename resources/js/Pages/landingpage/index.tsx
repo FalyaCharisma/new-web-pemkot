@@ -20,6 +20,7 @@ import { FasilitasKota } from "@/types/fasilitas";
 import FloatingReport from "@/Components/site/Floating";
 import logo from "@/assets/logo.png";
 import GempaSection from "@/Components/site/GempaSection";
+import Cuaca from "@/Components/site/Cuaca";
 
 type BudayaWarisan = {
     id: number;
@@ -71,8 +72,8 @@ export default function LandingPage({
 
                 <main>
                     <Hero hero={hero} />
-
-                    <GempaSection />
+        
+                    {/* <GempaSection /> */}
                     
                     <Services layanan={layanan} />
 
