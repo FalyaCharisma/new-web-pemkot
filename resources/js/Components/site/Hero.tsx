@@ -182,55 +182,45 @@ export function Hero({ hero }: Props) {
     };
 
     const getWeatherType = () => {
-    if (!cuaca) return "normal";
+        if (!cuaca) return "normal";
 
-    const weather = cuaca.cuaca.weather_desc.toLowerCase();
+        const weather = cuaca.cuaca.weather_desc.toLowerCase();
 
-    if (
-        weather.includes("petir") ||
-        weather.includes("thunder") ||
-        weather.includes("badai")
-    ) {
-        return "petir";
-    }
+        if (
+            weather.includes("petir") ||
+            weather.includes("thunder") ||
+            weather.includes("badai")
+        ) {
+            return "petir";
+        }
 
-    if (
-        weather.includes("hujan lebat") ||
-        weather.includes("heavy rain")
-    ) {
-        return "hujan-lebat";
-    }
+        if (weather.includes("hujan lebat") || weather.includes("heavy rain")) {
+            return "hujan-lebat";
+        }
 
-    if (
-        weather.includes("hujan") ||
-        weather.includes("rain")
-    ) {
-        return "hujan";
-    }
+        if (weather.includes("hujan") || weather.includes("rain")) {
+            return "hujan";
+        }
 
-    if (
-        weather.includes("berawan") ||
-        weather.includes("cloud")
-    ) {
-        return "berawan";
-    }
+        if (weather.includes("berawan") || weather.includes("cloud")) {
+            return "berawan";
+        }
 
-    return "normal";
-};
+        return "normal";
+    };
     return (
         <header className="relative h-screen overflow-visible">
             <div className="absolute inset-x-0 top-0 h-[85vh] overflow-hidden">
+                {/* FOTO HERO */}
+                <img
+                    src={hero ?? ""}
+                    alt="Kota Kediri"
+                    className="h-full w-full object-cover"
+                />
 
-    {/* FOTO HERO */}
-    <img
-        src={hero ?? ""}
-        alt="Kota Kediri"
-        className="h-full w-full object-cover"
-    />
-
-    {/* OVERLAY CUACA */}
-    <div
-        className={`
+                {/* OVERLAY CUACA */}
+                <div
+                    className={`
             absolute
             inset-0
             bg-gradient-to-b
@@ -238,19 +228,19 @@ export function Hero({ hero }: Props) {
             duration-1000
             ${getWeatherOverlay()}
         `}
-    />
+                />
 
-    {/* =====================================================
+                {/* =====================================================
         EFEK HUJAN
     ===================================================== */}
 
-    {(getWeatherType() === "hujan" ||
-        getWeatherType() === "hujan-lebat" ||
-        getWeatherType() === "petir") && (
-        <>
-            {/* HUJAN LAYER 1 */}
-            <div
-                className={`
+                {(getWeatherType() === "hujan" ||
+                    getWeatherType() === "hujan-lebat" ||
+                    getWeatherType() === "petir") && (
+                    <>
+                        {/* HUJAN LAYER 1 */}
+                        <div
+                            className={`
                     weather-rain
                     absolute
                     inset-[-100px]
@@ -262,148 +252,218 @@ export function Hero({ hero }: Props) {
                             : ""
                     }
                 `}
-            />
+                        />
 
-            {/* HUJAN LAYER 2 */}
-            <div
-                className="
+                        {/* HUJAN LAYER 2 */}
+                        <div
+                            className="
                     weather-rain weather-rain-second
                     absolute
                     inset-[-100px]
                     pointer-events-none
                 "
-            />
-        </>
-    )}
-
-</div>
+                        />
+                    </>
+                )}
+            </div>
 
             <div className="relative z-10 flex h-[85vh] items-center">
                 <div className="mx-auto w-full max-w-4xl px-6 lg:px-8">
                     <div className="max-w-4xl">
                         {/* Weather dan filter */}
+                        {/* Weather dan filter */}
                         {cuaca && (
                             <div
-                                className={`mb-6 flex w-fit max-w-full items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-2.5 text-white shadow-lg backdrop-blur-xl transition-opacity duration-300 ${loadingCuaca ? "opacity-70" : "opacity-100"}`}
+                                className={`
+             mb-4 w-full max-w-xl
+        rounded-2xl border border-white/20
+        bg-white/10 p-2.5
+            text-white shadow-lg backdrop-blur-xl
+            transition-opacity duration-300
+            sm:w-fit sm:max-w-full sm:rounded-full sm:p-2.5
+            ${loadingCuaca ? "opacity-70" : "opacity-100"}
+        `}
                             >
-                                <div className="flex items-center gap-2 px-2">
+                                {/* INFO CUACA */}
+                                <div className="flex items-center gap-2 px-2 py-0.5 sm:px-2">
                                     <img
                                         src={cuaca.cuaca.image}
                                         alt={cuaca.cuaca.weather_desc}
-                                        className="h-9 w-9"
+                                        className="h-9 w-9 shrink-0 sm:h-9 sm:w-9"
                                     />
-                                    <div className="leading-tight">
+
+                                    <div className="min-w-0 flex-1 leading-tight">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-base font-bold">
+                                            <span className="text-base font-bold sm:text-base">
                                                 {cuaca.cuaca.t}°C
                                             </span>
-                                            <span className="text-xs font-medium text-white/80">
+
+                                            <span className="truncate text-xs font-medium text-white/80">
                                                 {loadingCuaca
                                                     ? "Memperbarui..."
                                                     : cuaca.cuaca.weather_desc}
                                             </span>
                                         </div>
-                                        <div className="text-[10px] text-white/60">
+
+                                        <div className="truncate text-[10px] text-white/60">
                                             {cuaca.lokasi.desa},{" "}
                                             {cuaca.lokasi.kecamatan}
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="h-8 w-px bg-white/20" />
+                                {/* FILTER */}
+                                <div className="mt-2 grid grid-cols-2 gap-2 sm:mt-0 sm:flex sm:items-center sm:gap-2">
+                                    {/* Kecamatan */}
+                                    <div className="relative min-w-0">
+                                        <select
+                                            value={selectedKecamatan}
+                                            onChange={(e) =>
+                                                setSelectedKecamatan(
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className="
+                        h-9 w-full
+                        cursor-pointer appearance-none
+                        rounded-full
+                        border border-white/15
+                        bg-white/10
+                        px-3 pr-8
+                        text-xs font-semibold text-white
+                        outline-none
+                        transition
+                        hover:bg-white/20
+                        focus:bg-white/20
+                        sm:min-w-[120px]
+                        sm:px-4
+                    "
+                                        >
+                                            {kecamatan.map((item) => (
+                                                <option
+                                                    key={item.kd_kecamatan}
+                                                    value={item.kd_kecamatan}
+                                                    className="bg-slate-800 text-white"
+                                                >
+                                                    {item.nm_kecamatan}
+                                                </option>
+                                            ))}
+                                        </select>
 
-                                <div className="relative">
-                                    <select
-                                        value={selectedKecamatan}
-                                        onChange={(e) =>
-                                            setSelectedKecamatan(e.target.value)
+                                        <ChevronDown
+                                            size={13}
+                                            className="
+                        pointer-events-none
+                        absolute right-3 top-1/2
+                        -translate-y-1/2
+                        text-white/70
+                    "
+                                        />
+                                    </div>
+
+                                    {/* Kelurahan */}
+                                    <div className="relative min-w-0">
+                                        <select
+                                            value={selectedKelurahan}
+                                            disabled={!selectedKecamatan}
+                                            onChange={(e) =>
+                                                setSelectedKelurahan(
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className="
+                        h-10 w-full
+                        cursor-pointer appearance-none
+                        rounded-full
+                        border border-white/15
+                        bg-white/10
+                        px-3 pr-8
+                        text-xs font-semibold text-white
+                        outline-none
+                        transition
+                        hover:bg-white/20
+                        focus:bg-white/20
+                        disabled:opacity-50
+                        sm:min-w-[165px]
+                        sm:px-4
+                    "
+                                        >
+                                            {kelurahan.map((item) => (
+                                                <option
+                                                    key={item.kd_kelurahan}
+                                                    value={item.kd_kelurahan}
+                                                    className="bg-slate-800 text-white"
+                                                >
+                                                    {item.nm_kelurahan}
+                                                </option>
+                                            ))}
+                                        </select>
+
+                                        <ChevronDown
+                                            size={13}
+                                            className="
+                        pointer-events-none
+                        absolute right-3 top-1/2
+                        -translate-y-1/2
+                        text-white/70
+                    "
+                                        />
+                                    </div>
+
+                                    {/* Info Gempa */}
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            document
+                                                .getElementById("gempa")
+                                                ?.scrollIntoView({
+                                                    behavior: "smooth",
+                                                })
                                         }
-                                        className="h-10 min-w-[120px] cursor-pointer appearance-none rounded-full border border-white/15 bg-white/10 px-4 pr-8 text-xs font-semibold text-white outline-none transition hover:bg-white/20 focus:bg-white/20"
+                                        className="
+                    col-span-2
+                    flex h-9
+                    items-center justify-center
+                    gap-1.5
+                    rounded-full
+                    bg-white/10
+                    px-4
+                    text-xs font-semibold
+                    text-white
+                    transition
+                    hover:bg-white/20
+                    sm:col-span-1
+                "
                                     >
-                                        {kecamatan.map((item) => (
-                                            <option
-                                                key={item.kd_kecamatan}
-                                                value={item.kd_kecamatan}
-                                                className="bg-slate-800 text-white"
-                                            >
-                                                {item.nm_kecamatan}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <ChevronDown
-                                        size={13}
-                                        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-white/70"
-                                    />
+                                        <Activity size={14} />
+                                        <span>Info Gempa</span>
+                                        <ArrowRight size={13} />
+                                    </button>
                                 </div>
-
-                                <div className="relative">
-                                    <select
-                                        value={selectedKelurahan}
-                                        disabled={!selectedKecamatan}
-                                        onChange={(e) =>
-                                            setSelectedKelurahan(e.target.value)
-                                        }
-                                        className="h-10 min-w-[165px] cursor-pointer appearance-none rounded-full border border-white/15 bg-white/10 px-4 pr-8 text-xs font-semibold text-white outline-none transition hover:bg-white/20 focus:bg-white/20 disabled:opacity-50"
-                                    >
-                                        {kelurahan.map((item) => (
-                                            <option
-                                                key={item.kd_kelurahan}
-                                                value={item.kd_kelurahan}
-                                                className="bg-slate-800 text-white"
-                                            >
-                                                {item.nm_kelurahan}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <ChevronDown
-                                        size={13}
-                                        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-white/70"
-                                    />
-                                </div>
-
-                                <div className="h-8 w-px bg-white/20" />
-
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        document
-                                            .getElementById("gempa")
-                                            ?.scrollIntoView({
-                                                behavior: "smooth",
-                                            })
-                                    }
-                                    className="flex h-10 items-center gap-1.5 rounded-full bg-white/10 px-4 text-xs font-semibold text-white transition hover:bg-white/20"
-                                >
-                                    <Activity size={14} />
-                                    <span>Info Gempa</span>
-                                    <ArrowRight size={13} />
-                                </button>
                             </div>
                         )}
 
                         {/* Badge */}
-                        <div className="inline-flex items-center rounded-full bg-white/20 px-5 py-2 text-xs font-medium text-white backdrop-blur-md">
+                        <div className="inline-flex max-w-full flex-wrap items-center justify-center rounded-full bg-white/20 px-3 py-1.5 text-center text-[10px] leading-tight text-white backdrop-blur-md sm:px-5 sm:py-2 sm:text-xs">
                             <span>MAJU</span>
-                            <span className="mx-2 text-yellow-400">•</span>
+                            <span className="mx-1 text-yellow-400 sm:mx-2">•</span>
                             <span>AGAMIS</span>
-                            <span className="mx-2 text-yellow-400">•</span>
+                            <span className="mx-1 text-yellow-400 sm:mx-2">•</span>
                             <span>PRODUKTIF</span>
-                            <span className="mx-2 text-yellow-400">•</span>
+                            <span className="mx-1 text-yellow-400 sm:mx-2">•</span>
                             <span>AMAN</span>
-                            <span className="mx-2 text-yellow-400">•</span>
+                            <span className="mx-1 text-yellow-400 sm:mx-2">•</span>
                             <span>NGANGENI</span>
                         </div>
 
                         {/* Judul */}
-                        <h1 className="mt-3 text-5xl font-bold leading-[1.02] tracking-tight text-white md:text-7xl">
+                        <h1 className="mt-3 text-4xl font-bold leading-[1.02] tracking-tight text-white sm:text-5xl md:text-7xl">
                             Kota Kediri{" "}
-                            <span className="text-gold font-serif italic">
-                                Mapan
-                            </span>
+                            <span className="text-gold font-serif italic">Mapan</span>
                         </h1>
 
                         {/* Subtitle */}
-                        <h5 className="mt-4 text-lg font-medium uppercase tracking-[0.18em] text-white/80">
+                        <h5 className="mt-3 max-w-full text-sm font-medium uppercase leading-relaxed tracking-[0.08em] text-white/80 sm:mt-4 sm:text-lg sm:tracking-[0.18em]">
                             Ngangeni dalam Kenangan, Maju dalam Perubahan
                         </h5>
 
@@ -412,7 +472,7 @@ export function Hero({ hero }: Props) {
                             <input
                                 type="text"
                                 placeholder="Cari Fasilitas, berita, wisata atau informasi lainnya..."
-                                className="flex-1 px-7 py-3.5 text-gray-700 outline-none"
+                                className="min-w-0 flex-1 px-4 py-3 text-sm text-gray-700 outline-none sm:px-7 sm:py-3.5 sm:text-base"
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
                                 onKeyDown={(e) => {
@@ -425,22 +485,22 @@ export function Hero({ hero }: Props) {
 
                             <button
                                 onClick={handleSearch}
-                                className="m-1.5 flex h-11 w-11 items-center justify-center rounded-full bg-yellow-500 text-white"
+                                className="m-1.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-yellow-500 text-white sm:h-11 sm:w-11"
                             >
-                                <Search size={20} />
+                                <Search size={18} className="sm:h-5 sm:w-5" />
                             </button>
                         </div>
 
                         {/* CTA */}
-                        <div className="mt-6 flex flex-wrap gap-3">
+                        <div className="mt-5 flex flex-wrap gap-2 sm:mt-6 sm:gap-3">
                             <a
                                 href="https://pecut.kedirikota.go.id/"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+                                className="flex items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 text-xs font-semibold text-white transition hover:opacity-90 sm:gap-2 sm:px-6 sm:py-3 sm:text-sm"
                             >
                                 Akses Layanan Publik
-                                <ArrowRight size={17} />
+                                <ArrowRight size={15} className="sm:h-[17px] sm:w-[17px]" />
                             </a>
 
                             <button
@@ -449,10 +509,10 @@ export function Hero({ hero }: Props) {
                                         .getElementById("budaya")
                                         ?.scrollIntoView({ behavior: "smooth" })
                                 }
-                                className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-md transition hover:bg-white/20"
+                                className="flex items-center gap-1.5 rounded-full border border-white/30 bg-white/10 px-4 py-2.5 text-xs font-semibold text-white backdrop-blur-md transition hover:bg-white/20 sm:gap-2 sm:px-6 sm:py-3 sm:text-sm"
                             >
                                 Jelajahi Kota Kediri
-                                <ArrowRight size={17} />
+                                <ArrowRight size={15} className="sm:h-[17px] sm:w-[17px]" />
                             </button>
                         </div>
                     </div>
