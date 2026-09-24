@@ -275,17 +275,18 @@ export function Hero({ hero }: Props) {
                         {cuaca && (
                             <div
                                 className={`
-             mb-4 w-full max-w-xl
+        mb-4 w-full
         rounded-2xl border border-white/20
         bg-white/10 p-2.5
-            text-white shadow-lg backdrop-blur-xl
-            transition-opacity duration-300
-            sm:w-fit sm:max-w-full sm:rounded-full sm:p-2.5
-            ${loadingCuaca ? "opacity-70" : "opacity-100"}
-        `}
+        text-white shadow-lg backdrop-blur-xl
+        transition-opacity duration-300
+        sm:flex sm:w-fit sm:max-w-none sm:items-center sm:gap-3
+        sm:rounded-2xl sm:p-2.5
+        ${loadingCuaca ? "opacity-70" : "opacity-100"}
+    `}
                             >
                                 {/* INFO CUACA */}
-                                <div className="flex items-center gap-2 px-2 py-0.5 sm:px-2">
+                                <div className="flex min-w-0 shrink-0 items-center gap-2 px-2 py-0.5 sm:px-0">
                                     <img
                                         src={cuaca.cuaca.image}
                                         alt={cuaca.cuaca.weather_desc}
@@ -313,7 +314,7 @@ export function Hero({ hero }: Props) {
                                 </div>
 
                                 {/* FILTER */}
-                                <div className="mt-2 grid grid-cols-2 gap-2 sm:mt-0 sm:flex sm:items-center sm:gap-2">
+                                <div className="mt-2 grid grid-cols-2 gap-2 sm:mt-0 sm:flex sm:shrink-0 sm:items-center sm:gap-2">
                                     {/* Kecamatan */}
                                     <div className="relative min-w-0">
                                         <select
@@ -446,20 +447,30 @@ export function Hero({ hero }: Props) {
                         {/* Badge */}
                         <div className="inline-flex max-w-full flex-wrap items-center justify-center rounded-full bg-white/20 px-3 py-1.5 text-center text-[10px] leading-tight text-white backdrop-blur-md sm:px-5 sm:py-2 sm:text-xs">
                             <span>MAJU</span>
-                            <span className="mx-1 text-yellow-400 sm:mx-2">•</span>
+                            <span className="mx-1 text-yellow-400 sm:mx-2">
+                                •
+                            </span>
                             <span>AGAMIS</span>
-                            <span className="mx-1 text-yellow-400 sm:mx-2">•</span>
+                            <span className="mx-1 text-yellow-400 sm:mx-2">
+                                •
+                            </span>
                             <span>PRODUKTIF</span>
-                            <span className="mx-1 text-yellow-400 sm:mx-2">•</span>
+                            <span className="mx-1 text-yellow-400 sm:mx-2">
+                                •
+                            </span>
                             <span>AMAN</span>
-                            <span className="mx-1 text-yellow-400 sm:mx-2">•</span>
+                            <span className="mx-1 text-yellow-400 sm:mx-2">
+                                •
+                            </span>
                             <span>NGANGENI</span>
                         </div>
 
                         {/* Judul */}
                         <h1 className="mt-3 text-4xl font-bold leading-[1.02] tracking-tight text-white sm:text-5xl md:text-7xl">
                             Kota Kediri{" "}
-                            <span className="text-gold font-serif italic">Mapan</span>
+                            <span className="text-gold font-serif italic">
+                                Mapan
+                            </span>
                         </h1>
 
                         {/* Subtitle */}
@@ -500,7 +511,10 @@ export function Hero({ hero }: Props) {
                                 className="flex items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 text-xs font-semibold text-white transition hover:opacity-90 sm:gap-2 sm:px-6 sm:py-3 sm:text-sm"
                             >
                                 Akses Layanan Publik
-                                <ArrowRight size={15} className="sm:h-[17px] sm:w-[17px]" />
+                                <ArrowRight
+                                    size={15}
+                                    className="sm:h-[17px] sm:w-[17px]"
+                                />
                             </a>
 
                             <button
@@ -512,7 +526,10 @@ export function Hero({ hero }: Props) {
                                 className="flex items-center gap-1.5 rounded-full border border-white/30 bg-white/10 px-4 py-2.5 text-xs font-semibold text-white backdrop-blur-md transition hover:bg-white/20 sm:gap-2 sm:px-6 sm:py-3 sm:text-sm"
                             >
                                 Jelajahi Kota Kediri
-                                <ArrowRight size={15} className="sm:h-[17px] sm:w-[17px]" />
+                                <ArrowRight
+                                    size={15}
+                                    className="sm:h-[17px] sm:w-[17px]"
+                                />
                             </button>
                         </div>
                     </div>
